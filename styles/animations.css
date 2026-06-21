@@ -1,0 +1,260 @@
+.ap-progress,
+
+.ap-vol {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  border-radius: 999px;
+  background:
+    linear-gradient(#e8e7e7, #e8e7e7) 0 / var(--ap-fill, 0%) 100% no-repeat,
+    rgba(232, 231, 231, 0.24);
+  outline: none;
+}
+
+
+.ap-progress {
+  height: 5px;
+}
+
+
+.ap-vol {
+  height: 3px;
+}
+
+
+.ap-progress::-webkit-slider-thumb,
+
+.ap-vol::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  background: #e8e7e7;
+}
+
+
+.ap-progress::-webkit-slider-thumb {
+  width: 14px;
+  height: 14px;
+  opacity: 0;
+}
+
+
+.ap-progress:hover::-webkit-slider-thumb,
+
+.ap-progress:focus-visible::-webkit-slider-thumb {
+  opacity: 1;
+}
+
+
+.ap-vol::-webkit-slider-thumb {
+  width: 11px;
+  height: 11px;
+}
+
+
+.ap-progress::-moz-range-thumb,
+
+.ap-vol::-moz-range-thumb {
+  border: 0;
+  border-radius: 999px;
+  background: #e8e7e7;
+}
+
+
+.ap-progress::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  opacity: 0;
+}
+
+
+.ap-progress:hover::-moz-range-thumb,
+
+.ap-progress:focus-visible::-moz-range-thumb {
+  opacity: 1;
+}
+
+
+.ap-vol::-moz-range-thumb {
+  width: 11px;
+  height: 11px;
+}
+
+
+.ap-progress::-moz-range-track,
+
+.ap-vol::-moz-range-track {
+  border-radius: 999px;
+  background: rgba(232, 231, 231, 0.24);
+}
+
+
+.ap-progress::-moz-range-track {
+  height: 5px;
+}
+
+
+.ap-vol::-moz-range-track {
+  height: 3px;
+}
+
+
+.ap-progress::-moz-range-progress,
+
+.ap-vol::-moz-range-progress {
+  border-radius: 999px;
+  background: #e8e7e7;
+}
+
+
+.ap-progress::-moz-range-progress {
+  height: 5px;
+}
+
+
+.ap-vol::-moz-range-progress {
+  height: 3px;
+}
+
+
+@media (min-width: 1024px) {
+  .ap-rail-item {
+    transform:
+      translate3d(0, calc(-50% + (var(--ap-distance, 0) * clamp(128px, 22svh, 210px))), 0)
+      scale(var(--ap-scale, 1));
+    transition:
+      transform 680ms cubic-bezier(.2,.9,.2,1),
+      opacity 420ms ease,
+      border-color 420ms ease;
+    will-change: transform;
+  }
+}
+
+
+@keyframes apFadeUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+
+@keyframes apMediaIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0) scale(0.985);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0);
+  }
+}
+
+
+@keyframes introSlideUp{
+  0%{
+    transform: translate3d(0,0,0);
+    filter: blur(0px);
+  }
+  70%{
+    transform: translate3d(0,-102%,0);
+    filter: blur(1px);
+  }
+  100%{
+    transform: translate3d(0,-120%,0);
+    filter: blur(0px);
+  }
+}
+
+
+@keyframes introDotPulse{
+  0%{ transform: scale(1); box-shadow: 0 0 0 10px rgba(24, 0, 173, 0.12); }
+  50%{ transform: scale(1.35); box-shadow: 0 0 0 16px rgba(24, 0, 173, 0.06); }
+  100%{ transform: scale(1); box-shadow: 0 0 0 10px rgba(24, 0, 173, 0.12); }
+}
+
+
+@keyframes introBar{
+  0%{ transform: translateX(-100%); }
+  100%{ transform: translateX(100%); }
+}
+
+
+@keyframes contactDot{
+  0%{ transform: scale(1); opacity: .85; }
+  50%{ transform: scale(1.35); opacity: 1; }
+  100%{ transform: scale(1); opacity: .85; }
+}
+
+
+@keyframes marqueeScroll {
+  0% { transform: translate3d(0,0,0); }
+  100% { transform: translate3d(-50%,0,0); }
+}
+
+
+@keyframes galleryMarqueeLeft {
+  0% { transform: translate3d(0,0,0); }
+  100% { transform: translate3d(-50%,0,0); }
+}
+
+
+@keyframes sarahPing {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.7);
+    opacity: 0;
+  }
+  38% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(2.2);
+    opacity: 0;
+  }
+}
+
+
+@keyframes aboutDepthSlow {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -5px, 0);
+  }
+}
+
+
+@keyframes aboutDepthDrift {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(4px, -7px, 0);
+  }
+}
+
+
+.about-depth-slow {
+  animation: aboutDepthSlow 9s cubic-bezier(.45, 0, .25, 1) infinite;
+}
+
+
+.about-depth-drift {
+  animation: aboutDepthDrift 11s cubic-bezier(.45, 0, .25, 1) infinite;
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .about-depth-slow,
+  .about-depth-drift {
+    animation: none;
+  }
+}

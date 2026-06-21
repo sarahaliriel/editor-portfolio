@@ -1,0 +1,77 @@
+html, body {
+  height: 100%;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+
+html::-webkit-scrollbar,
+
+body::-webkit-scrollbar{
+  width: 0;
+  height: 0;
+}
+
+
+.ap-rail {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+
+.ap-rail::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+
+.scrollbar-sarah {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(24, 0, 173, 0.55) rgba(232, 231, 231, 0.08);
+}
+
+
+.scrollbar-sarah::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+
+.scrollbar-sarah::-webkit-scrollbar-track {
+  background: rgba(232, 231, 231, 0.06);
+  border-radius: 999px;
+}
+
+
+.scrollbar-sarah::-webkit-scrollbar-thumb {
+  background: rgba(24, 0, 173, 0.6);
+  border-radius: 999px;
+  border: 2px solid rgba(30, 30, 30, 1);
+}
+
+
+.scrollbar-sarah::-webkit-scrollbar-thumb:hover {
+  background: rgba(24, 0, 173, 0.8);
+}
+
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+::-webkit-scrollbar-thumb {
+  background: #1800ad;
+  border-radius: 999px;
+}
+
+
+::-webkit-scrollbar-thumb:hover {
+  background: #1800ad;
+}

@@ -82,7 +82,7 @@ export async function POST(req: Request) {
       `,
     });
 
-    if ((result as any)?.error) {
+    if ("error" in result && result.error) {
       return NextResponse.json(
         { ok: false, error: "Falha ao enviar. Tenta novamente." },
         { status: 500 }

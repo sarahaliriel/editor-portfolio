@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useMemo, useRef, useState } from "react"
-import { Lang, useI18n } from "@/components/i18n"
+import { Lang, useI18n } from "@/components/providers/i18n"
 
 const ORDER: Lang[] = ["pt", "en", "es"]
 
@@ -114,7 +114,7 @@ export default function LanguageToggle() {
                       <span className="text-[11px] font-semibold tracking-[0.18em] text-white/85">{shortLabel(l)}</span>
                     </span>
 
-                    <span className="text-[13px] text-white/85">{t(l as any)}</span>
+                    <span className="text-[13px] text-white/85">{t(l)}</span>
                   </span>
 
                   <span

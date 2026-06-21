@@ -1,0 +1,571 @@
+"use client"
+
+import { motion, useInView, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion"
+import type { Variants } from "framer-motion"
+import Image from "next/image"
+import Link from "next/link"
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
+import Menu from "@/components/layout/menu"
+import ScrollProgress from "@/components/layout/scroll-progress"
+import { useI18n } from "@/components/providers/i18n"
+
+type TimelineItem = {
+  year: string
+  title: string
+  body: string
+}
+
+type HelpColumn = {
+  number: string
+  title: string
+  items: string[]
+  body?: string
+  featured?: boolean
+}
+
+const reveal: Variants = {
+  hidden: { opacity: 0, y: 34, filter: "blur(6px)" },
+  show: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.85, ease: [0.16, 1, 0.3, 1] },
+  },
+}
+
+function splitItems(value: string) {
+  return value.split("|").filter(Boolean)
+}
+
+function useCompactViewport() {
+  const [isCompact, setIsCompact] = useState(true)
+
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 767px), (max-height: 760px)")
+    const update = () => setIsCompact(media.matches)
+
+    update()
+    media.addEventListener("change", update)
+    return () => media.removeEventListener("change", update)
+  }, [])
+
+  return isCompact
+}
+
+export default function MoreAboutPage() {
+  const { t } = useI18n()
+
+  const timeline = useMemo<TimelineItem[]>(
+    () => [
+      { year: "2019", title: t("moreAboutStory2019Title"), body: t("moreAboutStory2019Body") },
+      { year: "2022", title: t("moreAboutStory2022Title"), body: t("moreAboutStory2022Body") },
+      { year: "2025", title: t("moreAboutStory2025Title"), body: t("moreAboutStory2025Body") },
+      { year: "2026", title: t("moreAboutStory2026Title"), body: t("moreAboutStory2026Body") },
+    ],
+    [t]
+  )
+
+  const help = useMemo<HelpColumn[]>(
+    () => [
+      { number: "01", title: t("moreAboutHelp01Title"), items: splitItems(t("moreAboutHelp01Items")) },
+      { number: "02", title: t("moreAboutHelp02Title"), items: splitItems(t("moreAboutHelp02Items")) },
+      { number: "03", title: t("moreAboutHelp03Title"), items: splitItems(t("moreAboutHelp03Items")) },
+      {
+        number: "04",
+        title: t("moreAboutHelp04Title"),
+        items: splitItems(t("moreAboutHelp04Items")),
+        featured: true,
+      },
+    ],
+    [t]
+  )
+
+  return (
+    <main className="relative min-h-screen overflow-x-clip bg-[#e8e7e7] text-[#1e1e1e]">
+      <ScrollProgress />
+      <Menu />
+      <Hero />
+      <Story timeline={timeline} />
+      <Help title={t("moreAboutHelpTitle")} columns={help} />
+      <SocialProof
+        kicker={t("moreAboutStatsKicker")}
+        title={t("moreAboutStatsTitle")}
+        intro={t("moreAboutStatsIntro")}
+        stats={[
+          { value: "+6", label: t("moreAboutStatYears"), chapter: t("moreAboutStatYearsChapter") },
+          { value: "+100", label: t("moreAboutStatProjects"), chapter: t("moreAboutStatProjectsChapter") },
+          { value: "+10M", label: t("moreAboutStatViews"), chapter: t("moreAboutStatViewsChapter") },
+        ]}
+      />
+      <FinalCta
+        titleLines={[t("moreAboutCtaLine1"), t("moreAboutCtaLine2")]}
+        button={t("moreAboutCtaButton")}
+      />
+    </main>
+  )
+}
+
+function Hero() {
+  const { t } = useI18n()
+  const prefersReducedMotion = useReducedMotion()
+  const sectionRef = useRef<HTMLElement | null>(null)
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end start"] })
+  const y = useTransform(scrollYProgress, [0, 1], prefersReducedMotion ? [0, 0] : [0, 86])
+  const signatureY = useTransform(scrollYProgress, [0, 1], prefersReducedMotion ? [0, 0] : [0, 34])
+  const imageScale = useTransform(scrollYProgress, [0, 1], prefersReducedMotion ? [1, 1] : [1, 1.08])
+  const signatureOpacity = useTransform(scrollYProgress, [0, 0.72], prefersReducedMotion ? [1, 1] : [1, 0])
+  const signatureBlur = useTransform(scrollYProgress, [0, 0.72], prefersReducedMotion ? ["blur(0px)", "blur(0px)"] : ["blur(0px)", "blur(8px)"])
+  const imageY = useSpring(y, { stiffness: 80, damping: 26, mass: 0.35 })
+  const signatureSpringY = useSpring(signatureY, { stiffness: 70, damping: 30, mass: 0.5 })
+  const cursorX = useSpring(0, { stiffness: 80, damping: 28, mass: 0.5 })
+  const cursorY = useSpring(0, { stiffness: 80, damping: 28, mass: 0.5 })
+
+  return (
+    <section
+      ref={sectionRef}
+      className="relative min-h-svh overflow-hidden px-4 pb-16 pt-20 sm:px-8 sm:pb-16 sm:pt-28 lg:px-12 lg:pt-30"
+      onMouseMove={(event) => {
+        if (prefersReducedMotion) return
+        const rect = event.currentTarget.getBoundingClientRect()
+        cursorX.set(((event.clientX - rect.left) / rect.width - 0.5) * 16)
+        cursorY.set(((event.clientY - rect.top) / rect.height - 0.5) * 16)
+      }}
+      onMouseLeave={() => {
+        cursorX.set(0)
+        cursorY.set(0)
+      }}
+    >
+      <div className="mx-auto flex min-h-[calc(100svh-9rem)] w-full max-w-370 flex-col items-center justify-center">
+        <div className="relative flex w-full -translate-y-2 justify-center sm:-translate-y-8 lg:-translate-y-10">
+          <motion.div
+            className="pointer-events-none absolute left-1/2 top-1/2 z-0 w-[clamp(640px,120vw,1940px)] -translate-x-1/2 -translate-y-[64%] select-none mix-blend-multiply"
+            style={{ y: signatureSpringY, opacity: signatureOpacity, filter: signatureBlur }}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 18, filter: "blur(10px)" }}
+              animate={{ opacity: 0.065, y: 0, filter: "blur(0px)" }}
+              transition={{ duration: 1.15, delay: 0.74, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <Image
+                src="/images/profile/signature-sarah-aliriel.png"
+                alt="Assinatura Sarah Aliriel"
+                width={1920}
+                height={1080}
+                className="h-auto w-full"
+              />
+            </motion.div>
+          </motion.div>
+
+          <motion.div
+            className="relative z-10 h-[62svh] min-h-96 w-[min(84vw,calc(62svh*0.61))] max-w-155 overflow-hidden sm:h-[74svh] sm:min-h-120 sm:w-[min(68vw,calc(74svh*0.61))] lg:h-[78svh] lg:min-h-155 lg:w-[min(46vw,calc(78svh*0.61))]"
+            initial={{ opacity: 0, y: 34, filter: "blur(12px)", clipPath: "inset(18% 0 18% 0)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)", clipPath: "inset(0% 0 0% 0)" }}
+            transition={{ duration: 1.18, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <motion.div className="absolute inset-[-6%_0]" style={{ y: imageY }}>
+              <motion.div
+                className="absolute inset-0"
+                style={{ scale: imageScale, x: cursorX, y: cursorY }}
+              >
+                <Image
+                  src="/images/moreabout/aboutme-photo.png"
+                  alt="Sarah Aliriel Dumitrache"
+                  fill
+                  priority
+                  sizes="(min-width: 1024px) 46vw, (min-width: 640px) 68vw, 82vw"
+                  className="scale-[1.03] object-cover object-center"
+                />
+                <div className="absolute inset-0 border border-[#1e1e1e]/10 mix-blend-multiply" />
+              </motion.div>
+            </motion.div>
+          </motion.div>
+        </div>
+
+        <div className="relative z-20 mt-0 w-full max-w-305 sm:mt-1">
+          <motion.div
+            className="border-t border-[#1e1e1e]/24 pt-5 text-[14px] leading-snug text-[#1e1e1e]/74 sm:pt-6 sm:text-[15px] lg:text-base"
+            initial={{ opacity: 0, y: 18, filter: "blur(8px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.82, delay: 0.98, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <div className="grid gap-3 text-center sm:grid-cols-2 sm:text-left lg:grid-cols-[1fr_1.4fr_1fr] lg:items-start">
+              <p className="font-medium text-[#1e1e1e] sm:col-span-1">{t("moreAboutName")}</p>
+              <p className="sm:text-right lg:text-center">
+                {t("moreAboutRole1")} <span className="text-[#1e1e1e]/34">/</span> {t("moreAboutRole2")}{" "}
+                <span className="text-[#1e1e1e]/34">/</span> {t("moreAboutRole3")}
+              </p>
+              <p className="sm:col-span-2 sm:text-center lg:col-span-1 lg:text-right">{t("moreAboutLocation")}</p>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Story({ timeline }: { timeline: TimelineItem[] }) {
+  const { t } = useI18n()
+
+  return (
+    <section className="px-4 py-24 sm:px-8 sm:py-32 lg:px-12">
+      <div className="mx-auto w-full max-w-330">
+        <motion.div className="mb-14 sm:mb-20" variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.3 }}>
+          <span className="kicker">{t("moreAboutStoryKicker")}</span>
+          <h2 className="mt-5 max-w-4xl font-display text-[clamp(3rem,8vw,8rem)] font-black uppercase leading-[0.88] tracking-[0]">
+            {t("moreAboutStoryTitle")}
+          </h2>
+        </motion.div>
+
+        <div>
+          {timeline.map((item) => (
+            <motion.article
+              key={item.year}
+              className="grid gap-6 border-t border-[#1e1e1e]/18 py-10 last:border-b md:grid-cols-[130px_230px_minmax(0,1fr)] md:gap-8 md:py-14 lg:grid-cols-[170px_320px_minmax(0,1fr)] lg:gap-12"
+              variants={reveal}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.35 }}
+            >
+              <div className="font-display text-[clamp(2rem,4vw,4.5rem)] font-black leading-none text-[#1800ad]">{item.year}</div>
+              <h3 className="max-w-75 font-display text-[clamp(1.45rem,2.4vw,2.65rem)] font-semibold leading-[1.02] tracking-[0]">{item.title}</h3>
+              <p className="max-w-2xl text-base leading-relaxed text-[#1e1e1e]/68 sm:text-lg">{item.body}</p>
+            </motion.article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Help({ title, columns }: { title: string; columns: HelpColumn[] }) {
+  const [activeColumn, setActiveColumn] = useState<string | null>(null)
+
+  return (
+    <section className="px-4 py-24 sm:px-8 sm:py-32 lg:px-12">
+      <div className="mx-auto mb-14 w-full max-w-330 sm:mb-20">
+        <motion.h2
+          className="max-w-5xl font-display text-[clamp(3rem,7vw,8.5rem)] font-black leading-[0.9] tracking-[0]"
+          variants={reveal}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.25 }}
+        >
+          {title}
+        </motion.h2>
+      </div>
+
+      <div className="mx-auto w-full max-w-370">
+        <div className="grid border-t border-[#1e1e1e]/18 md:grid-cols-2 lg:grid-cols-4" onMouseLeave={() => setActiveColumn(null)}>
+          {columns.map((column, index) => (
+            <motion.div
+              key={column.number}
+              variants={reveal}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ delay: index * 0.05 }}
+            >
+              <motion.article
+                className={[
+                  "relative min-h-0 border-b border-[#1e1e1e]/18 px-0 py-8 md:min-h-95 md:px-7 lg:border-r lg:last:border-r-0",
+                  column.featured ? "text-[#1e1e1e]" : "",
+                ].join(" ")}
+                animate={{
+                  opacity: activeColumn && activeColumn !== column.number ? 0.48 : 1,
+                  y: activeColumn === column.number ? -6 : 0,
+                  backgroundColor: activeColumn === column.number ? "rgba(255,255,255,0.23)" : "rgba(255,255,255,0)",
+                }}
+                onMouseEnter={() => setActiveColumn(column.number)}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <motion.div
+                  className="absolute -inset-x-px top-0 h-1 origin-left bg-[#1800ad]"
+                  animate={{ scaleX: activeColumn === column.number || (!activeColumn && column.featured) ? 1 : 0 }}
+                  transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                />
+                <div className="flex items-start justify-between gap-6">
+                  <span className="font-display text-[13px] font-semibold text-[#1800ad]">{column.number}</span>
+                  {column.featured ? <span className="h-2.5 w-2.5 rounded-full bg-[#1800ad]" aria-hidden="true" /> : null}
+                </div>
+                <h3 className="mt-10 font-display text-[clamp(1.55rem,2vw,2.4rem)] font-semibold leading-tight tracking-[0]">{column.title}</h3>
+                <ul className="mt-8 space-y-3 text-[15px] leading-snug text-[#1e1e1e]/72 sm:text-base">
+                  {column.items.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+                {column.body ? <p className="mt-10 max-w-xs text-lg font-medium leading-snug text-[#1e1e1e]">{column.body}</p> : null}
+              </motion.article>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+type Stat = { value: string; label: string; chapter: string }
+
+const SOCIALS = [
+  { label: "Instagram", href: "https://www.instagram.com/chazinhodociel/" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/sarah-dumitrache/" },
+  { label: "GitHub", href: "https://github.com/sarahaliriel" },
+  { label: "Discord", href: "https://discord.com/users/942126894478950530" },
+] as const
+
+function SocialProof({ kicker, title, intro, stats }: { kicker: string; title: string; intro: string; stats: Stat[] }) {
+  return (
+    <section className="overflow-hidden px-4 py-28 sm:px-8 sm:py-40 lg:px-12 lg:py-48">
+      <div className="mx-auto w-full max-w-370">
+        <motion.header
+          className="grid gap-10 border-t border-[#1e1e1e]/18 pt-7 sm:pt-10 lg:grid-cols-[minmax(0,1.55fr)_minmax(18rem,.65fr)] lg:items-end lg:gap-20"
+          variants={reveal}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.35 }}
+        >
+          <div>
+            <span className="kicker text-[#1800ad]">{kicker}</span>
+            <h2 className="mt-6 max-w-[11ch] font-display text-[clamp(3.2rem,7.5vw,8.4rem)] font-black leading-[0.88] tracking-[-0.045em]">
+              {title}
+            </h2>
+          </div>
+          <p className="max-w-md text-base leading-relaxed text-[#1e1e1e]/65 sm:text-lg">{intro}</p>
+        </motion.header>
+
+        <div className="mt-24 sm:mt-36 lg:mt-48">
+          {stats.map((stat, index) => (
+            <motion.article
+              key={stat.label}
+              className="group relative grid min-h-0 gap-7 border-t border-[#1e1e1e]/18 py-10 sm:min-h-80 sm:gap-8 sm:py-14 lg:grid-cols-[8rem_minmax(0,1.25fr)_minmax(17rem,.65fr)] lg:items-center lg:gap-12 lg:py-16"
+              variants={reveal}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.35 }}
+              transition={{ delay: index * 0.08 }}
+            >
+              <motion.span
+                className="absolute inset-x-0 top-0 h-0.75 origin-left bg-[#1800ad]"
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true, amount: 0.7 }}
+                transition={{ duration: 1.1, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }}
+                aria-hidden="true"
+              />
+              <div className="flex items-center justify-between lg:block">
+                <span className="font-display text-xs font-semibold tracking-[0.12em] text-[#1800ad]">0{index + 1}</span>
+                <span className="text-[10px] uppercase tracking-[0.18em] text-[#1e1e1e]/35 lg:mt-4 lg:block">{stat.chapter}</span>
+              </div>
+              <strong className="block font-display text-[clamp(5.6rem,14vw,13.5rem)] font-black leading-[0.72] tracking-[-0.075em] text-[#1800ad] transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:translate-x-2 sm:leading-[0.74]">
+                {stat.value}
+              </strong>
+              <p className="max-w-[12ch] font-display text-[clamp(1.65rem,3vw,3.25rem)] font-semibold leading-[0.98] tracking-[-0.025em]">
+                {stat.label}
+              </p>
+            </motion.article>
+          ))}
+          <div className="border-t border-[#1e1e1e]/18" />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function LocalTime({ label }: { label: string }) {
+  const [localTime, setLocalTime] = useState("--:--:--")
+  const [localZone, setLocalZone] = useState("Lisboa")
+
+  useEffect(() => {
+    const formatter = new Intl.DateTimeFormat("pt-PT", {
+      timeZone: "Europe/Lisbon",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+      timeZoneName: "short",
+    })
+    const updateTime = () => {
+      const parts = formatter.formatToParts(new Date())
+      setLocalTime(parts.filter((part) => part.type !== "timeZoneName").map((part) => part.value).join("").trim())
+      setLocalZone(parts.find((part) => part.type === "timeZoneName")?.value ?? "Lisboa")
+    }
+
+    updateTime()
+    const interval = window.setInterval(updateTime, 1000)
+    return () => window.clearInterval(interval)
+  }, [])
+
+  return (
+    <div className="text-center">
+      <span className="block text-[#e8e7e7]/38">{label}</span>
+      <time className="mt-2 block font-medium tabular-nums tracking-[0.08em] text-[#e8e7e7]/82">
+        {localTime} {localZone}
+      </time>
+    </div>
+  )
+}
+
+function FinalCta({ titleLines, button }: { titleLines: string[]; button: string }) {
+  const { t } = useI18n()
+  const prefersReducedMotion = useReducedMotion()
+  const isCompactViewport = useCompactViewport()
+  const disablePinnedTransition = Boolean(prefersReducedMotion) || isCompactViewport
+  const transitionRef = useRef<HTMLElement | null>(null)
+  const sectionRef = useRef<HTMLElement | null>(null)
+  const lineRef = useRef<HTMLDivElement | null>(null)
+  const sphereAnchorRef = useRef<HTMLDivElement | null>(null)
+  const { scrollYProgress } = useScroll({ target: transitionRef, offset: ["start start", "end end"] })
+  const ctaY = useTransform(scrollYProgress, [0, 0.72], prefersReducedMotion ? ["0%", "0%"] : ["100%", "0%"])
+  const isInView = useInView(sectionRef, { once: true, amount: 0.18 })
+  const [sphereEntryX, setSphereEntryX] = useState<number | null>(null)
+  const sphereX = useSpring(0, { stiffness: 70, damping: 18, mass: 0.8 })
+  const sphereY = useSpring(0, { stiffness: 70, damping: 18, mass: 0.8 })
+
+  useLayoutEffect(() => {
+    const line = lineRef.current
+    const sphereAnchor = sphereAnchorRef.current
+    if (!line || !sphereAnchor) return
+
+    const updateEntryDistance = () => {
+      setSphereEntryX(-sphereAnchor.offsetLeft)
+    }
+
+    updateEntryDistance()
+    const resizeObserver = new ResizeObserver(updateEntryDistance)
+    resizeObserver.observe(line)
+    resizeObserver.observe(sphereAnchor)
+
+    return () => resizeObserver.disconnect()
+  }, [])
+
+  const pillClassName =
+    "group relative inline-flex h-16 w-full max-w-sm items-center justify-center overflow-hidden rounded-full border border-[#e8e7e7]/28 px-5 text-center text-[12px] font-medium text-[#e8e7e7]/86 transition-[border-color,color,transform] duration-500 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-0.5 hover:border-[#e8e7e7]/70 hover:text-[#1e1e1e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#e8e7e7] sm:w-72 sm:px-7 sm:text-[13px] lg:h-18"
+
+  return (
+    <section
+      id="final-cta"
+      ref={transitionRef}
+      className={disablePinnedTransition ? "relative z-20" : "relative z-20 -mt-[100svh] h-[220svh]"}
+    >
+      <div className={disablePinnedTransition ? "relative" : "sticky top-0 h-svh overflow-hidden"}>
+        <motion.section
+          ref={sectionRef}
+          style={{ y: disablePinnedTransition ? 0 : ctaY }}
+          className={`relative flex min-h-svh bg-[#1e1e1e] px-4 pb-8 pt-16 text-[#e8e7e7] sm:px-8 sm:pb-9 sm:pt-22 lg:px-12 lg:pb-10 lg:pt-24 ${disablePinnedTransition ? "overflow-visible" : "overflow-hidden"}`}
+          onMouseMove={(event) => {
+            if (disablePinnedTransition) return
+            const rect = event.currentTarget.getBoundingClientRect()
+            sphereX.set(((event.clientX - rect.left) / rect.width - 0.5) * 24)
+            sphereY.set(((event.clientY - rect.top) / rect.height - 0.5) * 24)
+          }}
+          onMouseLeave={() => {
+            sphereX.set(0)
+            sphereY.set(0)
+          }}
+        >
+          <div className="relative mx-auto flex w-full max-w-370 flex-1 flex-col justify-between gap-14 sm:gap-10">
+            <div className="flex flex-1 flex-col items-center justify-center pb-0 text-center sm:items-stretch sm:pb-16 sm:text-left lg:pb-20">
+              <motion.h2
+                className="relative z-10 font-display uppercase"
+                style={{
+                  fontSize: "clamp(1.75rem, 8.2vw, 6rem)",
+                  fontWeight: 500,
+                  lineHeight: 0.83,
+                  letterSpacing: "-0.07em",
+                }}
+                variants={reveal}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, amount: 0.18 }}
+              >
+                {titleLines.map((line) => (
+                  <span key={line} className="block whitespace-nowrap">
+                    {line}
+                  </span>
+                ))}
+              </motion.h2>
+
+              <div ref={lineRef} className="relative z-20 mt-20 w-full border-t border-[#e8e7e7]/24 sm:mt-[clamp(2.5rem,6vh,5.5rem)]">
+                <div
+                  ref={sphereAnchorRef}
+                  className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 sm:left-auto sm:right-[clamp(1rem,8vw,8rem)] sm:translate-x-0"
+                >
+                  <motion.div style={{ x: sphereX, y: sphereY }}>
+                    <motion.div
+                      initial={false}
+                      animate={
+                        sphereEntryX === null
+                          ? { opacity: 0, scale: 0.72, x: 0 }
+                          : isInView || prefersReducedMotion
+                            ? { opacity: 1, scale: 1, x: 0 }
+                            : { opacity: 0, scale: 0.72, x: sphereEntryX }
+                      }
+                      transition={{ duration: prefersReducedMotion ? 0 : 1.35, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                      <Link
+                        href="mailto:dumitrachebusiness@gmail.com"
+                        aria-label={button}
+                        className="group relative inline-flex aspect-square w-[clamp(112px,13vw,202px)] items-center justify-center overflow-hidden rounded-full bg-[#1800ad] p-5 text-center font-display text-[clamp(.68rem,.9vw,.88rem)] font-semibold uppercase leading-tight text-[#e8e7e7] transition-[transform,box-shadow,color] duration-700 hover:scale-[1.07] hover:text-[#1800ad] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#e8e7e7]"
+                      >
+                        <span className="absolute inset-0 origin-bottom scale-y-0 rounded-full bg-[#e8e7e7] transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100" aria-hidden="true" />
+                        <span className="relative z-10 flex items-center gap-2.5">
+                          {button} <span className="text-base transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1">↗</span>
+                        </span>
+                      </Link>
+                    </motion.div>
+                  </motion.div>
+                </div>
+              </div>
+
+              <motion.div
+                className="mt-20 flex w-full max-w-sm flex-col items-center gap-3 sm:mt-9 sm:max-w-152 sm:flex-row sm:items-stretch sm:gap-4 lg:mt-11"
+                variants={reveal}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, amount: 0.3 }}
+              >
+                <a href="mailto:dumitrachebusiness@gmail.com" className={pillClassName}>
+                  <span
+                    className="absolute inset-0 origin-bottom scale-y-0 rounded-full bg-[#e8e7e7] transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100"
+                    aria-hidden="true"
+                  />
+                  <span className="relative z-10">dumitrachebusiness@gmail.com</span>
+                </a>
+                <button type="button" className={pillClassName} aria-label={t("moreAboutCtaResume")}>
+                  <span
+                    className="absolute inset-0 origin-bottom scale-y-0 rounded-full bg-[#e8e7e7] transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100"
+                    aria-hidden="true"
+                  />
+                  <span className="relative z-10 uppercase">{t("moreAboutCtaResume")}</span>
+                </button>
+              </motion.div>
+            </div>
+
+            <footer className="grid gap-5 text-center text-[10px] uppercase tracking-[0.12em] sm:grid-cols-[1fr_1fr_1fr] sm:items-end sm:gap-6 sm:text-left sm:text-[11px] lg:text-xs">
+              <div className="sm:text-left">
+                <span className="block text-[#e8e7e7]/38">{t("moreAboutFooterEdition")}</span>
+                <span className="mt-2 block tracking-normal text-[#e8e7e7]/82">2026 © Sarah Aliriel</span>
+              </div>
+              <LocalTime label={t("moreAboutFooterLocalTime")} />
+              <nav aria-label="Redes sociais">
+                <span className="block text-[#e8e7e7]/38 sm:text-right">{t("moreAboutFooterSocials")}</span>
+                <div className="mt-2 flex flex-wrap justify-center gap-x-5 gap-y-2 tracking-normal sm:justify-end">
+                  {SOCIALS.map((social) => (
+                    <a
+                      key={social.label}
+                      href={social.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="link-underline-invert normal-case text-[#e8e7e7]/82"
+                    >
+                      {social.label}
+                    </a>
+                  ))}
+                </div>
+              </nav>
+            </footer>
+          </div>
+        </motion.section>
+      </div>
+    </section>
+  )
+}

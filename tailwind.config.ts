@@ -4,13 +4,14 @@ export default {
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./data/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
       colors: {
         base: "#e8e7e7",
         ink: "#1e1e1e",
-        detail: "#101c3d",
+        detail: "#1800ad",
       },
       fontFamily: {
         sans: ["var(--font-sans)"],

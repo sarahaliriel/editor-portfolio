@@ -2,13 +2,24 @@
 
 import { useEffect, useMemo, useState } from "react"
 import { createPortal } from "react-dom"
-import { useI18n } from "@/components/i18n"
+import { usePathname, useRouter } from "next/navigation"
+import { useI18n } from "@/components/providers/i18n"
 
 type LinkItem = { label: string; id: string }
 type SocialItem = { label: string; href: string }
+type FullscreenDocument = Document & {
+  webkitFullscreenElement?: Element | null
+  mozFullScreenElement?: Element | null
+  msFullscreenElement?: Element | null
+  webkitExitFullscreen?: () => Promise<void> | void
+  mozCancelFullScreen?: () => Promise<void> | void
+  msExitFullscreen?: () => Promise<void> | void
+}
 
 export default function Menu() {
   const { t } = useI18n()
+  const pathname = usePathname()
+  const router = useRouter()
 
   const links = useMemo<LinkItem[]>(
     () => [
@@ -33,7 +44,10 @@ export default function Menu() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
 
-  useEffect(() => setMounted(true), [])
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setMounted(true))
+    return () => cancelAnimationFrame(frame)
+  }, [])
 
   useEffect(() => {
     if (!menuOpen) return
@@ -59,7 +73,7 @@ export default function Menu() {
   useEffect(() => {
     if (!menuOpen) return
 
-    const d = document as any
+    const d = document as FullscreenDocument
     const fsEl = d.fullscreenElement || d.webkitFullscreenElement || d.mozFullScreenElement || d.msFullscreenElement
     if (!fsEl) return
 
@@ -82,7 +96,20 @@ export default function Menu() {
     window.history.replaceState(null, "", next)
   }
 
+  const goToHomeSection = (id: string) => {
+    setMenuOpen(false)
+
+    if (pathname !== "/") {
+      router.push(`/#${id}`)
+      return
+    }
+
+    return false
+  }
+
   const goTo = (id: string) => {
+    if (goToHomeSection(id) !== false) return
+
     if (id === "contact") {
       setMenuOpen(false)
       setHash("contact")
@@ -133,7 +160,7 @@ export default function Menu() {
   const overlayNode = (
     <div
       className={[
-        "fixed inset-0 z-20000 transition-opacity duration-300",
+        "fixed inset-0 z-9999 transition-opacity duration-300",
         menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none",
       ].join(" ")}
       aria-hidden={!menuOpen}

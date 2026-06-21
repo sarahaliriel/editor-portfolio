@@ -1,0 +1,19 @@
+.cursor-hidden,
+
+.cursor-hidden * {
+  cursor: none !important;
+}
+
+
+@keyframes cursorPulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(24, 0, 173, 0.0); }
+  45% { transform: scale(1.22); box-shadow: 0 0 0 10px rgba(24, 0, 173, 0.12); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(24, 0, 173, 0.0); }
+}
+
+
+@keyframes dotWiggle {
+  0% { transform: scale(1.1); }
+  50% { transform: scale(1.35); }
+  100% { transform: scale(1.1); }
+}

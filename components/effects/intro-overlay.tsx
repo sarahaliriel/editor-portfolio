@@ -1,7 +1,7 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState } from "react"
-import { useI18n } from "@/components/i18n"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useI18n } from "@/components/providers/i18n"
 
 const WORDS = [
   "olá",
@@ -22,13 +22,20 @@ const WORDS = [
   "welcome <3",
 ]
 
+const SKIP_INTRO_FROM_ALLPROJECTS_KEY = "portfolio:skip-intro-from-allprojects"
+
+function shouldSkipIntroFromAllProjects() {
+  if (typeof window === "undefined") return false
+  return window.sessionStorage.getItem(SKIP_INTRO_FROM_ALLPROJECTS_KEY) === "true"
+}
+
 export default function IntroOverlay() {
   const { t } = useI18n()
 
   const [ready, setReady] = useState(false)
   const [running, setRunning] = useState(false)
   const [exiting, setExiting] = useState(false)
-  const [done, setDone] = useState(false)
+  const [done, setDone] = useState(shouldSkipIntroFromAllProjects)
   const [i, setI] = useState(0)
 
   const restoreOverflowRef = useRef<string>("")
@@ -38,10 +45,19 @@ export default function IntroOverlay() {
   const word = useMemo(() => WORDS[Math.min(i, WORDS.length - 1)], [i])
 
   useEffect(() => {
+    if (shouldSkipIntroFromAllProjects()) {
+      window.sessionStorage.removeItem(SKIP_INTRO_FROM_ALLPROJECTS_KEY)
+      document.documentElement.dataset.intro = "done"
+      window.dispatchEvent(new CustomEvent("intro:done"))
+      return () => {
+        delete document.documentElement.dataset.intro
+      }
+    }
+
     restoreOverflowRef.current = document.documentElement.style.overflow || ""
     document.documentElement.style.overflow = "hidden"
     document.documentElement.dataset.intro = "idle"
-    setReady(true)
+    const readyFrame = window.requestAnimationFrame(() => setReady(true))
 
     if (typeof window !== "undefined") {
       restoreScrollRef.current = window.history.scrollRestoration
@@ -56,6 +72,7 @@ export default function IntroOverlay() {
 
     return () => {
       document.documentElement.style.overflow = restoreOverflowRef.current
+      window.cancelAnimationFrame(readyFrame)
       timersRef.current.forEach((tt) => window.clearTimeout(tt))
       timersRef.current = []
       delete document.documentElement.dataset.intro
@@ -104,10 +121,10 @@ export default function IntroOverlay() {
     )
   }, [running])
 
-  const start = () => {
+  const start = useCallback(() => {
     if (running) return
     setRunning(true)
-  }
+  }, [running])
 
   useEffect(() => {
     if (!ready) return
@@ -123,9 +140,9 @@ export default function IntroOverlay() {
 
     return () => {
       window.removeEventListener("keydown", onKey)
-      window.removeEventListener("pointerdown", onPointer as any)
+      window.removeEventListener("pointerdown", onPointer)
     }
-  }, [ready, running])
+  }, [ready, start])
 
   if (done) return null
 

@@ -1,16 +1,13 @@
-import AllProjects from "@/components/allprojects"
-import CustomCursor from "@/components/cursor-custom"
-import Menu from "@/components/menu"
+import AllProjects from "@/components/allprojects/allprojects"
+import Menu from "@/components/layout/menu"
 
 export default function Page() {
   return (
-  <main className="relative min-h-screen bg-base text-ink">
-        <CustomCursor />
-  <AllProjects />
-        <CustomCursor />
-              <div className="relative z-10">
-                <Menu />
-              </div>
-        </main>
+    <main className="relative h-svh overflow-hidden bg-[#e8e7e7] text-[#1e1e1e]">
+      <AllProjects />
+      <div className="relative z-10">
+        <Menu />
+      </div>
+    </main>
   )
 }

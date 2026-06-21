@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { useI18n } from "@/components/i18n"
+import { useI18n } from "@/components/providers/i18n"
 
 type Status = "idle" | "sending" | "success" | "error"
 

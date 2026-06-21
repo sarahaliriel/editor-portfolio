@@ -2,9 +2,15 @@
 
 import { useEffect, useMemo, useRef, useState } from "react"
 import { createPortal } from "react-dom"
-import { useI18n } from "@/components/i18n"
+import { useI18n } from "@/components/providers/i18n"
 
 type CursorMode = "default" | "view"
+
+type FullscreenDocument = Document & {
+  webkitFullscreenElement?: Element | null
+  mozFullScreenElement?: Element | null
+  msFullscreenElement?: Element | null
+}
 
 export default function CustomCursor() {
   const { t } = useI18n()
@@ -61,7 +67,7 @@ export default function CustomCursor() {
 
   useEffect(() => {
     const onFs = () => {
-      const d = document as any
+      const d = document as FullscreenDocument
       const el =
         (d.fullscreenElement as HTMLElement | null) ||
         (d.webkitFullscreenElement as HTMLElement | null) ||
@@ -72,35 +78,31 @@ export default function CustomCursor() {
 
     onFs()
     document.addEventListener("fullscreenchange", onFs)
-    document.addEventListener("webkitfullscreenchange", onFs as any)
-    document.addEventListener("mozfullscreenchange", onFs as any)
-    document.addEventListener("MSFullscreenChange", onFs as any)
+    document.addEventListener("webkitfullscreenchange", onFs)
+    document.addEventListener("mozfullscreenchange", onFs)
+    document.addEventListener("MSFullscreenChange", onFs)
 
     return () => {
       document.removeEventListener("fullscreenchange", onFs)
-      document.removeEventListener("webkitfullscreenchange", onFs as any)
-      document.removeEventListener("mozfullscreenchange", onFs as any)
-      document.removeEventListener("MSFullscreenChange", onFs as any)
+      document.removeEventListener("webkitfullscreenchange", onFs)
+      document.removeEventListener("mozfullscreenchange", onFs)
+      document.removeEventListener("MSFullscreenChange", onFs)
     }
   }, [])
 
   useEffect(() => {
     if (!enabled) return
 
-    const tick = () => {
-      raf.current = null
-      const el = cursorRef.current
-      if (!el) return
+      const tick = () => {
+        raf.current = null
+        const el = cursorRef.current
+        if (!el) return
 
-      const dx = target.current.x - current.current.x
-      const dy = target.current.y - current.current.y
+        current.current.x = target.current.x
+        current.current.y = target.current.y
 
-      const ease = isView ? 0.22 : 0.18
-      current.current.x += dx * ease
-      current.current.y += dy * ease
-
-      el.style.transform = `translate3d(${current.current.x}px, ${current.current.y}px, 0) translate(-50%, -50%)`
-    }
+        el.style.transform = `translate3d(${current.current.x}px, ${current.current.y}px, 0) translate(-50%, -50%)`
+      }
 
     const move = (e: PointerEvent) => {
       target.current.x = e.clientX

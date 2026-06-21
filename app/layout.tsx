@@ -1,7 +1,8 @@
 import "./globals.css"
 import { Montserrat, Inter } from "next/font/google"
-import { LanguageProvider } from "@/components/i18n"
-import LanguageToggle from "@/components/language-toggle"
+import { LanguageProvider } from "@/components/providers/i18n"
+import CustomCursor from "@/components/effects/cursor-custom"
+import LanguageToggle from "@/components/layout/language-toggle"
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -24,6 +25,7 @@ export default function RootLayout({
     <html lang="pt" className={`${montserrat.variable} ${inter.variable}`}>
       <body>
         <LanguageProvider>
+          <CustomCursor />
           {children}
           <LanguageToggle />
         </LanguageProvider>

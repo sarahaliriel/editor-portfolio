@@ -2,47 +2,13 @@
 
 import Image from "next/image"
 import { useMemo } from "react"
-import { useI18n } from "@/components/i18n"
-
-type Shot = {
-  src: string
-  alt: string
-  w: number
-  h: number
-}
+import { useI18n } from "@/components/providers/i18n"
+import { galleryShots } from "@/data/gallery"
 
 export default function Gallery() {
   const { t } = useI18n()
 
-  const shots = useMemo<Shot[]>(
-    () => [
-      { src: "/images/g00.png", alt: "Post 1", w: 1080, h: 1080 },
-      { src: "/images/g0.png", alt: "Post 2", w: 1080, h: 1080 },
-      { src: "/images/g1.png", alt: "Post 3", w: 1080, h: 1080 },
-      { src: "/images/g2.png", alt: "Post 4", w: 1080, h: 1080 },
-      { src: "/images/g3.png", alt: "Post 5", w: 1080, h: 1080 },
-      { src: "/images/g004.png", alt: "Post 6", w: 1080, h: 1080 },
-      { src: "/images/g5.png", alt: "Post 7", w: 1080, h: 1080 },
-      { src: "/images/g05.png", alt: "Post 8", w: 1080, h: 1080 },
-      { src: "/images/g6.png", alt: "Post 9", w: 1080, h: 1080 },
-      { src: "/images/g7.png", alt: "Post 10", w: 1080, h: 1080 },
-      { src: "/images/g07.png", alt: "Post 11", w: 1080, h: 1080 },
-      { src: "/images/g8.png", alt: "Post 12", w: 1080, h: 1080 },
-      { src: "/images/g9.png", alt: "Post 13", w: 1080, h: 1080 },
-      { src: "/images/g010.png", alt: "Post 14", w: 1080, h: 1080 },
-      { src: "/images/g11.png", alt: "Post 15", w: 1080, h: 1080 },
-      { src: "/images/g12.png", alt: "Post 16", w: 1080, h: 1080 },
-      { src: "/images/g13.png", alt: "Post 17", w: 1080, h: 1080 },
-      { src: "/images/g14.png", alt: "Post 18", w: 1080, h: 1080 },
-      { src: "/images/g15.png", alt: "Post 19", w: 1080, h: 1080 },
-      { src: "/images/g016.png", alt: "Post 20", w: 1080, h: 1080 },
-      { src: "/images/g017.png", alt: "Post 21", w: 1080, h: 1080 },
-      { src: "/images/g018.png", alt: "Post 22", w: 1080, h: 1080 },
-    ],
-    []
-  )
-
-  const row = useMemo(() => [...shots, ...shots], [shots])
+  const row = useMemo(() => [...galleryShots, ...galleryShots], [])
 
   return (
     <section id="gallery" className="relative min-h-svh bg-[#e8e7e7] text-[#1e1e1e] overflow-hidden">

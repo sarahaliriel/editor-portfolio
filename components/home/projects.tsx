@@ -1,22 +1,10 @@
 "use client"
 
 import Image from "next/image"
-import { useEffect, useMemo, useRef, useState } from "react"
-import { useI18n } from "@/components/i18n"
 import Link from "next/link"
-
-type ProjectVideo =
-  | { kind: "mp4"; src: string }
-  | { kind: "embed"; src: string }
-
-type Project = {
-  client: string
-  location: string
-  services: string
-  year: string
-  thumb: string
-  video?: ProjectVideo
-}
+import { useEffect, useMemo, useRef, useState } from "react"
+import { useI18n } from "@/components/providers/i18n"
+import { getFeaturedProjects } from "@/data/projects"
 
 function IconX() {
   return (
@@ -70,43 +58,7 @@ function IconVolumeOff() {
 export default function Projects() {
   const { t } = useI18n()
 
-  const projects = useMemo<Project[]>(
-    () => [
-      {
-        client: t("p1Client"),
-        location: t("p1Location"),
-        services: t("p1Services"),
-        year: "2024",
-        thumb: "/images/p1.jpg",
-        video: { kind: "mp4", src: "/videos/p1.mp4" },
-      },
-      {
-        client: t("p2Client"),
-        location: t("p2Location"),
-        services: t("p2Services"),
-        year: "2024",
-        thumb: "/images/p2.jpg",
-        video: { kind: "mp4", src: "/videos/p2.mp4" },
-      },
-      {
-        client: t("p3Client"),
-        location: t("p3Location"),
-        services: t("p3Services"),
-        year: "2023",
-        thumb: "/images/p3.jpg",
-        video: { kind: "mp4", src: "/videos/p3.mp4" },
-      },
-      {
-        client: t("p4Client"),
-        location: t("p4Location"),
-        services: t("p4Services"),
-        year: "2023",
-        thumb: "/images/p4.jpg",
-        video: { kind: "mp4", src: "/videos/p4.mp4" },
-      },
-    ],
-    [t]
-  )
+  const projects = useMemo(() => getFeaturedProjects(t), [t])
 
   const [open, setOpen] = useState(false)
   const [minimized, setMinimized] = useState(false)
