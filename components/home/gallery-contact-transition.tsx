@@ -2,7 +2,6 @@
 
 import { useEffect } from "react"
 import Gallery from "@/components/home/gallery"
-import WhatMoves from "@/components/home/what-moves"
 import Contact from "@/components/home/contact"
 
 export default function GalleryContactTransition() {
@@ -25,7 +24,6 @@ export default function GalleryContactTransition() {
   return (
     <>
       <Gallery />
-      <WhatMoves />
       <Contact />
     </>
   )

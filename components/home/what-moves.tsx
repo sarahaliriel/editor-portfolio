@@ -1,7 +1,9 @@
 "use client"
 
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion"
+import { motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion"
 import type { MotionValue } from "framer-motion"
+import Link from "next/link"
+import type { PointerEvent } from "react"
 import { useRef } from "react"
 import { useI18n } from "@/components/providers/i18n"
 
@@ -42,6 +44,73 @@ function MovingWord({
   )
 }
 
+function MagneticAboutButton({ reducedMotion }: { reducedMotion: boolean }) {
+  const { t } = useI18n()
+  const buttonX = useMotionValue(0)
+  const buttonY = useMotionValue(0)
+  const contentX = useMotionValue(0)
+  const contentY = useMotionValue(0)
+  const springConfig = { stiffness: 170, damping: 18, mass: 0.45 }
+  const x = useSpring(buttonX, springConfig)
+  const y = useSpring(buttonY, springConfig)
+  const innerX = useSpring(contentX, springConfig)
+  const innerY = useSpring(contentY, springConfig)
+
+  const resetPosition = () => {
+    buttonX.set(0)
+    buttonY.set(0)
+    contentX.set(0)
+    contentY.set(0)
+  }
+
+  const handlePointerMove = (event: PointerEvent<HTMLAnchorElement>) => {
+    if (reducedMotion || event.pointerType === "touch") return
+
+    const rect = event.currentTarget.getBoundingClientRect()
+    const offsetX = event.clientX - (rect.left + rect.width / 2)
+    const offsetY = event.clientY - (rect.top + rect.height / 2)
+
+    buttonX.set(offsetX * 0.12)
+    buttonY.set(offsetY * 0.12)
+    contentX.set(offsetX * 0.22)
+    contentY.set(offsetY * 0.22)
+  }
+
+  return (
+    <motion.div
+      className="relative z-20 self-center"
+      style={reducedMotion ? undefined : { x, y }}
+      whileHover={reducedMotion ? undefined : { scale: 1.06 }}
+      transition={{ type: "spring", stiffness: 190, damping: 17, mass: 0.5 }}
+    >
+      <Link
+        href="/more-about"
+        aria-label={t("moreAboutMovesCta")}
+        onPointerMove={handlePointerMove}
+        onPointerLeave={resetPosition}
+        onBlur={resetPosition}
+        className="group relative inline-flex aspect-square w-[clamp(132px,38vw,156px)] items-center justify-center overflow-hidden rounded-full border border-[#1800ad]/15 bg-[#1800ad] p-5 text-center font-display text-[clamp(.72rem,.9vw,.88rem)] font-semibold uppercase leading-tight text-[#e8e7e7] transition-[transform,box-shadow,color,border-color] duration-700 ease-[cubic-bezier(.16,1,.3,1)] hover:border-[#1800ad]/35 hover:text-[#1800ad] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1800ad] sm:w-[clamp(158px,12vw,188px)]"
+      >
+        <span
+          className="absolute inset-0 origin-bottom scale-y-0 rounded-full bg-[#e8e7e7] transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100"
+          aria-hidden="true"
+        />
+        <motion.span
+          className="relative z-10 grid min-w-[8.5em] place-items-center tracking-[0.04em]"
+          style={reducedMotion ? undefined : { x: innerX, y: innerY }}
+        >
+          <span className="col-start-1 row-start-1 transition-[transform,opacity] duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:-translate-y-2 group-hover:opacity-0">
+            {t("moreAboutMovesCta")}
+          </span>
+          <span className="col-start-1 row-start-1 translate-y-2 opacity-0 transition-[transform,opacity] duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:translate-y-0 group-hover:opacity-100">
+            {t("moreAboutMovesCtaHover")}
+          </span>
+        </motion.span>
+      </Link>
+    </motion.div>
+  )
+}
+
 export default function WhatMoves() {
   const { t } = useI18n()
   const sectionRef = useRef<HTMLElement | null>(null)
@@ -58,24 +127,14 @@ export default function WhatMoves() {
       ref={sectionRef}
       className={
         prefersReducedMotion
-          ? "relative bg-[#e8e7e7] px-4 py-28 text-[#1e1e1e] sm:px-8 sm:py-36 lg:px-12"
-          : "relative h-[260svh] bg-[#e8e7e7] px-4 text-[#1e1e1e] sm:px-8 lg:px-12"
+          ? "relative overflow-x-clip bg-[#e8e7e7] px-4 py-24 text-[#1e1e1e] sm:px-8 sm:py-32 lg:px-12"
+          : "relative h-[240svh] overflow-x-clip bg-[#e8e7e7] px-4 text-[#1e1e1e] sm:px-8 lg:px-12"
       }
     >
-      <div className={prefersReducedMotion ? "mx-auto w-full max-w-370" : "sticky top-0 mx-auto flex h-svh w-full max-w-370 items-center"}>
-        <div className="w-full py-16 sm:py-20">
-          <motion.span
-            className="kicker block text-[#1800ad]"
-            initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.8 }}
-            transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
-          >
-            {t("moreAboutMovesKicker")}
-          </motion.span>
-
+      <div className={prefersReducedMotion ? "mx-auto w-full" : "sticky top-0 mx-auto flex h-svh w-full items-center"}>
+        <div className="mx-auto flex w-full max-w-[1120px] flex-col py-[clamp(2.5rem,6svh,5rem)] sm:w-[72vw]">
           <p
-            className="mt-12 max-w-[14ch] font-display text-[clamp(3.2rem,8.8vw,9.5rem)] font-semibold leading-[0.94] tracking-[-0.045em] sm:mt-16"
+            className="w-full text-balance text-center font-display text-[clamp(2.4rem,13vw,4.2rem)] font-medium leading-[0.96] tracking-[-0.045em] sm:text-[clamp(3.2rem,6.8vw,7.2rem)] sm:leading-[0.94]"
             aria-label={quote}
           >
             {words.map((word, index) => {
@@ -97,6 +156,10 @@ export default function WhatMoves() {
               )
             })}
           </p>
+
+          <div className="mt-[clamp(2.75rem,6svh,5rem)] flex w-full justify-center">
+            <MagneticAboutButton reducedMotion={Boolean(prefersReducedMotion)} />
+          </div>
         </div>
       </div>
     </section>

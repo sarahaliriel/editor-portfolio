@@ -5,7 +5,7 @@ import { createPortal } from "react-dom"
 import { usePathname, useRouter } from "next/navigation"
 import { useI18n } from "@/components/providers/i18n"
 
-type LinkItem = { label: string; id: string }
+type LinkItem = { label: string; id: string; href?: string }
 type SocialItem = { label: string; href: string }
 type FullscreenDocument = Document & {
   webkitFullscreenElement?: Element | null
@@ -23,7 +23,7 @@ export default function Menu() {
 
   const links = useMemo<LinkItem[]>(
     () => [
-      { label: t("linkAbout"), id: "about" },
+      { label: t("linkAbout"), id: "more-about", href: "/more-about" },
       { label: t("linkWork"), id: "work" },
       { label: t("linkGallery"), id: "gallery" },
       { label: t("linkContact"), id: "contact" },
@@ -107,7 +107,13 @@ export default function Menu() {
     return false
   }
 
-  const goTo = (id: string) => {
+  const goTo = ({ id, href }: LinkItem) => {
+    if (href) {
+      setMenuOpen(false)
+      router.push(href)
+      return
+    }
+
     if (goToHomeSection(id) !== false) return
 
     if (id === "contact") {
@@ -189,7 +195,7 @@ export default function Menu() {
                 <li key={l.id}>
                   <button
                     type="button"
-                    onClick={() => goTo(l.id)}
+                    onClick={() => goTo(l)}
                     className={[
                       "group flex w-full items-start gap-5 text-left",
                       "text-[54px] leading-[0.95] tracking-tight sm:text-[76px]",

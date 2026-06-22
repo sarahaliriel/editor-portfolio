@@ -1,12 +1,15 @@
 "use client"
 
 import { useEffect } from "react"
+import { useRouter } from "next/navigation"
 import Menu from "@/components/layout/menu"
-import HeroAboutTransition from "@/components/home/hero-about-transition"
+import Hero from "@/components/home/hero"
+import WhatMoves from "@/components/home/what-moves"
 import Projects from "@/components/home/projects"
 import GalleryContactTransition from "@/components/home/gallery-contact-transition"
 import ScrollProgress from "@/components/layout/scroll-progress"
 import IntroOverlay from "@/components/effects/intro-overlay"
+import NarrativeOrb from "@/components/effects/narrative-orb"
 
 function scrollToHash(behavior: ScrollBehavior) {
   const id = window.location.hash.replace("#", "")
@@ -25,8 +28,15 @@ function scrollToHash(behavior: ScrollBehavior) {
 }
 
 export default function Page() {
+  const router = useRouter()
+
   useEffect(() => {
     const hash = window.location.hash
+
+    if (hash === "#about") {
+      router.replace("/more-about")
+      return
+    }
 
     if (hash) {
       const onIntroDone = () => scrollToHash("auto")
@@ -54,16 +64,18 @@ export default function Page() {
         window.history.scrollRestoration = prev
       }, 60)
     }
-  }, [])
+  }, [router])
 
   return (
     <main className="relative min-h-screen bg-base text-ink">
       <IntroOverlay />
       <ScrollProgress />
+      <NarrativeOrb />
 
       <div className="relative z-10">
         <Menu />
-        <HeroAboutTransition />
+        <Hero />
+        <WhatMoves />
         <Projects />
         <GalleryContactTransition />
       </div>

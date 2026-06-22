@@ -56,6 +56,11 @@ export default function Contact() {
 
   return (
     <section id="contact" className="relative w-full bg-[#1e1e1e] text-[#e8e7e7] overflow-hidden">
+      <span
+        aria-hidden="true"
+        data-orb-anchor="cta"
+        className="pointer-events-none absolute right-6 bottom-7 h-28 w-28 rounded-full sm:bottom-auto sm:right-[8vw] sm:top-[58%] sm:h-36.25 sm:w-36.25 lg:right-[10vw] lg:h-42.5 lg:w-42.5"
+      />
       <div className="container-bleed max-h-svh overflow-y-auto py-12 sm:py-14">
         {status !== "success" ? (
           <>

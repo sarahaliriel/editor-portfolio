@@ -222,39 +222,65 @@
 }
 
 
-@keyframes aboutDepthSlow {
+@keyframes narrativeOrbBreathe {
   0%, 100% {
-    transform: translate3d(0, 0, 0);
+    transform: scale(0.985) rotate(-0.35deg);
+    filter: saturate(1) brightness(1);
   }
-  50% {
-    transform: translate3d(0, -5px, 0);
+  37% {
+    transform: scale(1.012) rotate(0.25deg);
+    filter: saturate(1.08) brightness(1.035);
   }
-}
-
-
-@keyframes aboutDepthDrift {
-  0%, 100% {
-    transform: translate3d(0, 0, 0);
-  }
-  50% {
-    transform: translate3d(4px, -7px, 0);
+  71% {
+    transform: scale(0.997) rotate(0.12deg);
+    filter: saturate(1.03) brightness(1.015);
   }
 }
 
 
-.about-depth-slow {
-  animation: aboutDepthSlow 9s cubic-bezier(.45, 0, .25, 1) infinite;
+.narrative-orb {
+  translate: -50% -50%;
+  isolation: isolate;
+  cursor: pointer;
+  will-change: transform, width, height, opacity;
+  -webkit-tap-highlight-color: transparent;
 }
 
 
-.about-depth-drift {
-  animation: aboutDepthDrift 11s cubic-bezier(.45, 0, .25, 1) infinite;
+.narrative-orb__surface {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 32% 27%, rgba(255,255,255,.18), transparent 23%),
+    radial-gradient(circle at 35% 30%, #2c18ff 0%, #1800ad 55%, #10006f 100%);
+  animation: narrativeOrbBreathe 7.6s cubic-bezier(.42, 0, .24, 1) infinite;
+}
+
+
+.narrative-orb__surface::after {
+  content: "";
+  position: absolute;
+  inset: 7%;
+  border-radius: inherit;
+  border: 1px solid rgba(255,255,255,.08);
+  mask-image: linear-gradient(145deg, #000, transparent 52%);
+}
+
+
+.narrative-orb__ripple {
+  position: absolute;
+  inset: -8%;
+  z-index: -2;
+  border: 1px solid rgba(44, 24, 255, .52);
+  border-radius: 999px;
+  filter: blur(.2px);
 }
 
 
 @media (prefers-reduced-motion: reduce) {
-  .about-depth-slow,
-  .about-depth-drift {
+  .narrative-orb__surface {
     animation: none;
   }
 }
