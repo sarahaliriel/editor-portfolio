@@ -3,133 +3,13 @@
 import Image from "next/image"
 import { useEffect, useMemo, useState } from "react"
 import MotionCta from "@/components/shared/motion-cta"
-
-type GalleryImage = {
-  src: string
-  alt: string
-  title: string
-  shape?: "wide" | "tall" | "feature"
-}
-
-type Carousel = {
-  title: string
-  slides: GalleryImage[]
-}
-
-type GalleryProject = {
-  name: string
-  year: string
-  type: string
-  description: string
-  pieces: GalleryImage[]
-  carousels?: Carousel[]
-  stories?: GalleryImage[]
-}
+import { galleryPreviewImages, galleryProjects, playgroundPieces, type GalleryCarousel, type GalleryImage, type GalleryProject } from "@/data/gallery"
 
 type ViewerState = {
   project: string
-  carousel: Carousel
+  carousel: GalleryCarousel
   index: number
 }
-
-const image = (id: number, title: string, shape?: GalleryImage["shape"]): GalleryImage => ({
-  src: `/images/gallery/post-${String(id).padStart(2, "0")}.png`,
-  alt: title,
-  title,
-  shape,
-})
-
-const projects: GalleryProject[] = [
-  {
-    name: "Frigideira AI",
-    year: "2026",
-    type: "Direção de arte · Social media",
-    description: "Conteúdo visual para tornar tecnologia, IA e cultura digital mais claros, compartilháveis e reconhecíveis.",
-    pieces: [
-      image(1, "Post manifesto", "feature"),
-      image(2, "Peça educativa"),
-      image(3, "Chamada editorial", "tall"),
-      image(4, "Conteúdo técnico"),
-      image(5, "Frame de autoridade", "wide"),
-      image(6, "Post de comunidade"),
-    ],
-    carousels: [
-      {
-        title: "IA aplicada ao cotidiano",
-        slides: [
-          image(7, "Capa do carrossel IA aplicada"),
-          image(8, "Slide 02"),
-          image(9, "Slide 03"),
-          image(10, "Slide 04"),
-        ],
-      },
-    ],
-  },
-  {
-    name: "The Real Tocha",
-    year: "2025 - 2026",
-    type: "Identidade visual · Conteúdo de autoridade",
-    description: "Peças para transformar temas densos de empreendedorismo, investimento e comunicação em presença digital clara e forte.",
-    pieces: [
-      image(11, "Post de autoridade", "feature"),
-      image(12, "Frame de análise"),
-      image(13, "Peça de posicionamento", "tall"),
-      image(14, "Conteúdo educativo"),
-      image(15, "Post de retenção", "wide"),
-      image(16, "Chamada social"),
-    ],
-    carousels: [
-      {
-        title: "Narrativa para negócios digitais",
-        slides: [
-          image(17, "Capa do carrossel negócios digitais"),
-          image(18, "Slide 02"),
-          image(19, "Slide 03"),
-          image(20, "Slide 04"),
-        ],
-      },
-    ],
-    stories: [
-      image(21, "Story de abertura"),
-      image(22, "Story de sequência"),
-      image(23, "Story de fechamento"),
-    ],
-  },
-  {
-    name: "SDP",
-    year: "2026",
-    type: "Comunidade tech · Social media",
-    description: "Sistema visual para uma comunidade de tecnologia em crescimento, unindo campanhas, eventos e comunicação recorrente.",
-    pieces: [
-      image(24, "Post institucional", "feature"),
-      image(25, "Chamada de evento"),
-      image(26, "Peça de comunidade", "tall"),
-      image(27, "Anúncio social"),
-      image(28, "Conteúdo de campanha", "wide"),
-      image(29, "Post de engajamento"),
-      image(30, "Visual de apoio"),
-    ],
-    carousels: [
-      {
-        title: "Comunidade em movimento",
-        slides: [
-          image(31, "Capa do carrossel comunidade"),
-          image(32, "Slide 02"),
-          image(33, "Slide 03"),
-          image(34, "Slide 04"),
-        ],
-      },
-    ],
-  },
-]
-
-const playground: GalleryImage[] = [
-  image(35, "Estudo de composição", "feature"),
-  image(36, "Exploração tipográfica"),
-  image(37, "Conceito visual", "tall"),
-  image(38, "Peça experimental"),
-  image(39, "Direção visual livre", "wide"),
-]
 
 const pieceClass = {
   feature: "lg:col-span-5 lg:row-span-2",
@@ -161,7 +41,7 @@ function PieceCard({ piece, index }: { piece: GalleryImage; index: number }) {
   )
 }
 
-function CarouselCard({ project, carousel, onOpen }: { project: string; carousel: Carousel; onOpen: () => void }) {
+function CarouselCard({ project, carousel, onOpen }: { project: string; carousel: GalleryCarousel; onOpen: () => void }) {
   const cover = carousel.slides[0]
 
   return (
@@ -214,7 +94,7 @@ function StoriesStrip({ stories }: { stories: GalleryImage[] }) {
   )
 }
 
-function ProjectSection({ project, onOpen }: { project: GalleryProject; onOpen: (carousel: Carousel) => void }) {
+function ProjectSection({ project, onOpen }: { project: GalleryProject; onOpen: (carousel: GalleryCarousel) => void }) {
   const pieceCount = project.pieces.length + (project.stories?.length ?? 0) + (project.carousels?.reduce((total, carousel) => total + carousel.slides.length, 0) ?? 0)
 
   return (
@@ -332,18 +212,18 @@ export default function DesignGallery() {
   const [viewer, setViewer] = useState<ViewerState | null>(null)
   const totalPieces = useMemo(
     () =>
-      projects.reduce(
+      galleryProjects.reduce(
         (total, project) =>
           total +
           project.pieces.length +
           (project.stories?.length ?? 0) +
           (project.carousels?.reduce((carouselTotal, carousel) => carouselTotal + carousel.slides.length, 0) ?? 0),
-        playground.length,
+        playgroundPieces.length,
       ),
     [],
   )
 
-  const openCarousel = (project: string, carousel: Carousel) => {
+  const openCarousel = (project: string, carousel: GalleryCarousel) => {
     setViewer({ project, carousel, index: 0 })
   }
 
@@ -370,7 +250,7 @@ export default function DesignGallery() {
               Uma coleção de posts, carrosséis e peças visuais criadas para transformar ideias em presença digital.
             </p>
             <div className="mt-8 grid grid-cols-3 border-y border-[#1e1e1e]/12 py-5 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#1e1e1e]/58">
-              <span>{projects.length} projetos</span>
+              <span>{galleryProjects.length} projetos</span>
               <span>{totalPieces} peças</span>
               <span>manual order</span>
             </div>
@@ -378,7 +258,7 @@ export default function DesignGallery() {
         </div>
 
         <div className="mt-16 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {[image(1, "Preview Frigideira AI"), image(11, "Preview The Real Tocha"), image(24, "Preview SDP"), image(35, "Preview Creative Playground")].map((item, index) => (
+          {galleryPreviewImages.map((item, index) => (
             <figure key={item.src} className={`relative overflow-hidden border border-[#1e1e1e]/10 bg-[#dedddd] ${index % 2 ? "mt-8" : ""}`}>
               <div className="relative aspect-4/5">
                 <Image src={item.src} alt={item.alt} fill sizes="(max-width: 768px) 44vw, 22vw" className="object-cover grayscale transition duration-700 hover:grayscale-0" priority />
@@ -389,7 +269,7 @@ export default function DesignGallery() {
       </section>
 
       <div className="container-bleed">
-        {projects.map((project) => (
+        {galleryProjects.map((project) => (
           <ProjectSection key={project.name} project={project} onOpen={(carousel) => openCarousel(project.name, carousel)} />
         ))}
 
@@ -405,7 +285,7 @@ export default function DesignGallery() {
               </p>
             </div>
             <div className="grid auto-rows-auto grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-8 lg:gap-5">
-              {playground.map((piece, index) => (
+              {playgroundPieces.map((piece, index) => (
                 <PieceCard key={piece.src} piece={piece} index={index} />
               ))}
             </div>

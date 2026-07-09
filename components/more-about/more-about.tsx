@@ -23,6 +23,8 @@ type HelpColumn = {
   featured?: boolean
 }
 
+const RESUME_HREF = "/cv/Sarah-Design.CV.pdf"
+
 const reveal: Variants = {
   hidden: { opacity: 0, y: 34, filter: "blur(6px)" },
   show: {
@@ -556,13 +558,13 @@ function FinalCta({ titleLines, button }: { titleLines: string[]; button: string
                   />
                   <span className="relative z-10">dumitrachebusiness@gmail.com</span>
                 </a>
-                <button type="button" className={pillClassName} aria-label={t("moreAboutCtaResume")}>
+                <a href={RESUME_HREF} download className={pillClassName} aria-label={t("moreAboutCtaResume")}>
                   <span
                     className="absolute inset-0 origin-bottom scale-y-0 rounded-full bg-[#e8e7e7] transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100"
                     aria-hidden="true"
                   />
                   <span className="relative z-10 uppercase">{t("moreAboutCtaResume")}</span>
-                </button>
+                </a>
               </motion.div>
             </div>
 

@@ -14,6 +14,8 @@ const SOCIALS = [
   { label: "Discord", href: "https://discord.com/users/942126894478950530" },
 ] as const
 
+const RESUME_HREF = "/cv/Sarah-Design.CV.pdf"
+
 const reveal: Variants = {
   hidden: { opacity: 0, y: 28, filter: "blur(6px)" },
   show: {
@@ -168,10 +170,10 @@ export default function FinalCtaContent({
               <span aria-hidden="true" className="absolute inset-0 origin-bottom scale-y-0 rounded-full bg-[#1e1e1e] transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100" />
               <span className="relative z-10">dumitrachebusiness@gmail.com</span>
             </a>
-            <button type="button" tabIndex={interactive ? undefined : -1} className={pillClassName} aria-label={t("moreAboutCtaResume")}>
+            <a href={RESUME_HREF} download tabIndex={interactive ? undefined : -1} className={pillClassName} aria-label={t("moreAboutCtaResume")}>
               <span aria-hidden="true" className="absolute inset-0 origin-bottom scale-y-0 rounded-full bg-[#1e1e1e] transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100" />
               <span className="relative z-10 uppercase">{t("moreAboutCtaResume")}</span>
-            </button>
+            </a>
           </motion.div>
         </div>
 
