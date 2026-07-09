@@ -25,7 +25,6 @@ export default function Menu() {
     () => [
       { label: t("linkAbout"), id: "more-about", href: "/more-about" },
       { label: t("linkWork"), id: "work" },
-      { label: t("linkGallery"), id: "gallery" },
       { label: t("linkContact"), id: "contact" },
     ],
     [t]

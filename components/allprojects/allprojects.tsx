@@ -24,8 +24,6 @@ type FullscreenDocument = Document & {
   msExitFullscreen?: () => Promise<void> | void
 }
 
-const SKIP_INTRO_FROM_ALLPROJECTS_KEY = "portfolio:skip-intro-from-allprojects"
-
 function resolveVideoSrc(src: string) {
   const clean = src.trim()
   if (!clean || clean.includes("YOUR_FILE_ID") || clean.includes("placeholder")) return ""
@@ -39,10 +37,6 @@ function resolveVideoSrc(src: string) {
 
 export default function AllProjects() {
   const { t } = useI18n()
-
-  useEffect(() => {
-    window.sessionStorage.setItem(SKIP_INTRO_FROM_ALLPROJECTS_KEY, "true")
-  }, [])
 
   const categories = useMemo(
     () => ({
@@ -382,8 +376,8 @@ export default function AllProjects() {
             <h1 className="mt-1 text-[28px] font-semibold leading-none tracking-[0] sm:text-[34px] lg:text-[42px]">{t("allprojectsHeroTitle")}</h1>
           </div>
 
-          <div className="grid min-w-0 grid-cols-2 gap-x-5 gap-y-1.5 text-[11px] uppercase tracking-[0.14em] text-[#1e1e1e]/58 sm:text-[12px] lg:mx-auto lg:w-full lg:max-w-[1180px] lg:self-end">
-            <span>category</span>
+          <div className="grid min-w-0 grid-cols-2 gap-x-5 gap-y-1.5 text-[11px] uppercase tracking-[0.14em] text-[#1e1e1e]/58 sm:text-[12px] lg:mx-auto lg:w-full lg:max-w-295 lg:self-end">
+            <span>{t("allprojectsFormatLabel")}</span>
             <span className="text-right text-[#1800ad]">{category.title}</span>
             <span>active</span>
             <span className="text-right tabular-nums">

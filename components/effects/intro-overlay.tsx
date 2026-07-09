@@ -1,7 +1,8 @@
 "use client"
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { useI18n } from "@/components/providers/i18n"
+import { usePathname } from "next/navigation"
+import { type I18nKey, useI18n } from "@/components/providers/i18n"
 
 const WORDS = [
   "olá",
@@ -22,42 +23,90 @@ const WORDS = [
   "welcome <3",
 ]
 
-const SKIP_INTRO_FROM_ALLPROJECTS_KEY = "portfolio:skip-intro-from-allprojects"
+const HOME_INTRO_SEEN_KEY = "portfolio:intro-seen-home"
+const LAST_PATH_KEY = "portfolio:last-path"
 
-function shouldSkipIntroFromAllProjects() {
-  if (typeof window === "undefined") return false
-  return window.sessionStorage.getItem(SKIP_INTRO_FROM_ALLPROJECTS_KEY) === "true"
+type IntroMode = "home" | "route"
+
+type IntroConfig = {
+  mode: IntroMode
+  labelKey: I18nKey
+}
+
+const ROUTE_INTRO_KEYS = {
+  "/allprojects": "introRouteAllProjects",
+  "/gallery": "introRouteGallery",
+  "/more-about": "introRouteMoreAbout",
+} as const
+
+function dispatchIntroDone() {
+  document.documentElement.dataset.intro = "done"
+  window.dispatchEvent(new CustomEvent("intro:done"))
 }
 
 export default function IntroOverlay() {
+  const pathname = usePathname()
   const { t } = useI18n()
 
   const [ready, setReady] = useState(false)
   const [running, setRunning] = useState(false)
   const [exiting, setExiting] = useState(false)
-  const [done, setDone] = useState(shouldSkipIntroFromAllProjects)
+  const [done, setDone] = useState(false)
   const [i, setI] = useState(0)
+  const [config, setConfig] = useState<IntroConfig | null>(null)
 
   const restoreOverflowRef = useRef<string>("")
   const restoreScrollRef = useRef<History["scrollRestoration"]>("auto")
   const timersRef = useRef<number[]>([])
 
-  const word = useMemo(() => WORDS[Math.min(i, WORDS.length - 1)], [i])
+  const word = useMemo(() => {
+    if (config?.mode === "route") return t(config.labelKey)
+    return WORDS[Math.min(i, WORDS.length - 1)]
+  }, [config, i, t])
 
   useEffect(() => {
-    if (shouldSkipIntroFromAllProjects()) {
-      window.sessionStorage.removeItem(SKIP_INTRO_FROM_ALLPROJECTS_KEY)
-      document.documentElement.dataset.intro = "done"
-      window.dispatchEvent(new CustomEvent("intro:done"))
-      return () => {
-        delete document.documentElement.dataset.intro
-      }
+    timersRef.current.forEach((tt) => window.clearTimeout(tt))
+    timersRef.current = []
+
+    const path = pathname || "/"
+    const previousPath = window.sessionStorage.getItem(LAST_PATH_KEY)
+    const homeIntroSeen = window.sessionStorage.getItem(HOME_INTRO_SEEN_KEY) === "true"
+    const routeIntroKey = ROUTE_INTRO_KEYS[path as keyof typeof ROUTE_INTRO_KEYS]
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    const nextConfig: IntroConfig | null =
+      path === "/" && !homeIntroSeen
+        ? { mode: "home", labelKey: "introRouteHome" }
+        : path === "/" && previousPath && previousPath !== "/"
+          ? { mode: "route", labelKey: "introRouteHome" }
+          : routeIntroKey
+            ? { mode: "route", labelKey: routeIntroKey }
+            : null
+
+    window.sessionStorage.setItem(LAST_PATH_KEY, path)
+
+    if (!nextConfig || prefersReducedMotion) {
+      document.documentElement.style.overflow = restoreOverflowRef.current
+      dispatchIntroDone()
+      const settleFrame = window.requestAnimationFrame(() => {
+        setDone(true)
+        setConfig(null)
+      })
+      return () => window.cancelAnimationFrame(settleFrame)
     }
 
     restoreOverflowRef.current = document.documentElement.style.overflow || ""
     document.documentElement.style.overflow = "hidden"
     document.documentElement.dataset.intro = "idle"
-    const readyFrame = window.requestAnimationFrame(() => setReady(true))
+    let readyFrame = 0
+    const setupFrame = window.requestAnimationFrame(() => {
+      setConfig(nextConfig)
+      setReady(false)
+      setRunning(nextConfig.mode === "route")
+      setExiting(false)
+      setDone(false)
+      setI(0)
+      readyFrame = window.requestAnimationFrame(() => setReady(true))
+    })
 
     if (typeof window !== "undefined") {
       restoreScrollRef.current = window.history.scrollRestoration
@@ -72,35 +121,38 @@ export default function IntroOverlay() {
 
     return () => {
       document.documentElement.style.overflow = restoreOverflowRef.current
+      window.cancelAnimationFrame(setupFrame)
       window.cancelAnimationFrame(readyFrame)
       timersRef.current.forEach((tt) => window.clearTimeout(tt))
       timersRef.current = []
-      delete document.documentElement.dataset.intro
 
       if (typeof window !== "undefined") {
         window.history.scrollRestoration = restoreScrollRef.current
       }
     }
-  }, [])
+  }, [pathname])
 
   useEffect(() => {
-    if (!running) return
+    if (!running || !config) return
 
     document.documentElement.dataset.intro = "running"
 
     timersRef.current.forEach((tt) => window.clearTimeout(tt))
     timersRef.current = []
 
-    const step = 170
-    const holdFinal = 520
-    const exitDuration = 980
+    const isRouteIntro = config.mode === "route"
+    const step = isRouteIntro ? 0 : 170
+    const holdFinal = isRouteIntro ? 820 : 520
+    const exitDuration = isRouteIntro ? 1140 : 980
 
-    WORDS.forEach((_, idx) => {
-      const tt = window.setTimeout(() => setI(idx), idx * step)
-      timersRef.current.push(tt)
-    })
+    if (!isRouteIntro) {
+      WORDS.forEach((_, idx) => {
+        const tt = window.setTimeout(() => setI(idx), idx * step)
+        timersRef.current.push(tt)
+      })
+    }
 
-    const finalAt = (WORDS.length - 1) * step
+    const finalAt = isRouteIntro ? 0 : (WORDS.length - 1) * step
     const exitAt = finalAt + holdFinal
 
     timersRef.current.push(
@@ -115,11 +167,13 @@ export default function IntroOverlay() {
       window.setTimeout(() => {
         setDone(true)
         document.documentElement.style.overflow = restoreOverflowRef.current
-        document.documentElement.dataset.intro = "done"
-        window.dispatchEvent(new CustomEvent("intro:done"))
+        if (config.mode === "home") {
+          window.sessionStorage.setItem(HOME_INTRO_SEEN_KEY, "true")
+        }
+        dispatchIntroDone()
       }, doneAt)
     )
-  }, [running])
+  }, [config, running])
 
   const start = useCallback(() => {
     if (running) return
@@ -127,7 +181,7 @@ export default function IntroOverlay() {
   }, [running])
 
   useEffect(() => {
-    if (!ready) return
+    if (!ready || config?.mode !== "home") return
 
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Enter" || e.key === " ") start()
@@ -142,17 +196,22 @@ export default function IntroOverlay() {
       window.removeEventListener("keydown", onKey)
       window.removeEventListener("pointerdown", onPointer)
     }
-  }, [ready, start])
+  }, [config, ready, start])
 
-  if (done) return null
+  if (done || !config) return null
 
   return (
-    <div className="intro-overlay" data-exiting={exiting ? "true" : "false"}>
+    <div
+      className="intro-overlay"
+      data-exiting={exiting ? "true" : "false"}
+      data-mode={config.mode}
+      aria-live="polite"
+    >
       <div className="intro-corner">{t("introStarting")}</div>
 
       <div className="intro-stage" aria-label="Animação de entrada">
-        <div className="intro-word">
-          <span>{running ? word : "enter"}</span>
+        <div className={config.mode === "route" ? "intro-word intro-word--route" : "intro-word"}>
+          <span>{running ? word : t("introEnter")}</span>
           <span className="intro-dot" />
         </div>
       </div>

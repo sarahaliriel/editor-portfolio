@@ -3,7 +3,6 @@
 import {
   motion,
   useMotionValue,
-  useMotionValueEvent,
   useReducedMotion,
   useScroll,
   useSpring,
@@ -13,7 +12,8 @@ import { useCallback, useEffect, useLayoutEffect, useState } from "react"
 
 const ORB_STOPS = [0, 0.2, 0.45, 0.7, 0.95, 1]
 const MAGNET_RADIUS = 160
-const CTA_THRESHOLD = 0.95
+const CTA_REVEAL_START = 0.78
+const ORB_COVER_START = 0.22
 
 function sizesForViewport(width: number) {
   if (width < 640) return [16, 20, 28, 40, 112, 112]
@@ -41,12 +41,15 @@ export default function NarrativeOrb() {
   const prefersReducedMotion = useReducedMotion()
   const { scrollYProgress } = useScroll()
   const [isCta, setIsCta] = useState(false)
+  const [isCoveredByTransition, setIsCoveredByTransition] = useState(false)
 
   const viewportWidth = useMotionValue(1440)
   const viewportHeight = useMotionValue(900)
   const anchorX = useMotionValue(1123)
   const anchorY = useMotionValue(522)
+  const ctaSize = useMotionValue(170)
   const reducedMotion = useMotionValue(prefersReducedMotion ? 1 : 0)
+  const transitionProgress = useMotionValue(0)
   const magneticX = useMotionValue(0)
   const magneticY = useMotionValue(0)
   const proximity = useMotionValue(0)
@@ -57,25 +60,32 @@ export default function NarrativeOrb() {
     const width = window.innerWidth
     const height = window.innerHeight
     const sizes = sizesForViewport(width)
-    const finalSize = sizes[sizes.length - 1]
+    const lastSize = sizes[sizes.length - 1]
     const anchor = document.querySelector<HTMLElement>('[data-orb-anchor="cta"]')
+    const stage = document.querySelector<HTMLElement>("[data-orb-stage]")
+    const transition = document.querySelector<HTMLElement>("[data-project-cta-transition]")
 
-    let measuredAnchorX = width < 640 ? width - 24 - finalSize / 2 : width * 0.78
-    let measuredAnchorY = width < 640 ? height - 28 - finalSize / 2 : height * 0.58
+    let measuredAnchorX = width < 640 ? width - 24 - lastSize / 2 : width * 0.78
+    let measuredAnchorY = width < 640 ? height - 28 - lastSize / 2 : height * 0.58
 
-    if (anchor) {
+    if (anchor && stage && transition) {
       const rect = anchor.getBoundingClientRect()
-      const maxScroll = Math.max(0, document.documentElement.scrollHeight - height)
-      measuredAnchorX = rect.left + rect.width / 2
-      measuredAnchorY = rect.top + window.scrollY + rect.height / 2 - maxScroll
+      const stageRect = stage.getBoundingClientRect()
+      const transitionTop = transition.getBoundingClientRect().top + window.scrollY
+      const transitionStart = transitionTop - height
+      const progress = clamp((window.scrollY - transitionStart) / Math.max(1, transition.offsetHeight), 0, 1)
+      const contentShift = progress <= 0.68 ? 44 : progress >= 0.84 ? 0 : 44 * (1 - (progress - 0.68) / 0.16)
+      measuredAnchorX = rect.left - stageRect.left + rect.width / 2
+      measuredAnchorY = rect.top - stageRect.top + rect.height / 2 - contentShift
+      ctaSize.set(rect.width || lastSize)
     }
 
-    const edge = finalSize / 2 + 16
+    const edge = lastSize / 2 + 16
     viewportWidth.set(width)
     viewportHeight.set(height)
     anchorX.set(clamp(measuredAnchorX, edge, width - edge))
     anchorY.set(clamp(measuredAnchorY, edge, height - edge))
-  }, [anchorX, anchorY, viewportHeight, viewportWidth])
+  }, [anchorX, anchorY, ctaSize, viewportHeight, viewportWidth])
 
   useLayoutEffect(() => {
     let frame = requestAnimationFrame(measure)
@@ -102,6 +112,36 @@ export default function NarrativeOrb() {
     reducedMotion.set(prefersReducedMotion ? 1 : 0)
   }, [prefersReducedMotion, reducedMotion])
 
+  useEffect(() => {
+    const updateTransition = () => {
+      const transition = document.querySelector<HTMLElement>("[data-project-cta-transition]")
+      if (!transition) {
+        transitionProgress.set(0)
+        setIsCoveredByTransition(false)
+        setIsCta(false)
+        return
+      }
+
+      const top = transition.getBoundingClientRect().top + window.scrollY
+      const start = top - window.innerHeight
+      const progress = clamp((window.scrollY - start) / Math.max(1, transition.offsetHeight), 0, 1)
+      const covered = !prefersReducedMotion && progress >= ORB_COVER_START && progress < CTA_REVEAL_START
+      const ctaActive = progress >= CTA_REVEAL_START
+
+      transitionProgress.set(progress)
+      setIsCoveredByTransition((current) => current === covered ? current : covered)
+      setIsCta((current) => current === ctaActive ? current : ctaActive)
+    }
+
+    updateTransition()
+    window.addEventListener("scroll", updateTransition, { passive: true })
+    window.addEventListener("resize", updateTransition)
+    return () => {
+      window.removeEventListener("scroll", updateTransition)
+      window.removeEventListener("resize", updateTransition)
+    }
+  }, [prefersReducedMotion, transitionProgress])
+
   const xTrack = useTransform(() => {
     if (reducedMotion.get()) return anchorX.get()
     const width = viewportWidth.get()
@@ -114,7 +154,9 @@ export default function NarrativeOrb() {
   })
   const sizeTrack = useTransform(() => {
     const sizes = sizesForViewport(viewportWidth.get())
-    return reducedMotion.get() ? sizes[sizes.length - 1] : sampleTrack(scrollYProgress.get(), sizes)
+    const ctaSizes = [...sizes]
+    ctaSizes[ctaSizes.length - 1] = ctaSize.get()
+    return reducedMotion.get() ? ctaSize.get() : sampleTrack(scrollYProgress.get(), ctaSizes)
   })
 
   const x = useSpring(xTrack, { stiffness: 72, damping: 24, mass: 0.72 })
@@ -128,9 +170,9 @@ export default function NarrativeOrb() {
 
   const orbX = useTransform(() => x.get() + magnetX.get())
   const orbY = useTransform(() => y.get() + magnetY.get())
-  const textOpacity = useTransform(scrollYProgress, [0.88, 0.95], [0, 1])
-  const textScale = useTransform(scrollYProgress, [0.88, 0.97], [0.86, 1])
-  const arrowOpacity = useTransform(scrollYProgress, [0.91, 0.97], [0, 1])
+  const textOpacity = useTransform(transitionProgress, [CTA_REVEAL_START, 0.92], [0, 1])
+  const textScale = useTransform(transitionProgress, [CTA_REVEAL_START, 0.94], [0.86, 1])
+  const arrowOpacity = useTransform(transitionProgress, [0.84, 0.94], [0, 1])
   const reducedOpacity = useTransform(scrollYProgress, [0.88, 0.94], [0, 1])
   const orbOpacity = useTransform(() => (reducedMotion.get() ? reducedOpacity.get() : 1))
   const glow = useTransform(
@@ -140,17 +182,6 @@ export default function NarrativeOrb() {
   )
   const rippleOpacity = useTransform(proximitySpring, [0, 1], [0, 0.34])
   const rippleScale = useTransform(proximitySpring, [0, 1], [0.76, 1.12])
-
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    setIsCta((current) => {
-      const next = latest >= CTA_THRESHOLD
-      return current === next ? current : next
-    })
-  })
-
-  useEffect(() => {
-    setIsCta(scrollYProgress.get() >= CTA_THRESHOLD)
-  }, [scrollYProgress])
 
   useEffect(() => {
     if (prefersReducedMotion) return
@@ -200,7 +231,7 @@ export default function NarrativeOrb() {
       tabIndex={isCta ? 0 : -1}
       data-narrative-orb
       data-orb-state={isCta ? "cta" : "journey"}
-      className="narrative-orb fixed left-0 top-0 z-60 grid place-items-center rounded-full text-[#e8e7e7] outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-4 focus-visible:ring-offset-[#1800ad]"
+      className="narrative-orb fixed left-0 top-0 grid place-items-center rounded-full text-[#e8e7e7] outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-4 focus-visible:ring-offset-[#e8e7e7]"
       style={{
         boxShadow: glow,
         height: size,
@@ -211,14 +242,11 @@ export default function NarrativeOrb() {
         width: size,
         x: orbX,
         y: orbY,
+        zIndex: isCoveredByTransition ? 5 : 60,
       }}
     >
       <span className="narrative-orb__surface" aria-hidden="true" />
-      <motion.span
-        className="narrative-orb__ripple"
-        aria-hidden="true"
-        style={{ opacity: rippleOpacity, scale: rippleScale }}
-      />
+      <motion.span className="narrative-orb__ripple" aria-hidden="true" style={{ opacity: rippleOpacity, scale: rippleScale }} />
 
       <motion.span
         className="relative z-10 flex flex-col items-center font-display text-[clamp(0.67rem,1.08vw,0.96rem)] font-semibold uppercase leading-[0.94] tracking-[-0.025em]"

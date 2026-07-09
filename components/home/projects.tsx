@@ -132,11 +132,11 @@ export default function Projects() {
   }, [activeIndex, open, canControlVolume])
 
   return (
-    <section id="work" className="relative pb-24 pt-16 sm:pb-32 sm:pt-20">
-      <div className="container-bleed">
+    <section id="work" className="relative z-10 pb-24 pt-8 text-[#e8e7e7] sm:pb-32 sm:pt-12">
+      <div className="container-bleed relative z-10">
         <div className="mb-10 sm:mb-12">
           <div className="mb-3 inline-flex items-center gap-3">
-            <span className="h-0.5 w-10 bg-detail" />
+            <span className="h-0.5 w-10 bg-[#7965eb]" />
           </div>
 
           <div className="flex items-end justify-between gap-8">
@@ -148,7 +148,7 @@ export default function Projects() {
           <p className="mt-5 max-w-[72ch] text-[15px] leading-[1.7] opacity-70 sm:text-[16px]">{t("projectsDesc")}</p>
         </div>
 
-        <div className="h-px w-full bg-ink/10" />
+        <div className="h-px w-full bg-[#e8e7e7]/14" />
 
         <div className="mt-6">
           {projects.map((p, i) => (
@@ -156,7 +156,7 @@ export default function Projects() {
               key={`${p.client}-${p.year}-${i}`}
               type="button"
               onClick={() => openProject(i)}
-              className="group block w-full border-b border-ink/10 px-4 py-6 text-left transition-colors hover:bg-detail/4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-detail/45 focus-visible:ring-offset-2 focus-visible:ring-offset-base sm:px-2 sm:py-8"
+              className="group block w-full border-b border-[#e8e7e7]/12 px-4 py-6 text-left transition-colors hover:bg-[#1800ad]/12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7965eb]/55 focus-visible:ring-offset-2 focus-visible:ring-offset-[#1e1e1e] sm:px-2 sm:py-8"
             >
               <div className="flex items-center justify-between gap-6">
                 <div className="min-w-0">
@@ -172,7 +172,7 @@ export default function Projects() {
                 <div className="shrink-0 text-right">
                   <div className="text-[16px] font-semibold opacity-80">{p.year}</div>
                   <div className="mt-2 inline-flex items-center gap-2 text-[12px] font-semibold tracking-[0.22em] opacity-70">
-                    <span className="h-px w-10 bg-ink/20 transition group-hover:bg-detail/60" />
+                    <span className="h-px w-10 bg-[#e8e7e7]/25 transition group-hover:bg-[#7965eb]" />
                     <span>{t("projectsOpen")}</span>
                   </div>
                 </div>
@@ -181,7 +181,7 @@ export default function Projects() {
             
           ))}
           <div className="mt-12 sm:mt-14">
-  <Link href="/allprojects" className="group inline-flex items-center gap-6 text-[17px] font-medium">
+  <Link href="/allprojects" className="group inline-flex items-center gap-6 text-[17px] font-medium focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#7965eb]">
     <span className="relative inline-flex items-center">
       <span className="relative">
         {t("projectsAllCta")}
@@ -189,7 +189,7 @@ export default function Projects() {
         <span className="ping-dot"></span>
       </span>
     </span>
-    <span className="relative inline-flex h-12 w-12 items-center justify-center rounded-full border border-ink/25 transition-all duration-350 ease-[cubic-bezier(.16,1,.3,1)] group-hover:border-[#1800ad] group-hover:bg-[#1800ad]/10 group-hover:scale-110">
+    <span className="relative inline-flex h-12 w-12 items-center justify-center rounded-full border border-[#e8e7e7]/30 transition-all duration-350 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-110 group-hover:border-[#7965eb] group-hover:bg-[#1800ad]/20">
       <span className="transition-transform duration-350 ease-[cubic-bezier(.16,1,.3,1)] group-hover:translate-x-0.5">→</span>
       <span className="pointer-events-none absolute inset-0 rounded-full opacity-0 transition-opacity duration-350 group-hover:opacity-100 ring-1 ring-[#1800ad]/35"></span>
     </span>

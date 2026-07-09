@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 import type { CSSProperties, RefObject } from "react"
+import { useI18n } from "@/components/providers/i18n"
 import type { ArchiveProject, CategoryKey } from "@/data/all-projects"
 
 type CategoryMap = Record<CategoryKey, { title: string }>
@@ -24,6 +25,8 @@ function carouselDistance(index: number, active: number, total: number) {
 }
 
 export function ProjectThumbs({ activeIndex, categories, onSelect, projects, railRef, total }: ProjectThumbsProps) {
+  const { t } = useI18n()
+
   return (
     <aside className="order-2 min-w-0 lg:order-1 lg:h-full">
       <div
@@ -49,7 +52,7 @@ export function ProjectThumbs({ activeIndex, categories, onSelect, projects, rai
                   on ? "border-[#1800ad] opacity-100" : "border-[#1e1e1e]/18 opacity-48 hover:opacity-85",
                 ].join(" ")}
                 aria-current={on ? "true" : undefined}
-                aria-label={`Selecionar projeto ${project.id}`}
+                aria-label={`${t("allprojectsSelectEdit")} ${project.id}`}
               >
                 <div className={["relative h-14 overflow-hidden bg-[#1e1e1e]/10 transition-transform duration-500 sm:h-16 lg:h-18", on ? "scale-100" : "scale-[0.92]"].join(" ")}>
                   <Image src={project.cover} alt="" fill className="object-cover" sizes="90px" />

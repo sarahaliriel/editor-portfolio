@@ -24,8 +24,10 @@ function MovingWord({
   emphasized: boolean
   reducedMotion: boolean
 }) {
-  const start = 0.08 + (index / total) * 0.7
-  const end = Math.min(start + (emphasized ? 0.2 : 0.14), 0.96)
+  const hasFinalPeriod = children.endsWith(".")
+  const word = hasFinalPeriod ? children.slice(0, -1) : children
+  const start = 0.03 + (index / total) * 0.68
+  const end = Math.min(start + (emphasized ? 0.22 : 0.16), 0.92)
   const opacity = useTransform(progress, [start, end], reducedMotion ? [1, 1] : [emphasized ? 0.06 : 0.18, 1])
   const y = useTransform(progress, [start, end], reducedMotion ? [0, 0] : [emphasized ? 34 : 22, 0])
   const filter = useTransform(
@@ -39,7 +41,8 @@ function MovingWord({
       className={emphasized ? "inline-block font-black text-[#1800ad]" : "inline-block"}
       style={{ opacity, y, filter }}
     >
-      {children}
+      {word}
+      {hasFinalPeriod ? <span className="text-[#e8e7e7]">.</span> : null}
     </motion.span>
   )
 }
@@ -89,7 +92,7 @@ function MagneticAboutButton({ reducedMotion }: { reducedMotion: boolean }) {
         onPointerMove={handlePointerMove}
         onPointerLeave={resetPosition}
         onBlur={resetPosition}
-        className="group relative inline-flex aspect-square w-[clamp(132px,38vw,156px)] items-center justify-center overflow-hidden rounded-full border border-[#1800ad]/15 bg-[#1800ad] p-5 text-center font-display text-[clamp(.72rem,.9vw,.88rem)] font-semibold uppercase leading-tight text-[#e8e7e7] transition-[transform,box-shadow,color,border-color] duration-700 ease-[cubic-bezier(.16,1,.3,1)] hover:border-[#1800ad]/35 hover:text-[#1800ad] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1800ad] sm:w-[clamp(158px,12vw,188px)]"
+        className="group relative inline-flex aspect-square w-[clamp(132px,38vw,156px)] items-center justify-center overflow-hidden rounded-full border border-transparent bg-[#1800ad] p-5 text-center font-display text-[clamp(.72rem,.9vw,.88rem)] font-semibold uppercase leading-tight text-[#e8e7e7] transition-[transform,box-shadow,color] duration-700 ease-[cubic-bezier(.16,1,.3,1)] hover:text-[#1800ad] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1800ad] sm:w-[clamp(158px,12vw,188px)]"
       >
         <span
           className="absolute inset-0 origin-bottom scale-y-0 rounded-full bg-[#e8e7e7] transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100"
@@ -127,12 +130,12 @@ export default function WhatMoves() {
       ref={sectionRef}
       className={
         prefersReducedMotion
-          ? "relative overflow-x-clip bg-[#e8e7e7] px-4 py-24 text-[#1e1e1e] sm:px-8 sm:py-32 lg:px-12"
-          : "relative h-[240svh] overflow-x-clip bg-[#e8e7e7] px-4 text-[#1e1e1e] sm:px-8 lg:px-12"
+          ? "relative z-20 overflow-x-clip bg-transparent px-4 py-24 text-[#e8e7e7] sm:px-8 sm:py-32 lg:px-12"
+          : "relative z-20 h-[180svh] overflow-x-clip bg-transparent px-4 text-[#e8e7e7] sm:px-8 lg:px-12"
       }
     >
       <div className={prefersReducedMotion ? "mx-auto w-full" : "sticky top-0 mx-auto flex h-svh w-full items-center"}>
-        <div className="mx-auto flex w-full max-w-[1120px] flex-col py-[clamp(2.5rem,6svh,5rem)] sm:w-[72vw]">
+        <div className="mx-auto flex w-full max-w-280 flex-col py-[clamp(2.5rem,6svh,5rem)] sm:w-[72vw]">
           <p
             className="w-full text-balance text-center font-display text-[clamp(2.4rem,13vw,4.2rem)] font-medium leading-[0.96] tracking-[-0.045em] sm:text-[clamp(3.2rem,6.8vw,7.2rem)] sm:leading-[0.94]"
             aria-label={quote}

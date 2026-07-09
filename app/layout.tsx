@@ -2,6 +2,7 @@ import "./globals.css"
 import { Montserrat, Inter } from "next/font/google"
 import { LanguageProvider } from "@/components/providers/i18n"
 import CustomCursor from "@/components/effects/cursor-custom"
+import IntroOverlay from "@/components/effects/intro-overlay"
 import LanguageToggle from "@/components/layout/language-toggle"
 
 const montserrat = Montserrat({
@@ -26,6 +27,7 @@ export default function RootLayout({
       <body>
         <LanguageProvider>
           <CustomCursor />
+          <IntroOverlay />
           {children}
           <LanguageToggle />
         </LanguageProvider>

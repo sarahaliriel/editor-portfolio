@@ -5,11 +5,12 @@ import { useRouter } from "next/navigation"
 import Menu from "@/components/layout/menu"
 import Hero from "@/components/home/hero"
 import WhatMoves from "@/components/home/what-moves"
-import Projects from "@/components/home/projects"
-import GalleryContactTransition from "@/components/home/gallery-contact-transition"
+import SelectedWork from "@/components/home/selected-work"
+import MotionSelected from "@/components/home/motion-selected"
+import ProjectToCtaTransition from "@/components/home/project-to-cta-transition"
 import ScrollProgress from "@/components/layout/scroll-progress"
-import IntroOverlay from "@/components/effects/intro-overlay"
 import NarrativeOrb from "@/components/effects/narrative-orb"
+import { ReactiveDotField } from "@/components/effects/reactive-dot-field"
 
 function scrollToHash(behavior: ScrollBehavior) {
   const id = window.location.hash.replace("#", "")
@@ -68,16 +69,19 @@ export default function Page() {
 
   return (
     <main className="relative min-h-screen bg-base text-ink">
-      <IntroOverlay />
       <ScrollProgress />
       <NarrativeOrb />
 
       <div className="relative z-10">
         <Menu />
         <Hero />
-        <WhatMoves />
-        <Projects />
-        <GalleryContactTransition />
+        <div className="relative isolate overflow-x-clip bg-[#1e1e1e] text-[#e8e7e7]">
+          <ReactiveDotField fill className="[mask-image:linear-gradient(to_bottom,transparent_0%,black_6%,black_92%,transparent_100%)]" />
+          <WhatMoves />
+          <SelectedWork />
+          <MotionSelected />
+          <ProjectToCtaTransition />
+        </div>
       </div>
     </main>
   )

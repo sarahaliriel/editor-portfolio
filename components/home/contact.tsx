@@ -5,7 +5,7 @@ import { useI18n } from "@/components/providers/i18n"
 
 type Status = "idle" | "sending" | "success" | "error"
 
-export default function Contact() {
+export default function Contact({ id = "contact" }: { id?: string }) {
   const { t } = useI18n()
 
   const [status, setStatus] = useState<Status>("idle")
@@ -55,7 +55,7 @@ export default function Contact() {
   }
 
   return (
-    <section id="contact" className="relative w-full bg-[#1e1e1e] text-[#e8e7e7] overflow-hidden">
+    <section id={id} className="relative w-full bg-[#1e1e1e] text-[#e8e7e7] overflow-hidden">
       <span
         aria-hidden="true"
         data-orb-anchor="cta"

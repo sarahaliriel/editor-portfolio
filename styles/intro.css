@@ -14,6 +14,10 @@
   animation: introSlideUp 980ms cubic-bezier(.16,1,.22,1) forwards;
 }
 
+.intro-overlay[data-mode="route"][data-exiting="true"]{
+  animation-duration: 1140ms;
+}
+
 
 .intro-stage{
   position: absolute;
@@ -35,6 +39,12 @@
   align-items: baseline;
   gap: 14px;
   transform: translate3d(0, 2svh, 0);
+}
+
+.intro-word--route{
+  font-size: clamp(38px, 6vw, 82px);
+  letter-spacing: -0.03em;
+  text-align: center;
 }
 
 
@@ -99,6 +109,10 @@
     gap: 12px;
     transform: translate3d(0, 1.6svh, 0);
   }
+  .intro-word--route{
+    font-size: clamp(34px, 10vw, 58px);
+    max-width: min(86vw, 720px);
+  }
   .intro-corner{
     left: 16px;
     top: 16px;
@@ -107,6 +121,16 @@
     right: 16px;
     bottom: 16px;
     letter-spacing: .18em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-overlay,
+  .intro-overlay[data-exiting="true"],
+  .intro-overlay[data-mode="route"][data-exiting="true"],
+  .intro-dot,
+  .intro-bar::after{
+    animation: none;
   }
 }
 

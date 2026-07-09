@@ -201,12 +201,14 @@ a {
   width: 100%;
   transform: scaleX(0);
   transform-origin: left;
-  background: rgba(255,255,255,0.7);
+  background: currentColor;
+  opacity: 0.85;
   transition: transform 300ms ease;
 }
 
 
-.link-underline-invert:hover::after{
+.link-underline-invert:hover::after,
+.link-underline-invert:focus-visible::after{
   transform: scaleX(1);
 }
 

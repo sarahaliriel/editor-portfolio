@@ -55,6 +55,32 @@ function useCompactViewport() {
 export default function MoreAboutPage() {
   const { t } = useI18n()
 
+  useLayoutEffect(() => {
+    const html = document.documentElement
+    const prevScrollRestoration = window.history.scrollRestoration
+    const prevScrollBehavior = html.style.scrollBehavior
+
+    window.history.scrollRestoration = "manual"
+    html.style.scrollBehavior = "auto"
+
+    const resetScroll = () => window.scrollTo({ top: 0, left: 0, behavior: "auto" })
+
+    resetScroll()
+    const frame = requestAnimationFrame(resetScroll)
+    const timer = window.setTimeout(() => {
+      resetScroll()
+      html.style.scrollBehavior = prevScrollBehavior
+      window.history.scrollRestoration = prevScrollRestoration
+    }, 120)
+
+    return () => {
+      cancelAnimationFrame(frame)
+      window.clearTimeout(timer)
+      html.style.scrollBehavior = prevScrollBehavior
+      window.history.scrollRestoration = prevScrollRestoration
+    }
+  }, [])
+
   const timeline = useMemo<TimelineItem[]>(
     () => [
       { year: "2019", title: t("moreAboutStory2019Title"), body: t("moreAboutStory2019Body") },
