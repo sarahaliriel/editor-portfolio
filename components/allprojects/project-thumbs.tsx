@@ -1,6 +1,5 @@
 "use client"
 
-import Image from "next/image"
 import type { CSSProperties, RefObject } from "react"
 import { useI18n } from "@/components/providers/i18n"
 import type { ArchiveProject, CategoryKey } from "@/data/all-projects"
@@ -47,18 +46,13 @@ export function ProjectThumbs({ activeIndex, categories, onSelect, projects, rai
                 onClick={() => onSelect(i)}
                 style={{ "--ap-distance": distance, "--ap-scale": scale } as CSSProperties}
                 className={[
-                  "ap-rail-item group grid w-53.5 shrink-0 snap-center grid-cols-[54px_minmax(0,1fr)] gap-2.5 border-t pt-2.5 text-left transition-all duration-500 sm:w-58.75 sm:grid-cols-[62px_minmax(0,1fr)] lg:absolute lg:left-0 lg:top-1/2 lg:w-full lg:border-t-0 lg:pt-0",
+                  "ap-rail-item group grid w-53.5 shrink-0 snap-center border-t pt-2.5 text-left transition-all duration-500 sm:w-58.75 lg:absolute lg:left-0 lg:top-1/2 lg:w-full lg:border-t-0 lg:pt-0",
                   hiddenOnDesktop ? "lg:pointer-events-none lg:opacity-0" : "",
                   on ? "border-[#1800ad] opacity-100" : "border-[#1e1e1e]/18 opacity-48 hover:opacity-85",
                 ].join(" ")}
                 aria-current={on ? "true" : undefined}
                 aria-label={`${t("allprojectsSelectEdit")} ${project.id}`}
               >
-                <div className={["relative h-14 overflow-hidden bg-[#1e1e1e]/10 transition-transform duration-500 sm:h-16 lg:h-18", on ? "scale-100" : "scale-[0.92]"].join(" ")}>
-                  <Image src={project.cover} alt="" fill className="object-cover" sizes="90px" />
-                  <div className={["absolute inset-0 bg-black transition-opacity duration-500", on ? "opacity-0" : "opacity-30"].join(" ")} />
-                </div>
-
                 <div className="min-w-0">
                   <div className="flex items-baseline gap-3">
                     <span className={["text-[11px] tabular-nums transition-colors duration-300", on ? "text-[#1800ad]" : "text-[#1e1e1e]/45"].join(" ")}>

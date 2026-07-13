@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { createPortal } from "react-dom"
 import { useI18n } from "@/components/providers/i18n"
 
@@ -31,10 +31,7 @@ export default function CustomCursor() {
 
   const isView = mode === "view"
 
-  const label = useMemo(() => {
-    if (mode === "view") return t("cursorView")
-    return ""
-  }, [mode, t])
+  const label = mode === "view" ? t("cursorView") : ""
 
   useEffect(() => {
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)")

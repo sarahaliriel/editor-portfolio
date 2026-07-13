@@ -1,115 +1,112 @@
-export type CategoryKey = "lab" | "social" | "story"
+import type { Lang } from "@/components/providers/i18n"
 
-export type ArchiveProject = {
+export type CategoryKey = "lab" | "social" | "story"
+type LocalizedText = Record<Lang, string>
+
+const VIDEO_CDN_BASE = (
+  process.env.NEXT_PUBLIC_VIDEO_CDN_BASE ??
+  "https://pub-04fcc3bcef3f485f8e93619eedd7a237.r2.dev"
+).replace(/\/$/, "")
+
+type ArchiveProjectSource = {
   id: string
-  title: string
+  title: LocalizedText
   category: CategoryKey
-  tagsLine: string
+  tagsLine: LocalizedText
   year: string
   tools: string
-  cover: string
-  poster: string
   src: string
 }
 
-export const archiveProjects: ArchiveProject[] = [
+export type ArchiveProject = Omit<ArchiveProjectSource, "title" | "tagsLine"> & {
+  title: string
+  tagsLine: string
+}
+
+const archiveProjectSources: ArchiveProjectSource[] = [
   {
     id: "01",
-    title: "Signal Cut",
+    title: { pt: "Tipografia & Motion", en: "Typography & Motion", es: "Tipografía & Movimiento" },
     category: "lab",
-    tagsLine: "motion edit | rhythm cut | alight motion",
-    year: "2026",
+    tagsLine: { pt: "tipografia cinética | edição rítmica", en: "kinetic typography | rhythmic edit", es: "tipografía cinética | edición rítmica" },
+    year: "2025",
     tools: "Alight Motion",
-    cover: "/images/projects/signal-cut.png",
-    poster: "/images/projects/signal-cut.png",
-    src: "https://drive.google.com/file/d/1bwZoucbHUOZ6wa25rGqYbcJvGtvkuHIz/view?usp=sharing",
+    src: `${VIDEO_CDN_BASE}/01-tipografia-e-motion.mp4`,
   },
   {
     id: "02",
-    title: "Type Pulse",
+    title: { pt: "Tipografia Edit", en: "Typography Edit", es: "Tipografía Edit" },
     category: "lab",
-    tagsLine: "motion typography | kinetic type | rhythm",
-    year: "2026",
+    tagsLine: { pt: "tipografia animada | short-form", en: "animated typography | short-form", es: "tipografía animada | short-form" },
+    year: "2025",
     tools: "Alight Motion",
-    cover: "/images/projects/type-pulse.png",
-    poster: "/images/projects/type-pulse.png",
-    src: "https://drive.google.com/file/d/1O9yd7LiMqSQG3blYC3UbwfvHCno3QGDj/view?usp=drive_link",
+    src: `${VIDEO_CDN_BASE}/02-tipografia-edit.mp4`,
   },
   {
     id: "03",
-    title: "Glitch Bloom",
-    category: "lab",
-    tagsLine: "motion transitions | glitch | visual pacing",
-    year: "2025",
-    tools: "Alight Motion",
-    cover: "/images/projects/glitch-bloom.png",
-    poster: "/images/projects/glitch-bloom.png",
-    src: "https://drive.google.com/file/d/YOUR_FILE_ID_03/view?usp=sharing",
+    title: { pt: "Corte de Podcast", en: "Podcast Cut", es: "Corte de Pódcast" },
+    category: "social",
+    tagsLine: { pt: "corte de podcast | legendas dinâmicas", en: "podcast cut | dynamic captions", es: "corte de pódcast | subtítulos dinámicos" },
+    year: "2024",
+    tools: "Alight Motion • CapCut",
+    src: `${VIDEO_CDN_BASE}/03-corte-podcast.mp4`,
   },
   {
     id: "04",
-    title: "Retention Edit",
-    category: "social",
-    tagsLine: "short-form | retention | captions",
+    title: { pt: "História Stop Motion", en: "Stop Motion Story", es: "Historia en Stop Motion" },
+    category: "story",
+    tagsLine: { pt: "storytelling | stop motion | 1º lugar", en: "storytelling | stop motion | 1st place", es: "storytelling | stop motion | 1.er lugar" },
     year: "2025",
-    tools: "CapCut",
-    cover: "/images/projects/retention-edit.png",
-    poster: "/images/projects/retention-edit.png",
-    src: "https://drive.google.com/file/d/YOUR_FILE_ID_04/view?usp=sharing",
+    tools: "Alight Motion",
+    src: `${VIDEO_CDN_BASE}/04-historia-stop-motion.mp4`,
   },
   {
     id: "05",
-    title: "Caption System",
+    title: { pt: "Corte de Podcast", en: "Podcast Cut", es: "Corte de Pódcast" },
     category: "social",
-    tagsLine: "short-form | subtitle system | davinci",
+    tagsLine: { pt: "corte de podcast | legendas dinâmicas", en: "podcast cut | dynamic captions", es: "corte de pódcast | subtítulos dinámicos" },
     year: "2025",
-    tools: "DaVinci Resolve",
-    cover: "/images/projects/caption-system.png",
-    poster: "/images/projects/caption-system.png",
-    src: "https://drive.google.com/file/d/1mAOPPyicmeXQjsP0HCd5tD6nAy7Wh5pV/view?usp=sharing",
+    tools: "DaVinci Resolve • CapCut",
+    src: `${VIDEO_CDN_BASE}/05-podcast.mp4`,
   },
   {
     id: "06",
-    title: "Motion Thread",
+    title: { pt: "Jugg Edit", en: "Jugg Edit", es: "Jugg Edit" },
     category: "lab",
-    tagsLine: "motion design | transitions | alight motion",
-    year: "2025",
+    tagsLine: { pt: "jugg edit | efeitos e transições", en: "jugg edit | effects and transitions", es: "jugg edit | efectos y transiciones" },
+    year: "2026",
     tools: "Alight Motion",
-    cover: "/images/projects/motion-thread.png",
-    poster: "/images/projects/motion-thread.png",
-    src: "https://drive.google.com/file/d/YOUR_FILE_ID_06/view?usp=sharing",
+    src: `${VIDEO_CDN_BASE}/06-jugg-edit.mp4`,
   },
   {
     id: "07",
-    title: "Social Loop",
+    title: { pt: "Short Dinâmico", en: "Dynamic Short", es: "Short Dinámico" },
     category: "social",
-    tagsLine: "campaign loop | social video | cap cut",
-    year: "2025",
-    tools: "CapCut",
-    cover: "/images/projects/social-loop.png",
-    poster: "/images/projects/social-loop.png",
-    src: "https://drive.google.com/file/d/YOUR_FILE_ID_07/view?usp=sharing",
+    tagsLine: { pt: "short-form | transições dinâmicas", en: "short-form | dynamic transitions", es: "short-form | transiciones dinámicas" },
+    year: "2026",
+    tools: "Alight Motion • CapCut",
+    src: `${VIDEO_CDN_BASE}/07-short-dinamico.mp4`,
   },
   {
     id: "08",
-    title: "PNG Texture",
+    title: { pt: "PNG Aesthetic Edit", en: "Aesthetic PNG Edit", es: "Edit Estético en PNG" },
     category: "lab",
-    tagsLine: "visual motion | texture edit | alight motion",
+    tagsLine: { pt: "colagem PNG | estética TikTok", en: "PNG collage | TikTok aesthetic", es: "collage PNG | estética TikTok" },
     year: "2024",
-    tools: "Alight Motion",
-    cover: "/images/projects/png-texture.png",
-    poster: "/images/projects/png-texture.png",
-    src: "https://drive.google.com/file/d/YOUR_FILE_ID_08/view?usp=sharing",
+    tools: "Alight Motion • Canva",
+    src: `${VIDEO_CDN_BASE}/08-png-edit.mp4`,
   },
   {
     id: "09",
-    title: "Story Fold",
-    category: "story",
-    tagsLine: "storytelling | stop motion | pacing",
+    title: { pt: "Short & Motion", en: "Short & Motion", es: "Short & Motion" },
+    category: "social",
+    tagsLine: { pt: "motion graphics | legendas dinâmicas", en: "motion graphics | dynamic captions", es: "motion graphics | subtítulos dinámicos" },
     year: "2024",
-    tools: "Alight Motion",
-    cover: "/images/projects/story-fold.png",
-    poster: "/images/projects/story-fold.png",
-    src: "https://drive.google.com/file/d/YOUR_FILE_ID_09/view?usp=sharing",
+    tools: "CapCut • Alight Motion",
+    src: `${VIDEO_CDN_BASE}/09-short-motion.mp4`,
   },
 ]
+
+export function getArchiveProjects(lang: Lang): ArchiveProject[] {
+  return archiveProjectSources.map(({ title, tagsLine, ...project }) => ({ ...project, title: title[lang], tagsLine: tagsLine[lang] }))
+}

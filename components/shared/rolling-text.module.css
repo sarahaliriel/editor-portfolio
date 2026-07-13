@@ -1,0 +1,161 @@
+.root {
+  --rolling-duration: 240ms;
+  --rolling-skew: 2deg;
+  --rolling-scale: 1.025;
+  --rolling-opacity: .92;
+  --rolling-wave-x: .035em;
+  --rolling-stagger: 2ms;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  line-height: inherit;
+}
+
+.subtle {
+  --rolling-duration: 240ms;
+  --rolling-skew: 1deg;
+  --rolling-scale: 1.01;
+  --rolling-opacity: .96;
+  --rolling-wave-x: .018em;
+  --rolling-stagger: 2ms;
+}
+
+.strong {
+  --rolling-duration: 240ms;
+  --rolling-skew: 3deg;
+  --rolling-scale: 1.04;
+  --rolling-opacity: .88;
+  --rolling-wave-x: .055em;
+  --rolling-stagger: 2ms;
+}
+
+.track {
+  display: grid;
+}
+
+.characters {
+  display: inline-flex;
+  white-space: pre;
+}
+
+.alternate {
+  display: grid;
+}
+
+.characterLine {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  justify-self: center;
+  white-space: pre;
+}
+
+.characterLine .copy {
+  display: inline-block;
+}
+
+.secondaryLine {
+  transform: translate3d(0, 100%, 0);
+}
+
+.secondaryLine .secondary {
+  transform: none;
+}
+
+.character {
+  display: grid;
+  overflow: hidden;
+}
+
+.character .copy {
+  animation-delay: calc(var(--rolling-index) * var(--rolling-stagger));
+}
+
+.copy {
+  grid-area: 1 / 1;
+  min-width: 0;
+  backface-visibility: hidden;
+  transform-origin: 50% 50%;
+}
+
+.primary {
+  transform: translate3d(0, 0, 0);
+  opacity: 1;
+}
+
+.secondary {
+  transform: translate3d(0, 100%, 0);
+  opacity: 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  :global(a:hover) .primary,
+  :global(button:hover) .primary,
+  :global(a:focus-visible) .primary,
+  :global(button:focus-visible) .primary {
+    will-change: transform, opacity;
+    animation: rolling-out var(--rolling-duration) cubic-bezier(.22, 1, .36, 1) both;
+    animation-delay: calc(var(--rolling-index, 0) * var(--rolling-stagger));
+  }
+
+  :global(a:hover) .secondary,
+  :global(button:hover) .secondary,
+  :global(a:focus-visible) .secondary,
+  :global(button:focus-visible) .secondary {
+    will-change: transform, opacity;
+    animation: rolling-in var(--rolling-duration) cubic-bezier(.22, 1, .36, 1) both;
+    animation-delay: calc(var(--rolling-index, 0) * var(--rolling-stagger));
+  }
+
+  :global(a:hover) .secondaryLine,
+  :global(button:hover) .secondaryLine,
+  :global(a:focus-visible) .secondaryLine,
+  :global(button:focus-visible) .secondaryLine {
+    transform: none;
+  }
+}
+
+@keyframes rolling-out {
+  0% {
+    transform: translate3d(0, 0, 0) skewY(0) scaleY(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, -100%, 0) skewY(calc(var(--rolling-skew) * -1)) scaleY(var(--rolling-scale));
+    opacity: 1;
+  }
+}
+
+@keyframes rolling-in {
+  0% {
+    transform: translate3d(0, 100%, 0) skewY(var(--rolling-skew)) scaleY(var(--rolling-scale));
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, 0, 0) skewY(0) scaleY(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .primary {
+    transform: none !important;
+    opacity: 1 !important;
+    animation: none !important;
+    transition: opacity 180ms ease;
+  }
+
+  .secondary {
+    display: none;
+  }
+
+  .secondaryLine {
+    display: none;
+  }
+
+  :global(a:hover) .primary,
+  :global(button:hover) .primary,
+  :global(a:focus-visible) .primary,
+  :global(button:focus-visible) .primary {
+    opacity: .9 !important;
+  }
+}

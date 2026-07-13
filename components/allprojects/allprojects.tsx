@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ProjectPlayer } from "@/components/allprojects/project-player"
 import { ProjectThumbs } from "@/components/allprojects/project-thumbs"
 import { useI18n } from "@/components/providers/i18n"
-import { archiveProjects } from "@/data/all-projects"
+import { getArchiveProjects } from "@/data/all-projects"
 import { pad2 } from "@/lib/format"
 import { clamp, wrapIndex } from "@/lib/utils"
 
@@ -24,19 +24,8 @@ type FullscreenDocument = Document & {
   msExitFullscreen?: () => Promise<void> | void
 }
 
-function resolveVideoSrc(src: string) {
-  const clean = src.trim()
-  if (!clean || clean.includes("YOUR_FILE_ID") || clean.includes("placeholder")) return ""
-
-  if (clean.startsWith("http://") || clean.startsWith("https://")) {
-    return `/api/video?src=${encodeURIComponent(clean)}`
-  }
-
-  return clean
-}
-
 export default function AllProjects() {
-  const { t } = useI18n()
+  const { lang, t } = useI18n()
 
   const categories = useMemo(
     () => ({
@@ -47,12 +36,12 @@ export default function AllProjects() {
     [t]
   )
 
-  const projects = archiveProjects
+  const projects = useMemo(() => getArchiveProjects(lang), [lang])
   const total = projects.length
   const [active, setActive] = useState(0)
   const idx = wrapIndex(active, total)
   const current = projects[idx]
-  const videoSrc = resolveVideoSrc(current.src)
+  const videoSrc = current.src
   const category = categories[current.category]
 
   const wrapRef = useRef<HTMLDivElement | null>(null)
@@ -66,7 +55,7 @@ export default function AllProjects() {
   const seekValRef = useRef(0)
 
   const [playing, setPlaying] = useState(false)
-  const [muted, setMuted] = useState(true)
+  const [muted, setMuted] = useState(false)
   const [volume, setVolume] = useState(0.65)
   const [duration, setDuration] = useState(0)
   const [currentTime, setCurrentTime] = useState(0)
@@ -92,6 +81,7 @@ export default function AllProjects() {
     setCurrentTime(0)
     setDuration(0)
     setPlaying(false)
+    setMuted(false)
     setShowControls(true)
   }, [])
 
@@ -287,6 +277,17 @@ export default function AllProjects() {
 
   useEffect(() => {
     const video = videoRef.current
+    if (!video || !videoSrc || isClosed) return
+
+    const play = () => void video.play().catch(() => setPlaying(false))
+    if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) play()
+    else video.addEventListener("canplay", play, { once: true })
+
+    return () => video.removeEventListener("canplay", play)
+  }, [idx, videoSrc, isClosed])
+
+  useEffect(() => {
+    const video = videoRef.current
     if (!video) return
 
     const onLoaded = () => {
@@ -379,7 +380,7 @@ export default function AllProjects() {
           <div className="grid min-w-0 grid-cols-2 gap-x-5 gap-y-1.5 text-[11px] uppercase tracking-[0.14em] text-[#1e1e1e]/58 sm:text-[12px] lg:mx-auto lg:w-full lg:max-w-295 lg:self-end">
             <span>{t("allprojectsFormatLabel")}</span>
             <span className="text-right text-[#1800ad]">{category.title}</span>
-            <span>active</span>
+            <span>{t("allprojectsActiveLabel")}</span>
             <span className="text-right tabular-nums">
               {pad2(idx + 1)} / {pad2(total)}
             </span>
@@ -402,15 +403,14 @@ export default function AllProjects() {
                 </div>
 
                 <div className="grid grid-cols-[64px_minmax(0,1fr)] gap-x-3 gap-y-1 text-[12px] leading-tight text-[#1e1e1e]/68 sm:text-[13px] lg:self-end">
-                  <span className="text-[#1e1e1e]/42">tags</span>
+                  <span className="text-[#1e1e1e]/42">{t("allprojectsTagsLabel")}</span>
                   <span className="truncate">{current.tagsLine}</span>
-                  <span className="text-[#1e1e1e]/42">tools</span>
+                  <span className="text-[#1e1e1e]/42">{t("allprojectsToolsLabel")}</span>
                   <span className="truncate">{current.tools}</span>
                 </div>
               </div>
 
               <ProjectPlayer
-                activeIndex={idx}
                 closeLabel={t("allprojectsClose")}
                 current={current}
                 currentTime={currentTime}

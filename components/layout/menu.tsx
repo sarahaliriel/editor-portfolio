@@ -1,9 +1,10 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import { createPortal } from "react-dom"
 import { usePathname, useRouter } from "next/navigation"
 import { useI18n } from "@/components/providers/i18n"
+import RollingText from "@/components/shared/rolling-text"
 
 type LinkItem = { label: string; id: string; href?: string }
 type SocialItem = { label: string; href: string }
@@ -21,24 +22,18 @@ export default function Menu() {
   const pathname = usePathname()
   const router = useRouter()
 
-  const links = useMemo<LinkItem[]>(
-    () => [
-      { label: t("linkAbout"), id: "more-about", href: "/more-about" },
-      { label: t("linkWork"), id: "work" },
-      { label: t("linkContact"), id: "contact" },
-    ],
-    [t]
-  )
+  const links: LinkItem[] = [
+    { label: t("linkAbout"), id: "more-about", href: "/more-about" },
+    { label: t("linkWork"), id: "work" },
+    { label: t("linkContact"), id: "contact" },
+  ]
 
-  const socials = useMemo<SocialItem[]>(
-    () => [
-      { label: "Instagram", href: "https://www.instagram.com/chazinhodociel/" },
-      { label: "LinkedIn", href: "https://www.linkedin.com/in/sarah-dumitrache/" },
-      { label: "TikTok", href: "https://www.tiktok.com/@cielstea" },
-      { label: "Discord", href: "https://discord.com/users/942126894478950530" },
-    ],
-    []
-  )
+  const socials: SocialItem[] = [
+    { label: "Instagram", href: "https://www.instagram.com/chazinhodociel/" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/sarah-dumitrache/" },
+    { label: "TikTok", href: "https://www.tiktok.com/@cielstea" },
+    { label: "Discord", href: "https://discord.com/users/942126894478950530" },
+  ]
 
   const [menuOpen, setMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
@@ -203,7 +198,7 @@ export default function Menu() {
                     ].join(" ")}
                   >
                     <span className="mt-4.5 h-2.5 w-2.5 rounded-full bg-white/65 transition-transform duration-300 group-hover:scale-110 group-hover:bg-white" />
-                    <span className="select-none">{l.label}</span>
+                    <RollingText variant="default" className="select-none">{l.label}</RollingText>
                   </button>
                 </li>
               ))}
@@ -221,7 +216,7 @@ export default function Menu() {
                   rel="noreferrer"
                   className="hover:opacity-100 transition-opacity"
                 >
-                  {s.label}
+                  <RollingText variant="subtle">{s.label}</RollingText>
                 </a>
               ))}
             </div>

@@ -1,27 +1,14 @@
 "use client"
 
-import Image from "next/image"
 import Link from "next/link"
 import { motion, useReducedMotion } from "framer-motion"
-import { useMemo } from "react"
 import { useI18n } from "@/components/providers/i18n"
 import MotionCta from "@/components/shared/motion-cta"
 import TextCta from "@/components/shared/text-cta"
-import { archiveProjects, type ArchiveProject } from "@/data/all-projects"
+import { getArchiveProjects, type ArchiveProject } from "@/data/all-projects"
 
 const EASE = [0.16, 1, 0.3, 1] as const
-const selectedIds = ["01", "02", "05", "06"]
-
-function resolveVideoSrc(src: string) {
-  const clean = src.trim()
-  if (!clean || clean.includes("YOUR_FILE_ID") || clean.includes("placeholder")) return ""
-
-  if (clean.startsWith("http://") || clean.startsWith("https://")) {
-    return `/api/video?src=${encodeURIComponent(clean)}`
-  }
-
-  return clean
-}
+const selectedIds = ["01", "02", "03", "04"]
 
 function MotionCard({
   project,
@@ -33,7 +20,7 @@ function MotionCard({
   reducedMotion: boolean
 }) {
   const { t } = useI18n()
-  const videoSrc = resolveVideoSrc(project.src)
+  const videoSrc = project.src
 
   return (
     <motion.article
@@ -43,29 +30,20 @@ function MotionCard({
       transition={{ duration: 0.86, delay: reducedMotion ? 0 : index * 0.08, ease: EASE }}
       className="group relative min-w-0"
     >
-      <div className="relative overflow-hidden rounded-[8px] border border-[#e8e7e7]/10 bg-black shadow-[0_30px_90px_rgba(0,0,0,.34)]">
+      <div className="relative overflow-hidden rounded-lg border border-[#e8e7e7]/10 bg-black shadow-[0_30px_90px_rgba(0,0,0,.34)]">
         <Link href="/allprojects" aria-label={`${t("motionSelectedWatch")} ${project.title}`} className="block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#e8e7e7]">
           <div className="relative aspect-video overflow-hidden">
             {videoSrc ? (
               <video
                 className="h-full w-full object-cover opacity-90 transition-transform duration-1000 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.045]"
                 src={videoSrc}
-                poster={project.poster}
                 muted
                 loop
                 playsInline
                 autoPlay={!reducedMotion}
                 preload="metadata"
               />
-            ) : (
-              <Image
-                src={project.poster}
-                alt={project.title}
-                fill
-                sizes="(max-width: 1024px) 100vw, 46vw"
-                className="object-cover opacity-90 transition-transform duration-1000 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.045]"
-              />
-            )}
+            ) : <div className="h-full w-full bg-black" />}
 
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.76))]" />
             <div className="absolute left-4 top-4 flex items-center gap-2 sm:left-5 sm:top-5">
@@ -95,12 +73,9 @@ function MotionCard({
 }
 
 export default function MotionSelected() {
-  const { t } = useI18n()
+  const { lang, t } = useI18n()
+  const selectedProjects = selectedIds.map((id) => getArchiveProjects(lang).find((project) => project.id === id)).filter(Boolean) as ArchiveProject[]
   const reducedMotion = Boolean(useReducedMotion())
-  const projects = useMemo(
-    () => selectedIds.map((id) => archiveProjects.find((project) => project.id === id)).filter(Boolean) as ArchiveProject[],
-    []
-  )
   const reveal = reducedMotion ? {} : { initial: { opacity: 0, y: 32, filter: "blur(8px)" }, whileInView: { opacity: 1, y: 0, filter: "blur(0px)" } }
 
   return (
@@ -129,7 +104,7 @@ export default function MotionSelected() {
         </motion.header>
 
         <div className="grid gap-5 pt-20 sm:pt-28 lg:grid-cols-2 lg:gap-6">
-          {projects.map((project, index) => (
+          {selectedProjects.map((project, index) => (
             <MotionCard key={project.id} project={project} index={index} reducedMotion={reducedMotion} />
           ))}
         </div>

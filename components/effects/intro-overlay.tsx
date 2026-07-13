@@ -1,6 +1,8 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+/* eslint-disable react-hooks/set-state-in-effect -- Route intro state must commit in a layout effect before the new page can paint. */
+
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
 import { usePathname } from "next/navigation"
 import { type I18nKey, useI18n } from "@/components/providers/i18n"
 
@@ -56,15 +58,22 @@ export default function IntroOverlay() {
   const [config, setConfig] = useState<IntroConfig | null>(null)
 
   const restoreOverflowRef = useRef<string>("")
+  const restoreScrollBehaviorRef = useRef<string>("")
   const restoreScrollRef = useRef<History["scrollRestoration"]>("auto")
   const timersRef = useRef<number[]>([])
 
-  const word = useMemo(() => {
-    if (config?.mode === "route") return t(config.labelKey)
-    return WORDS[Math.min(i, WORDS.length - 1)]
-  }, [config, i, t])
+  const word = config?.mode === "route" ? t(config.labelKey) : WORDS[Math.min(i, WORDS.length - 1)]
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    restoreScrollRef.current = window.history.scrollRestoration
+    window.history.scrollRestoration = "manual"
+
+    return () => {
+      window.history.scrollRestoration = restoreScrollRef.current
+    }
+  }, [])
+
+  useLayoutEffect(() => {
     timersRef.current.forEach((tt) => window.clearTimeout(tt))
     timersRef.current = []
 
@@ -86,49 +95,41 @@ export default function IntroOverlay() {
 
     if (!nextConfig || prefersReducedMotion) {
       document.documentElement.style.overflow = restoreOverflowRef.current
+      document.documentElement.style.scrollBehavior = restoreScrollBehaviorRef.current
+      if (!window.location.hash) {
+        const previousBehavior = document.documentElement.style.scrollBehavior
+        document.documentElement.style.scrollBehavior = "auto"
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" })
+        document.documentElement.style.scrollBehavior = previousBehavior
+      }
       dispatchIntroDone()
-      const settleFrame = window.requestAnimationFrame(() => {
-        setDone(true)
-        setConfig(null)
-      })
-      return () => window.cancelAnimationFrame(settleFrame)
+      setDone(true)
+      setConfig(null)
+      return
     }
 
     restoreOverflowRef.current = document.documentElement.style.overflow || ""
+    restoreScrollBehaviorRef.current = document.documentElement.style.scrollBehavior || ""
     document.documentElement.style.overflow = "hidden"
+    document.documentElement.style.scrollBehavior = "auto"
     document.documentElement.dataset.intro = "idle"
-    let readyFrame = 0
-    const setupFrame = window.requestAnimationFrame(() => {
-      setConfig(nextConfig)
-      setReady(false)
-      setRunning(nextConfig.mode === "route")
-      setExiting(false)
-      setDone(false)
-      setI(0)
-      readyFrame = window.requestAnimationFrame(() => setReady(true))
-    })
-
-    if (typeof window !== "undefined") {
-      restoreScrollRef.current = window.history.scrollRestoration
-      window.history.scrollRestoration = "manual"
-
-      const hash = window.location.hash
-      if (!hash) {
-        window.scrollTo({ top: 0, left: 0, behavior: "auto" })
-        requestAnimationFrame(() => window.scrollTo({ top: 0, left: 0, behavior: "auto" }))
-      }
+    if (!window.location.hash) {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" })
     }
+    setConfig(nextConfig)
+    setReady(false)
+    setRunning(nextConfig.mode === "route")
+    setExiting(false)
+    setDone(false)
+    setI(0)
+    const readyFrame = window.requestAnimationFrame(() => setReady(true))
 
     return () => {
       document.documentElement.style.overflow = restoreOverflowRef.current
-      window.cancelAnimationFrame(setupFrame)
+      document.documentElement.style.scrollBehavior = restoreScrollBehaviorRef.current
       window.cancelAnimationFrame(readyFrame)
       timersRef.current.forEach((tt) => window.clearTimeout(tt))
       timersRef.current = []
-
-      if (typeof window !== "undefined") {
-        window.history.scrollRestoration = restoreScrollRef.current
-      }
     }
   }, [pathname])
 
@@ -157,6 +158,8 @@ export default function IntroOverlay() {
 
     timersRef.current.push(
       window.setTimeout(() => {
+        // Keep layout shifts and browser scroll anchoring behind the curtain.
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" })
         setExiting(true)
         document.documentElement.dataset.intro = "exiting"
       }, exitAt)
@@ -167,6 +170,7 @@ export default function IntroOverlay() {
       window.setTimeout(() => {
         setDone(true)
         document.documentElement.style.overflow = restoreOverflowRef.current
+        document.documentElement.style.scrollBehavior = restoreScrollBehaviorRef.current
         if (config.mode === "home") {
           window.sessionStorage.setItem(HOME_INTRO_SEEN_KEY, "true")
         }

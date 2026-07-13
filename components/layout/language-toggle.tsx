@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Lang, useI18n } from "@/components/providers/i18n"
 
 const ORDER: Lang[] = ["pt", "en", "es"]
@@ -16,10 +16,7 @@ export default function LanguageToggle() {
   const [open, setOpen] = useState(false)
   const wrapRef = useRef<HTMLDivElement | null>(null)
 
-  const next = useMemo(() => {
-    const idx = ORDER.indexOf(lang)
-    return ORDER[(idx + 1) % ORDER.length]
-  }, [lang])
+  const next = ORDER[(ORDER.indexOf(lang) + 1) % ORDER.length]
 
   useEffect(() => {
     if (!open) return

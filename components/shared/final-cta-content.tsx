@@ -6,6 +6,7 @@ import Link from "next/link"
 import type { PointerEvent, Ref } from "react"
 import { useEffect, useState } from "react"
 import { useI18n } from "@/components/providers/i18n"
+import RollingText from "@/components/shared/rolling-text"
 
 const SOCIALS = [
   { label: "Instagram", href: "https://www.instagram.com/chazinhodociel/" },
@@ -65,11 +66,10 @@ type FinalCtaContentProps = {
   button: string
   id?: string
   style?: MotionStyle
-  buttonStyle?: MotionStyle
   buttonAnchorRef?: Ref<HTMLDivElement>
+  buttonVisible?: boolean
   interactive?: boolean
   animateReveal?: boolean
-  externalButton?: boolean
 }
 
 export default function FinalCtaContent({
@@ -77,11 +77,10 @@ export default function FinalCtaContent({
   button,
   id = "final-cta",
   style,
-  buttonStyle,
   buttonAnchorRef,
+  buttonVisible = true,
   interactive = true,
   animateReveal = true,
-  externalButton = false,
 }: FinalCtaContentProps) {
   const { t } = useI18n()
   const reducedMotion = Boolean(useReducedMotion())
@@ -89,12 +88,6 @@ export default function FinalCtaContent({
   const rawY = useMotionValue(0)
   const x = useSpring(rawX, { stiffness: 70, damping: 18, mass: 0.8 })
   const y = useSpring(rawY, { stiffness: 70, damping: 18, mass: 0.8 })
-  const buttonLines = (() => {
-    const words = button.trim().split(/\s+/)
-    if (words.length < 2) return [button]
-    const splitAt = Math.ceil(words.length / 2)
-    return [words.slice(0, splitAt).join(" "), words.slice(splitAt).join(" ")]
-  })()
   const revealProps = animateReveal && !reducedMotion
     ? { variants: reveal, initial: "hidden" as const, whileInView: "show" as const, viewport: { once: true, amount: 0.18 } }
     : {}
@@ -128,7 +121,13 @@ export default function FinalCtaContent({
         <div className="flex flex-1 flex-col items-center justify-center text-center sm:items-stretch sm:pb-10 sm:text-left lg:pb-14">
           <motion.h2
             id={`${id}-title`}
-            className="relative z-10 font-display text-[clamp(1.75rem,8.2vw,6rem)] font-medium uppercase leading-[.83] tracking-[-.07em]"
+            className="relative z-10 font-display uppercase"
+            style={{
+              fontSize: "clamp(1.75rem, 8.2vw, 6rem)",
+              fontWeight: 500,
+              lineHeight: 0.83,
+              letterSpacing: "-0.07em",
+            }}
             {...revealProps}
           >
             {titleLines.map((line) => (
@@ -141,24 +140,28 @@ export default function FinalCtaContent({
               ref={buttonAnchorRef}
               className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 sm:left-auto sm:right-[clamp(1rem,8vw,8rem)] sm:translate-x-0"
             >
-              {externalButton ? (
-                <div aria-hidden="true" data-orb-anchor="cta" className="aspect-square w-[clamp(112px,13vw,202px)]" />
-              ) : (
-                <motion.div style={{ x, y, ...buttonStyle }}>
+              <motion.div
+                initial={false}
+                animate={buttonVisible
+                  ? { opacity: 1, scale: 1, x: 0 }
+                  : { opacity: 0, scale: 0.72, x: "-42vw" }}
+                transition={{ duration: reducedMotion ? 0 : 1.35, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <motion.div style={{ x, y }}>
                   <Link
                     href="mailto:dumitrachebusiness@gmail.com"
                     aria-label={button}
                     tabIndex={interactive ? undefined : -1}
-                    className="group relative grid aspect-square w-[clamp(112px,13vw,202px)] place-items-center overflow-hidden rounded-full bg-[#1800ad] p-5 text-center font-display text-[clamp(.68rem,.9vw,.88rem)] font-semibold uppercase leading-[1.05] text-[#e8e7e7] transition-[transform,box-shadow,color] duration-700 hover:scale-[1.07] hover:text-[#1800ad] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1e1e1e]"
+                    className="group relative inline-flex aspect-square w-[clamp(112px,13vw,202px)] items-center justify-center overflow-hidden rounded-full bg-[#1800ad] p-5 text-center font-display text-[clamp(.68rem,.9vw,.88rem)] font-semibold uppercase leading-tight text-[#e8e7e7] transition-[transform,box-shadow,color] duration-700 hover:scale-[1.07] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1e1e1e]"
                   >
-                    <span aria-hidden="true" className="absolute inset-0 origin-bottom scale-y-0 rounded-full bg-[#e8e7e7] transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100" />
-                    <span className="relative z-10 grid place-items-center">
-                      {buttonLines.map((line) => <span key={line} className="block">{line}</span>)}
+                    <span aria-hidden="true" className="absolute inset-0 origin-bottom scale-y-0 rounded-full bg-[#1e1e1e] transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100" />
+                    <span className="relative z-10 flex items-center gap-2.5">
+                      <RollingText variant="strong">{button}</RollingText>
+                      <span aria-hidden="true" className="text-base transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1">↗</span>
                     </span>
-                    <span aria-hidden="true" className="absolute right-[18%] top-1/2 z-10 -translate-y-1/2 text-base transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-[calc(50%+0.25rem)]">↗</span>
                   </Link>
                 </motion.div>
-              )}
+              </motion.div>
             </div>
           </div>
 
@@ -168,11 +171,11 @@ export default function FinalCtaContent({
           >
             <a href="mailto:dumitrachebusiness@gmail.com" tabIndex={interactive ? undefined : -1} className={pillClassName}>
               <span aria-hidden="true" className="absolute inset-0 origin-bottom scale-y-0 rounded-full bg-[#1e1e1e] transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100" />
-              <span className="relative z-10">dumitrachebusiness@gmail.com</span>
+              <RollingText variant="subtle" className="relative z-10">dumitrachebusiness@gmail.com</RollingText>
             </a>
             <a href={RESUME_HREF} download tabIndex={interactive ? undefined : -1} className={pillClassName} aria-label={t("moreAboutCtaResume")}>
               <span aria-hidden="true" className="absolute inset-0 origin-bottom scale-y-0 rounded-full bg-[#1e1e1e] transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100" />
-              <span className="relative z-10 uppercase">{t("moreAboutCtaResume")}</span>
+              <RollingText variant="strong" className="relative z-10 uppercase">{t("moreAboutCtaResume")}</RollingText>
             </a>
           </motion.div>
         </div>
@@ -188,7 +191,7 @@ export default function FinalCtaContent({
             <div className="mt-1.5 flex flex-wrap justify-center gap-x-4 gap-y-1.5 tracking-normal sm:mt-2 sm:justify-end sm:gap-x-5 sm:gap-y-2">
               {SOCIALS.map((social) => (
                 <a key={social.label} href={social.href} target="_blank" rel="noreferrer" tabIndex={interactive ? undefined : -1} className="link-underline-invert normal-case text-[#1e1e1e]/82">
-                  {social.label}
+                  <RollingText variant="subtle">{social.label}</RollingText>
                 </a>
               ))}
             </div>

@@ -15,10 +15,10 @@ const DICT = {
     menuClose: "Fechar menu",
     menuNav: "NAVEGAÇÃO",
     menuSocial: "REDES",
-    menuFun: "Vamos criar algo fora do padrão XD",
+
     linkAbout: "Sobre",
     linkWork: "Projetos",
-    linkGallery: "Galeria",
+
     linkContact: "Contato",
 
     introStarting: "iniciando",
@@ -42,84 +42,61 @@ const DICT = {
     moreAboutMovesCta: "+ SOBRE MIM",
     moreAboutMovesCtaHover: "LER HISTÓRIA",
 
-    projectsTitle: "Projetos Selecionados",
-    projectsEntries: "entradas",
-    projectsCuration: "Curadoria editorial",
-    projectsDesc:
-      "Trabalhos selecionados com foco em performance e estética: estrutura narrativa, ritmo de corte, consistência visual e execução pensada para plataformas sociais.",
-    projectsColClient: "CLIENT",
-    projectsColLocation: "LOCATION",
-    projectsColServices: "SERVICES",
-    projectsColYear: "YEAR",
-    projectsOpen: "ABRIR",
-    projectsPlay: "Play",
-    projectsModalAria: "Vídeo do projeto",
-    projectsClose: "Fechar",
-    projectsNoVideoTitle: "Sem vídeo associado",
-    projectsNoVideoBody: "Adiciona o campo video neste projeto para abrir aqui.",
-    projectsClickOutside: "clique fora para fechar",
-    projectsServicesLabel: "SERVICES",
-    projectsModalHeadline: "Social first, digitally native campaigns para marcas que toda a gente reconhece.",
-    projectsModalBody: "Aqui tu mostras o projeto com um layout editorial bem forte. Podes trocar este texto por um mini case study: objetivo, abordagem, ferramentas e resultado.",
-    projectsModalMeta1Title: "SERVIÇOS",
-    projectsModalMeta2Title: "LOCAL",
-    projectsModalMeta3Title: "ANO",
-    projectsBack: "Voltar",
 
-    allprojectsHeroTitle: "Projetos em vídeo",
+
+
+    allprojectsHeroTitle: "Arquivo Motion",
     allprojectsFormatLabel: "formato",
+    allprojectsActiveLabel: "ativo",
+    allprojectsTagsLabel: "tags",
+    allprojectsToolsLabel: "tools",
 
-    allprojectsKicker1: "capítulo 01",
+
     allprojectsTitle1: "MOTION LAB",
-    allprojectsDesc1: "Edições experimentais onde exploro ritmo, transições, glitch e tipografia em movimento. É aqui que a minha linguagem de motion fica mais forte.",
 
-    allprojectsKicker2: "capítulo 02",
+
     allprojectsTitle2: "SHORT-FORM & SOCIAL",
-    allprojectsDesc2: "Edições short-form focadas em retenção, clareza e ritmo. Feitas para TikTok, Reels, Shorts e campanhas em movimento.",
 
-    allprojectsKicker4: "capítulo 04",
+
     allprojectsTitle4: "VIDEO STORYTELLING",
-    allprojectsDesc4: "Edições com foco em estrutura narrativa, pacing, atmosfera e flow.",
 
-    allprojectsCount: "vídeos",
-    allprojectsView: "ver",
-    allprojectsClipLabel: "clip",
-    allprojectsClipTitle: "Edição selecionada",
-    allprojectsFloating: "mini player",
+
+
+
+
+
     allprojectsSelectEdit: "Selecionar edição",
 
     allprojectsClose: "Fechar",
     allprojectsMinimize: "Diminuir",
-    allprojectsExpand: "Expandir",
+
     allprojectsSoundOn: "Ativar som",
     allprojectsSoundOff: "Silenciar",
 
-    projectsAllCta: "Todas as edições",
 
-    selectedWorkKicker: "Portfólio em foco",
     selectedWorkCount: "03 selecionados",
     selectedWorkTitle: "Trabalhos Selecionados",
     selectedWorkGhost: "Selecionados",
     selectedWorkDescription: "Uma seleção de designs e mockups criados para prender atenção, traduzir ideias e dar consistência visual à comunicação.",
     selectedWorkDesign: "Design",
-    selectedWorkCategory: "Categoria",
-    selectedWorkTools: "Ferramentas",
-    selectedWorkCtaEyebrow: "Arquivo completo",
+
+
+
     selectedWorkCta: "Explorar coleção",
     selectedWorkCtaHover: "Design gallery",
-    selectedWorkCtaDescription: "Uma coleção dedicada a peças de design, mockups e presença visual.",
+
     motionSelectedKicker: "curadoria de vídeo",
     motionSelectedTitle: "Projetos em movimento",
     motionSelectedCopy: "Design cria a primeira impressão. O vídeo faz ela permanecer.",
     motionSelectedWatch: "assistir",
     motionSelectedCta: "Ver todas as edições",
-    projectCtaEyebrow: "O próximo capítulo",
-    projectCtaTitle: "Talvez o próximo projeto seja o seu.",
+
+
     projectCtaLine1: "O próximo projeto",
     projectCtaLine2: "pode ser o seu",
-    projectCtaLine3: "impossível de ignorar?",
-    projectCtaBody: "Design, vídeo e código trabalhando juntos para criar presença, ritmo e memória.",
-    projectCtaButton: "Vamos conversar",
+
+
+
     projectCtaScroll: "Continue a deslizar",
     selectedWork01Title: "Frigideira AI",
     selectedWork01Category: "DIREÇÃO DE ARTE • SOCIAL MEDIA",
@@ -130,54 +107,242 @@ const DICT = {
     selectedWork03Title: "SDP",
     selectedWork03Category: "SOCIAL MEDIA • COMUNIDADE TECH",
     selectedWork03Description: "Desenvolvimento de uma identidade visual consistente para uma comunidade de tecnologia em constante crescimento. Além da criação dos conteúdos para redes sociais, participei da organização de eventos, campanhas e comunicação visual, ajudando a fortalecer a presença digital da comunidade e o relacionamento com milhares de membros.",
-    p1Client: "Cortes",
-    p1Services: "Edição Short-form, Motion",
-    p1Location: "Lisboa",
 
-    p2Client: "Cortes dinâmicos",
-    p2Services: "Direção, Edição, Identidade",
-    p2Location: "Lisboa",
 
-    p3Client: "Storytelling",
-    p3Services: "Edição Long-form, stop motion",
-    p3Location: "Remoto",
 
-    p4Client: "UGC Blablabla",
-    p4Services: "Edição",
-    p4Location: "Remoto",
 
-    galleryTitle: "Designs que seguram o scroll",
-    galleryDesc:
-      "Seleção de peças criadas para Instagram e LinkedIn, incluindo feed, stories e carrosséis. O foco é clareza, ritmo visual e consistência de marca entre formatos.",
-    galleryTagFeed: "feed",
-    galleryTagStory: "story",
-    galleryTagCarousel: "carrossel",
-    galleryCaptionA: "Movimento contínuo para mostrar variedade.",
-    galleryCaptionB: "Pausa no hover para observar tipografia, hierarquia e tratamento visual.",
 
-    contactKicker: "contacto",
-    contactTitle: "VAMOS CONVERSAR",
-    contactBody:
-      "Algum projeto em mente, precisa de uma edição profissional ou quer simplesmente trocar ideias? Envia uma mensagem e começamos por aí!",
-    contactNamePh: "O teu nome",
-    contactEmailPh: "O teu email",
-    contactMsgPh: "Me conte sobre o projeto",
-    contactSend: "Enviar mensagem",
-    contactSending: "a enviar",
-    contactOkKicker: "Enviado com sucesso",
-    contactOkTitle: "Mensagem recebida!",
-    contactOkBody:
-      "Obrigada por confiar no meu trabalho. Se for algo urgente, pode chamar também pelas minhas redes sociais. Fico no aguardo para conversarmos sobre o seu projeto!",
-    contactSendAnother: "Enviar outra mensagem",
-    contactErrSend: "Não foi possível enviar agora.",
-    contactErrGeneric: "Ocorreu um erro.",
 
-    moreAboutMetaTitle: "Mais Sobre Sarah Aliriel Dumitrache",
-    moreAboutMetaDescription:
-      "Conheça a evolução criativa de Sarah Aliriel Dumitrache, do vídeo ao design e desenvolvimento frontend.",
-    moreAboutHeroTitle1: "MAIS",
-    moreAboutHeroTitle2: "SOBRE",
-    moreAboutHeroTitle3: "MIM",
+
+
+
+
+
+
+
+
+
+
+
+
+
+    galleryMetaTitle: "Galeria de Design | Sarah Aliriel Dumitrache",
+    galleryMetaDescription: "Explore projetos de design, social media, mockups, posts, stories e carrosséis criados por Sarah Aliriel Dumitrache.",
+    galleryArchiveGhost: "Arquivo",
+    galleryHeroArchiveLabel: "arquivo visual",
+    galleryHeroSocialArchive: "arquivo de social media",
+    galleryHeroTitle: "Design Gallery",
+    galleryHeroProjectsLabel: "projetos",
+    galleryHeroPiecesLabel: "peças",
+    galleryHeroOrderLabel: "ordem",
+    galleryHeroOrderValue: "manual",
+    gallerySelectedEyebrow: "capítulos selecionados",
+    gallerySelectedTitle: "Trabalhos Selecionados",
+    gallerySelectedDescription: "Uma seleção de projetos onde estratégia, identidade e execução visual trabalham juntas para gerar impacto real.",
+    gallerySelectedArchiveLink: "sobre o arquivo",
+    galleryPieceCountLabel: "peças",
+    galleryViewMorePieces: "Ver mais peças",
+
+    galleryPlaygroundEyebrow: "estudos e conceitos",
+    galleryPlaygroundTitle: "Creative Playground",
+    galleryPlaygroundDescription: "Estudos soltos, composições livres e experimentos visuais que não nasceram como projeto completo, mas ajudaram a explorar linguagem, contraste e direção visual.",
+    galleryPlaygroundAnnex: "anexo 01",
+    galleryFinalEyebrow: "próximo passo",
+    galleryFinalTitle: "Vamos criar presença.",
+    galleryFinalDescription: "Design, vídeo e código trabalhando juntos para transformar uma ideia em uma experiência clara, memorável e pronta para circular.",
+    galleryFinalButton: "Vamos conversar",
+    gallerySocialEmail: "Email",
+    gallerySocialLinkedIn: "LinkedIn",
+    gallerySocialGitHub: "GitHub",
+    gallerySocialInstagram: "Instagram",
+    galleryDetailMetaSuffix: "Case Study de Design",
+    galleryDetailBack: "Voltar",
+    galleryProcessKicker: "Processo",
+    galleryProcessHeading: "O raciocínio por trás da identidade.",
+    galleryProcessContext: "Contexto",
+    galleryProcessDirection: "Direção",
+    galleryProcessImpact: "Impacto",
+    galleryProcessChallenge: "Desafio",
+    galleryProcessChallengeBody: "Falar sobre inteligência artificial normalmente leva aos mesmos códigos visuais: gradientes, robôs, interfaces futuristas e uma estética genérica de tecnologia. O desafio era criar uma presença acessível, reconhecível e com personalidade, capaz de transformar temas complexos em conteúdos claros e fáceis de compartilhar.",
+    galleryProcessFollowers: "Novos seguidores",
+    galleryProcessDirectionBody: "A direção visual foi construída a partir de títulos grandes, contraste alto, composições modulares e uma linguagem editorial direta. Cada publicação precisava ser compreendida em poucos segundos, sem perder profundidade, consistência ou identidade.",
+    galleryProcessViews: "Visualizações",
+    galleryProcessResult: "Result",
+    galleryProcessResultBody: "O projeto ganhou um sistema visual consistente, memorável e fácil de expandir. A identidade passou a organizar temas complexos em narrativas simples, reconhecíveis e adaptáveis a diferentes formatos de conteúdo.",
+    galleryProcessActive: "Ativo",
+    galleryProcessVisualSystem: "Sistema visual",
+    galleryProcessSelectedPieces: "9 peças selecionadas",
+    galleryProcessNext: "Próximo capítulo",
+    galleryProcessOneYear: "ano de atividade",
+    galleryProcessFiveMonths: "meses de atividade",
+    galleryVisualSystem: "Sistema visual",
+    galleryVisualObjective: "Objetivo",
+    galleryVisualPurpose: "O propósito da identidade",
+    galleryVisualCharacteristics: "Características",
+    galleryVisualTypographyAndColors: "Tipografia & Cores",
+    galleryVisualTypography: "Tipografia",
+    galleryVisualColors: "Cores",
+    galleryVisualDesigns: "Designs",
+    galleryVisualDisplay: "Display",
+    galleryVisualBody: "Body",
+    galleryVisualPrimaryColor: "Cor principal",
+    galleryVisualSupportColor: "Cor de apoio",
+    galleryVisualHighlights: "Destaques",
+    galleryVisualBackground: "Background",
+    galleryVisualContrast: "Contraste",
+    galleryVisualEditorial: "Editorial",
+    galleryVisualModular: "Modular",
+    galleryVisualConsistent: "Consistente",
+    galleryVisualClear: "Clara",
+    galleryVisualMemorable: "Memorável",
+    galleryVisualAccessible: "Acessível",
+    galleryVisualDirect: "Direta",
+    galleryVisualStrong: "Forte",
+    galleryVisualDynamic: "Dinâmica",
+    galleryVisualCollective: "Coletiva",
+    galleryVisualIdeas: "Ideias",
+    galleryVisualEurope: "Europa",
+    galleryVisualExecution: "Execução",
+    galleryVisualBusiness: "Negócios",
+    galleryVisualAI: "IA",
+    galleryVisualAuthority: "Autoridade",
+    galleryVisualVision: "Visão",
+    galleryVisualCode: "Código",
+    galleryVisualCommunity: "Comunidade",
+    galleryVisualEvents: "Eventos",
+    galleryVisualFuture: "Futuro",
+    galleryVisualFrigideiraObjective: "Tornar inteligência artificial mais clara, memorável e compartilhável.",
+    galleryVisualFrigideiraObjectiveBody: "A identidade foi construída para transformar assuntos técnicos em conteúdos acessíveis, reconhecíveis e fáceis de consumir nas redes sociais.",
+    galleryVisualTochaObjective: "Transformar conhecimento denso em presença clara e reconhecível.",
+    galleryVisualTochaObjectiveBody: "A identidade organiza ideias de negócio e comunicação em conteúdos diretos, fortes e preparados para criar autoridade nas redes sociais.",
+    galleryVisualSdpObjective: "Dar unidade e energia a uma comunidade de tecnologia em movimento.",
+    galleryVisualSdpObjectiveBody: "O sistema conecta campanhas, eventos e conteúdos recorrentes em uma linguagem acessível, reconhecível e fácil de ampliar.",
+
+
+
+
+
+
+
+
+
+    galleryDetailAssetMockup: "Mockup",
+    galleryDetailAssetPost: "Post estático",
+    galleryDetailAssetStory: "Story",
+    galleryDetailAssetSlides: "slides",
+    galleryDetailEditorialEyebrow: "Galeria editorial",
+    galleryDetailEditorialTitle: "Peças em escala editorial.",
+    galleryDetailEditorialDescription: "Um arquivo visual em ritmo de revista: peças menores, respiros longos e variações de escala para deixar o olho circular.",
+    galleryDetailCtaEyebrow: "CTA final",
+    galleryDetailCtaTitle: "Próximo capítulo visual.",
+    galleryDetailCtaBody: "Explore outro case da galeria ou volte ao arquivo completo para ver como a mesma estrutura se adapta a projetos diferentes.",
+    galleryDetailCtaGallery: "Galeria",
+    galleryDetailViewerClose: "Fechar visualizador",
+    galleryDetailViewerPrevious: "Slide anterior",
+    galleryDetailViewerNext: "Próximo slide",
+    galleryDetailViewerGoToSlide: "Ir para slide",
+    galleryDetailCarouselCoverAlt: "Capa do carrossel",
+    galleryDetailCarouselSlideAlt: "Slide",
+    galleryFormatPosts: "posts",
+    galleryFormatCarousels: "carrosséis",
+    galleryFormatEditorialCovers: "capas editoriais",
+    galleryFormatStories: "stories",
+    galleryFormatMockups: "mockups",
+    galleryFormatCampaignPosts: "posts de campanha",
+    galleryFormatEditorialSequences: "sequências editoriais",
+    galleryMetricStaticPosts: "posts estáticos",
+    galleryMetricEditorialCarousels: "carrosséis editoriais",
+    galleryMetricVisualSystem: "sistema visual",
+    galleryMetricCarousels: "carrosséis",
+    galleryMetricStories: "stories",
+    galleryMetricSequences: "sequências",
+    galleryMetricSlides: "slides",
+    galleryMetricCommunity: "comunidade",
+    galleryProjectFrigideiraName: "Frigideira AI",
+    galleryProjectFrigideiraType: "Direção de arte · Social media",
+    galleryProjectFrigideiraRole: "Direção de arte, design editorial e social media",
+    galleryProjectFrigideiraDescription: "Conteúdo visual para tornar tecnologia, IA e cultura digital mais claros, compartilháveis e reconhecíveis.",
+    galleryProjectFrigideiraIntro: "Um sistema editorial para traduzir tecnologia em conteúdo desejável, com ritmo social-first e uma linguagem visual pronta para circular entre curiosidade, humor e autoridade.",
+    galleryProjectFrigideiraChallenge: "O tema precisava parecer acessível sem perder profundidade. A marca falava sobre IA, ferramentas e cultura digital, mas precisava evitar uma estética genérica de tecnologia e criar reconhecimento imediato no feed.",
+    galleryProjectFrigideiraSolution: "Construí uma direção visual com títulos grandes, contraste alto, composições modulares e capas com leitura instantânea. Cada peça foi pensada como uma entrada editorial: clara no primeiro segundo, mas com detalhe suficiente para segurar a atenção.",
+    galleryProjectFrigideiraResult: "A presença visual ficou mais consistente e memorável, com peças que organizam temas complexos em narrativas simples, compartilháveis e fáceis de reconhecer dentro de uma rotina de conteúdo.",
+    galleryFrigideiraPiece01: "Post manifesto",
+    galleryFrigideiraPiece02: "Peça educativa",
+    galleryFrigideiraPiece03: "Chamada editorial",
+    galleryFrigideiraPiece04: "Conteúdo técnico",
+    galleryFrigideiraPiece05: "Frame de autoridade",
+    galleryFrigideiraCarousel01: "IA aplicada ao cotidiano",
+    galleryFrigideiraCarousel02: "Processo visual e clareza",
+    galleryFrigideiraCarousel03: "Narrativa de tecnologia",
+    galleryFrigideiraCarousel04: "Conteúdo para comunidade",
+    galleryFrigideiraMockup: "Mockup Frigideira AI",
+    galleryProjectTochaName: "The Real Tocha",
+    galleryProjectTochaType: "Identidade visual · Conteúdo de autoridade",
+    galleryProjectTochaRole: "Identidade visual, direção de arte e conteúdo de autoridade",
+    galleryProjectTochaDescription: "Peças para transformar temas densos de empreendedorismo, investimento e comunicação em presença digital clara e forte.",
+    galleryProjectTochaIntro: "Uma presença visual construída para autoridade: direta, densa e editorial, com peças que transformam ideias de negócio, investimento e comunicação em conteúdo de impacto.",
+    galleryProjectTochaChallenge: "O projeto precisava sustentar temas sérios sem parecer frio. A comunicação tinha de transmitir confiança, criar retenção e manter uma estética forte mesmo em formatos rápidos como stories e carrosséis.",
+    galleryProjectTochaSolution: "Desenvolvi uma linguagem com hierarquia tipográfica agressiva, recortes precisos, ritmo de capas e sequências que guiam o olhar. A estrutura visual permite alternar análise, opinião e chamada de comunidade sem perder unidade.",
+    galleryProjectTochaResult: "O arquivo passou a funcionar como um sistema de autoridade: reconhecível, expansível e preparado para diferentes níveis de profundidade, desde um post único até uma sequência completa.",
+    galleryTochaPiece01: "Post de autoridade",
+    galleryTochaPiece02: "Frame de análise",
+    galleryTochaPiece03: "Peça de posicionamento",
+    galleryTochaPiece04: "Conteúdo educativo",
+    galleryTochaPiece05: "Post de retenção",
+    galleryTochaPiece06: "Chamada social",
+    galleryTochaPiece07: "Post de comunidade",
+    galleryTochaCarousel01: "Narrativa para negócios digitais",
+    galleryTochaCarousel02: "Autoridade e presença",
+    galleryTochaCarousel03: "Educação visual",
+    galleryTochaCarousel04: "Ritmo editorial",
+    galleryTochaCarousel05: "Investimento e comunicação",
+    galleryTochaCarousel06: "Construção de repertório",
+    galleryTochaCarousel07: "Sequência de autoridade",
+    galleryTochaCarousel08: "Clareza para conversão",
+    galleryTochaCarousel09: "Mensagem de impacto",
+    galleryTochaStory01: "Story de abertura",
+    galleryTochaStory02: "Story de sequência",
+    galleryTochaStory03: "Story de desenvolvimento",
+    galleryTochaStory04: "Story de fechamento",
+    galleryTochaMockup: "Mockup The Real Tocha",
+    galleryProjectSdpName: "SDP",
+    galleryProjectSdpHeroTitle: "Servidor dos Programadores",
+    galleryProjectSdpType: "Comunidade tech · Social media",
+    galleryProjectSdpRole: "Sistema visual, campanhas e comunicação de comunidade",
+    galleryProjectSdpDescription: "Sistema visual para uma comunidade de tecnologia em crescimento, unindo campanhas, eventos e comunicação recorrente.",
+    galleryProjectSdpIntro: "Um sistema visual para comunidade tech, pensado para organizar informação, criar energia de campanha e dar unidade a conteúdos recorrentes sem engessar a comunicação.",
+    galleryProjectSdpChallenge: "A comunidade precisava comunicar eventos, chamadas e conteúdos educativos com clareza, mas também transmitir movimento e pertencimento. O risco era parecer apenas informativo, sem personalidade visual.",
+    galleryProjectSdpSolution: "A solução combina grids diretos, capas com leitura rápida e sequências de carrossel que criam progressão. O template visual dá espaço para código, comunidade e chamadas fortes sem competir com a mensagem principal.",
+    galleryProjectSdpResult: "O projeto ganhou uma base flexível para campanhas e comunicação contínua, com peças mais fáceis de escalar e adaptar a diferentes momentos da comunidade.",
+    gallerySdpCarousel01: "Comunidade em movimento",
+    gallerySdpCarousel02: "Programação e comunidade",
+    gallerySdpCarousel03: "Chamada editorial",
+    gallerySdpCarousel04: "Campanha tech",
+    gallerySdpCarousel05: "Engajamento da comunidade",
+    gallerySdpCarousel06: "Sequência especial",
+    gallerySdpMockup: "Mockup SDP",
+    galleryPlaygroundPiece01: "Estudo de composição",
+    galleryPlaygroundPiece02: "Exploração tipográfica",
+    galleryPlaygroundPiece03: "Conceito visual",
+    galleryPlaygroundPiece04: "Peça experimental",
+    galleryPlaygroundPiece05: "Direção visual livre",
+    galleryPlaygroundPiece06: "Save Our Seas",
+    galleryPlaygroundPiece07: "Estudo visual livre",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     moreAboutName: "Sarah Aliriel Dumitrache",
     moreAboutRole1: "Editora de Vídeo",
     moreAboutRole2: "Designer",
@@ -193,7 +358,7 @@ const DICT = {
     moreAboutStory2025Body: "Entrei no marketing digital trabalhando com conteúdos para as redes sociais. Aprendi a equilibrar criatividade e estratégia, criando peças pensadas para comunicar, conectar e gerar resultados.",
     moreAboutStory2026Title: "Design, vídeo e código no mesmo processo",
     moreAboutStory2026Body: "Hoje uno design, vídeo e desenvolvimento para criar experiências digitais com intenção. Cada detalhe, do conceito à interação final, é pensado para comunicar algo, gerar impacto e deixar uma impressão duradoura.",
-    moreAboutMovesKicker: "O que me move",
+
     moreAboutMovesQuote: "Gosto de criar experiências que façam as pessoas pararem, sentirem e lembrarem.",
     moreAboutHelpTitle: "POSSO AJUDAR COM...",
     moreAboutHelp01Title: "Design",
@@ -217,7 +382,7 @@ const DICT = {
     moreAboutCtaLine2: "uma ideia do papel?",
     moreAboutCtaButton: "VAMOS CONVERSAR",
     moreAboutCtaResume: "Baixar currículo",
-    moreAboutCtaEyebrow: "Uma ideia pode começar aqui",
+
     moreAboutFooterEdition: "Edição",
     moreAboutFooterLocalTime: "Hora local · Portugal",
     moreAboutFooterSocials: "Redes",
@@ -232,10 +397,10 @@ const DICT = {
     menuClose: "Close menu",
     menuNav: "NAVIGATION",
     menuSocial: "SOCIALS",
-    menuFun: "Let’s build something not basic XD",
+
     linkAbout: "About",
     linkWork: "Work",
-    linkGallery: "Gallery",
+
     linkContact: "Contact",
 
     introStarting: "starting",
@@ -259,84 +424,61 @@ const DICT = {
     moreAboutMovesCta: "+ ABOUT ME",
     moreAboutMovesCtaHover: "READ STORY",
 
-    projectsTitle: "Selected Works",
-    projectsEntries: "entries",
-    projectsCuration: "Editorial curation",
-    projectsDesc:
-      "Selected work with performance and aesthetics in mind: narrative structure, cutting rhythm, visual consistency and platform focused execution.",
-    projectsColClient: "CLIENT",
-    projectsColLocation: "LOCATION",
-    projectsColServices: "SERVICES",
-    projectsColYear: "YEAR",
-    projectsOpen: "OPEN",
-    projectsPlay: "Play",
-    projectsModalAria: "Project video",
-    projectsClose: "Close",
-    projectsNoVideoTitle: "No video attached",
-    projectsNoVideoBody: "Add the video field in this project to open it here.",
-    projectsClickOutside: "click outside to close",
-    projectsServicesLabel: "SERVICES",
-    projectsModalHeadline: "Social first, digitally native campaigns for brands people instantly recognize.",
-    projectsModalBody: "Show the project with an editorial layout. Replace this with a short case study: goal, approach, tools and outcome.",
-    projectsModalMeta1Title: "SERVICES",
-    projectsModalMeta2Title: "LOCATION",
-    projectsModalMeta3Title: "YEAR",
-    projectsBack: "Back",
+
+
 
     allprojectsHeroTitle: "Motion Archive",
     allprojectsFormatLabel: "format",
+    allprojectsActiveLabel: "active",
+    allprojectsTagsLabel: "tags",
+    allprojectsToolsLabel: "tools",
 
-    allprojectsKicker1: "chapter 01",
+
     allprojectsTitle1: "MOTION LAB",
-    allprojectsDesc1: "Experimental edits where I explore rhythm, transitions, glitch and moving typography. This is where my motion language gets sharper.",
 
-    allprojectsKicker2: "chapter 02",
+
     allprojectsTitle2: "SHORT-FORM & SOCIAL",
-    allprojectsDesc2: "Short-form edits focused on retention, clarity and rhythm. Built for TikTok, Reels, Shorts and campaigns in motion.",
 
-    allprojectsKicker4: "chapter 04",
+
     allprojectsTitle4: "VIDEO STORYTELLING",
-    allprojectsDesc4: "Edits focused on narrative structure, pacing, atmosphere and flow.",
 
-    allprojectsCount: "videos",
-    allprojectsView: "view",
-    allprojectsClipLabel: "clip",
-    allprojectsClipTitle: "Selected edit",
-    allprojectsFloating: "mini player",
+
+
+
+
+
     allprojectsSelectEdit: "Select edit",
 
     allprojectsClose: "Close",
     allprojectsMinimize: "Minimize",
-    allprojectsExpand: "Expand",
+
     allprojectsSoundOn: "Sound on",
     allprojectsSoundOff: "Mute",
 
-    projectsAllCta: "All edits →",
 
-    selectedWorkKicker: "Portfolio focus",
     selectedWorkCount: "03 selected",
     selectedWorkTitle: "Selected Work",
     selectedWorkGhost: "Selected",
     selectedWorkDescription: "A selection of designs and mockups created to hold attention, translate ideas and bring visual consistency to communication.",
     selectedWorkDesign: "Design",
-    selectedWorkCategory: "Category",
-    selectedWorkTools: "Tools",
-    selectedWorkCtaEyebrow: "Complete archive",
+
+
+
     selectedWorkCta: "Explore collection",
     selectedWorkCtaHover: "Design gallery",
-    selectedWorkCtaDescription: "A collection dedicated to design pieces, mockups and visual presence.",
+
     motionSelectedKicker: "video curation",
     motionSelectedTitle: "Motion Selected",
     motionSelectedCopy: "Design creates the first impression. Video makes it stay.",
     motionSelectedWatch: "watch",
     motionSelectedCta: "See all edits",
-    projectCtaEyebrow: "The next chapter",
-    projectCtaTitle: "Maybe the next project is yours.",
+
+
     projectCtaLine1: "The next project",
     projectCtaLine2: "could be yours",
-    projectCtaLine3: "impossible to ignore?",
-    projectCtaBody: "Design, video and code working together to create presence, rhythm and memory.",
-    projectCtaButton: "Let’s talk",
+
+
+
     projectCtaScroll: "Keep scrolling",
     selectedWork01Title: "Frigideira AI",
     selectedWork01Category: "ART DIRECTION • SOCIAL MEDIA",
@@ -347,54 +489,242 @@ const DICT = {
     selectedWork03Title: "SDP",
     selectedWork03Category: "SOCIAL MEDIA • TECH COMMUNITY",
     selectedWork03Description: "Development of a consistent visual identity for one of Brazil's largest technology communities. Alongside creating social media content, I helped organize events, campaigns and visual communication, strengthening the community's digital presence and engagement with thousands of members.",
-    p1Client: "Cuts with rhythm and retention",
-    p1Services: "Short-form editing, Motion",
-    p1Location: "Lisbon, PT",
 
-    p2Client: "Editorial content for a brand",
-    p2Services: "Direction, Editing, Identity",
-    p2Location: "Porto, PT",
 
-    p3Client: "Storytelling",
-    p3Services: "Long-form editing, stop motion",
-    p3Location: "Remote",
 
-    p4Client: "UGC Blablabla",
-    p4Services: "Editing",
-    p4Location: "Remote",
 
-    galleryTitle: "Designs that stop the scroll",
-    galleryDesc:
-      "A selection of pieces created for Instagram and LinkedIn, including feed, stories and carousels. The focus is clarity, visual rhythm and brand consistency across formats.",
-    galleryTagFeed: "feed",
-    galleryTagStory: "story",
-    galleryTagCarousel: "carousel",
-    galleryCaptionA: "Continuous movement to show variety.",
-    galleryCaptionB: "Pause on hover to see typography, hierarchy and visual treatment.",
 
-    contactKicker: "contact",
-    contactTitle: "LET’S TALK",
-    contactBody:
-      "Got a project in mind, need pro editing, or just want to brainstorm? Send a message and we’ll start there!",
-    contactNamePh: "Your name",
-    contactEmailPh: "Your email",
-    contactMsgPh: "Tell me about the project",
-    contactSend: "Send message",
-    contactSending: "sending",
-    contactOkKicker: "Sent successfully",
-    contactOkTitle: "Message received!",
-    contactOkBody:
-      "Thanks for trusting my work. If it’s urgent, you can also reach me on my social channels. Can’t wait to talk about your project!",
-    contactSendAnother: "Send another message",
-    contactErrSend: "Could not send right now.",
-    contactErrGeneric: "Something went wrong.",
 
-    moreAboutMetaTitle: "More About Sarah Aliriel Dumitrache",
-    moreAboutMetaDescription:
-      "Explore Sarah Aliriel Dumitrache's creative evolution across video, design and frontend development.",
-    moreAboutHeroTitle1: "MORE",
-    moreAboutHeroTitle2: "ABOUT",
-    moreAboutHeroTitle3: "ME",
+
+
+
+
+
+
+
+
+
+
+
+
+
+    galleryMetaTitle: "Design Gallery | Sarah Aliriel Dumitrache",
+    galleryMetaDescription: "Explore design projects, social media work, mockups, posts, stories and carousels created by Sarah Aliriel Dumitrache.",
+    galleryArchiveGhost: "Archive",
+    galleryHeroArchiveLabel: "visual archive",
+    galleryHeroSocialArchive: "social media archive",
+    galleryHeroTitle: "Design Gallery",
+    galleryHeroProjectsLabel: "projects",
+    galleryHeroPiecesLabel: "pieces",
+    galleryHeroOrderLabel: "order",
+    galleryHeroOrderValue: "manual",
+    gallerySelectedEyebrow: "selected chapters",
+    gallerySelectedTitle: "Selected Work",
+    gallerySelectedDescription: "A selection of projects where strategy, identity and visual execution work together to create real impact.",
+    gallerySelectedArchiveLink: "about the archive",
+    galleryPieceCountLabel: "pieces",
+    galleryViewMorePieces: "See more pieces",
+
+    galleryPlaygroundEyebrow: "studies and concepts",
+    galleryPlaygroundTitle: "Creative Playground",
+    galleryPlaygroundDescription: "Loose studies, free compositions and visual experiments that did not start as full projects, but helped explore language, contrast and art direction.",
+    galleryPlaygroundAnnex: "annex 01",
+    galleryFinalEyebrow: "next step",
+    galleryFinalTitle: "Let’s create presence.",
+    galleryFinalDescription: "Design, video and code working together to turn an idea into a clear, memorable experience ready to circulate.",
+    galleryFinalButton: "Let’s talk",
+    gallerySocialEmail: "Email",
+    gallerySocialLinkedIn: "LinkedIn",
+    gallerySocialGitHub: "GitHub",
+    gallerySocialInstagram: "Instagram",
+    galleryDetailMetaSuffix: "Design Case Study",
+    galleryDetailBack: "Back",
+    galleryProcessKicker: "Process",
+    galleryProcessHeading: "The thinking behind the identity.",
+    galleryProcessContext: "Context",
+    galleryProcessDirection: "Direct",
+    galleryProcessImpact: "Impact",
+    galleryProcessChallenge: "Challen",
+    galleryProcessChallengeBody: "Artificial intelligence usually leads to the same visual codes: gradients, robots, futuristic interfaces and generic tech aesthetics. The challenge was to create an accessible, recognizable presence with personality, capable of turning complex topics into clear, shareable content.",
+    galleryProcessFollowers: "New followers",
+    galleryProcessDirectionBody: "The visual direction was built around large titles, high contrast, modular compositions and direct editorial language. Each publication had to be understood in seconds without losing depth, consistency or identity.",
+    galleryProcessViews: "Views",
+    galleryProcessResult: "Result",
+    galleryProcessResultBody: "The project gained a consistent, memorable visual system that is easy to expand. The identity began organizing complex topics into simple, recognizable narratives adaptable to different content formats.",
+    galleryProcessActive: "Active",
+    galleryProcessVisualSystem: "Visual system",
+    galleryProcessSelectedPieces: "9 selected pieces",
+    galleryProcessNext: "Next chapter",
+    galleryProcessOneYear: "year of activity",
+    galleryProcessFiveMonths: "months of activity",
+    galleryVisualSystem: "Visual system",
+    galleryVisualObjective: "Objective",
+    galleryVisualPurpose: "The identity's purpose",
+    galleryVisualCharacteristics: "Characteristics",
+    galleryVisualTypographyAndColors: "Typography & Colors",
+    galleryVisualTypography: "Typography",
+    galleryVisualColors: "Colors",
+    galleryVisualDesigns: "Designs",
+    galleryVisualDisplay: "Display",
+    galleryVisualBody: "Body",
+    galleryVisualPrimaryColor: "Primary color",
+    galleryVisualSupportColor: "Support color",
+    galleryVisualHighlights: "Highlights",
+    galleryVisualBackground: "Background",
+    galleryVisualContrast: "Contrast",
+    galleryVisualEditorial: "Editorial",
+    galleryVisualModular: "Modular",
+    galleryVisualConsistent: "Consistent",
+    galleryVisualClear: "Clear",
+    galleryVisualMemorable: "Memorable",
+    galleryVisualAccessible: "Accessible",
+    galleryVisualDirect: "Direct",
+    galleryVisualStrong: "Strong",
+    galleryVisualDynamic: "Dynamic",
+    galleryVisualCollective: "Collective",
+    galleryVisualIdeas: "Ideas",
+    galleryVisualEurope: "Europe",
+    galleryVisualExecution: "Execution",
+    galleryVisualBusiness: "Business",
+    galleryVisualAI: "AI",
+    galleryVisualAuthority: "Authority",
+    galleryVisualVision: "Vision",
+    galleryVisualCode: "Code",
+    galleryVisualCommunity: "Community",
+    galleryVisualEvents: "Events",
+    galleryVisualFuture: "Future",
+    galleryVisualFrigideiraObjective: "Make artificial intelligence clearer, more memorable and shareable.",
+    galleryVisualFrigideiraObjectiveBody: "The identity transforms technical subjects into accessible, recognizable content that is easy to consume on social media.",
+    galleryVisualTochaObjective: "Turn dense knowledge into a clear and recognizable presence.",
+    galleryVisualTochaObjectiveBody: "The identity organizes business and communication ideas into direct, strong content designed to build authority on social media.",
+    galleryVisualSdpObjective: "Bring unity and energy to a technology community in motion.",
+    galleryVisualSdpObjectiveBody: "The system connects campaigns, events and recurring content through an accessible, recognizable language that is easy to expand.",
+
+
+
+
+
+
+
+
+
+    galleryDetailAssetMockup: "Mockup",
+    galleryDetailAssetPost: "Static post",
+    galleryDetailAssetStory: "Story",
+    galleryDetailAssetSlides: "slides",
+    galleryDetailEditorialEyebrow: "Editorial gallery",
+    galleryDetailEditorialTitle: "Pieces at editorial scale.",
+    galleryDetailEditorialDescription: "A visual archive with a magazine rhythm: smaller pieces, long pauses and shifts in scale that let the eye wander.",
+    galleryDetailCtaEyebrow: "Final CTA",
+    galleryDetailCtaTitle: "Next visual chapter.",
+    galleryDetailCtaBody: "Explore another gallery case or return to the full archive to see how the same structure adapts to different projects.",
+    galleryDetailCtaGallery: "Gallery",
+    galleryDetailViewerClose: "Close viewer",
+    galleryDetailViewerPrevious: "Previous slide",
+    galleryDetailViewerNext: "Next slide",
+    galleryDetailViewerGoToSlide: "Go to slide",
+    galleryDetailCarouselCoverAlt: "Carousel cover",
+    galleryDetailCarouselSlideAlt: "Slide",
+    galleryFormatPosts: "posts",
+    galleryFormatCarousels: "carousels",
+    galleryFormatEditorialCovers: "editorial covers",
+    galleryFormatStories: "stories",
+    galleryFormatMockups: "mockups",
+    galleryFormatCampaignPosts: "campaign posts",
+    galleryFormatEditorialSequences: "editorial sequences",
+    galleryMetricStaticPosts: "static posts",
+    galleryMetricEditorialCarousels: "editorial carousels",
+    galleryMetricVisualSystem: "visual system",
+    galleryMetricCarousels: "carousels",
+    galleryMetricStories: "stories",
+    galleryMetricSequences: "sequences",
+    galleryMetricSlides: "slides",
+    galleryMetricCommunity: "community",
+    galleryProjectFrigideiraName: "Frigideira AI",
+    galleryProjectFrigideiraType: "Art direction · Social media",
+    galleryProjectFrigideiraRole: "Art direction, editorial design and social media",
+    galleryProjectFrigideiraDescription: "Visual content to make technology, AI and digital culture clearer, more memorable and more shareable.",
+    galleryProjectFrigideiraIntro: "An editorial system for translating technology into desirable content, with a social-first rhythm and a visual language ready to move through curiosity, humor and authority.",
+    galleryProjectFrigideiraChallenge: "The topic needed to feel accessible without losing depth. The brand talked about AI, tools and digital culture, but had to avoid generic tech aesthetics and build instant recognition in the feed.",
+    galleryProjectFrigideiraSolution: "I built an art direction with large titles, high contrast, modular compositions and covers with instant readability. Each piece was designed as an editorial entry: clear in the first second, with enough detail to hold attention.",
+    galleryProjectFrigideiraResult: "The visual presence became more consistent and memorable, with pieces that organize complex topics into simple, shareable narratives that are easy to recognize in a content routine.",
+    galleryFrigideiraPiece01: "Manifesto post",
+    galleryFrigideiraPiece02: "Educational piece",
+    galleryFrigideiraPiece03: "Editorial callout",
+    galleryFrigideiraPiece04: "Technical content",
+    galleryFrigideiraPiece05: "Authority frame",
+    galleryFrigideiraCarousel01: "AI applied to everyday life",
+    galleryFrigideiraCarousel02: "Visual process and clarity",
+    galleryFrigideiraCarousel03: "Technology storytelling",
+    galleryFrigideiraCarousel04: "Content for community",
+    galleryFrigideiraMockup: "Frigideira AI mockup",
+    galleryProjectTochaName: "The Real Tocha",
+    galleryProjectTochaType: "Visual identity · Authority content",
+    galleryProjectTochaRole: "Visual identity, art direction and authority content",
+    galleryProjectTochaDescription: "Pieces that turn dense topics around entrepreneurship, investing and communication into a clear, strong digital presence.",
+    galleryProjectTochaIntro: "A visual presence built for authority: direct, dense and editorial, with pieces that turn business, investment and communication ideas into high-impact content.",
+    galleryProjectTochaChallenge: "The project needed to sustain serious themes without feeling cold. The communication had to convey trust, create retention and keep a strong aesthetic even in fast formats like stories and carousels.",
+    galleryProjectTochaSolution: "I developed a language with aggressive typographic hierarchy, precise cuts, cover rhythm and sequences that guide the eye. The visual structure can move between analysis, opinion and community calls without losing unity.",
+    galleryProjectTochaResult: "The archive became an authority system: recognizable, expandable and ready for different levels of depth, from a single post to a complete sequence.",
+    galleryTochaPiece01: "Authority post",
+    galleryTochaPiece02: "Analysis frame",
+    galleryTochaPiece03: "Positioning piece",
+    galleryTochaPiece04: "Educational content",
+    galleryTochaPiece05: "Retention post",
+    galleryTochaPiece06: "Social callout",
+    galleryTochaPiece07: "Community post",
+    galleryTochaCarousel01: "Narrative for digital business",
+    galleryTochaCarousel02: "Authority and presence",
+    galleryTochaCarousel03: "Visual education",
+    galleryTochaCarousel04: "Editorial rhythm",
+    galleryTochaCarousel05: "Investing and communication",
+    galleryTochaCarousel06: "Building repertoire",
+    galleryTochaCarousel07: "Authority sequence",
+    galleryTochaCarousel08: "Clarity for conversion",
+    galleryTochaCarousel09: "Impact message",
+    galleryTochaStory01: "Opening story",
+    galleryTochaStory02: "Sequence story",
+    galleryTochaStory03: "Development story",
+    galleryTochaStory04: "Closing story",
+    galleryTochaMockup: "The Real Tocha mockup",
+    galleryProjectSdpName: "SDP",
+    galleryProjectSdpHeroTitle: "Servidor dos Programadores",
+    galleryProjectSdpType: "Tech community · Social media",
+    galleryProjectSdpRole: "Visual system, campaigns and community communication",
+    galleryProjectSdpDescription: "A visual system for a growing technology community, bringing together campaigns, events and recurring communication.",
+    galleryProjectSdpIntro: "A visual system for a tech community, designed to organize information, create campaign energy and bring unity to recurring content without making communication rigid.",
+    galleryProjectSdpChallenge: "The community needed to communicate events, calls and educational content clearly, while also conveying movement and belonging. The risk was becoming merely informative, without visual personality.",
+    galleryProjectSdpSolution: "The solution combines direct grids, fast-reading covers and carousel sequences that create progression. The visual template gives space to code, community and strong calls without competing with the main message.",
+    galleryProjectSdpResult: "The project gained a flexible base for campaigns and ongoing communication, with pieces that are easier to scale and adapt to different community moments.",
+    gallerySdpCarousel01: "Community in motion",
+    gallerySdpCarousel02: "Programming and community",
+    gallerySdpCarousel03: "Editorial callout",
+    gallerySdpCarousel04: "Tech campaign",
+    gallerySdpCarousel05: "Community engagement",
+    gallerySdpCarousel06: "Special sequence",
+    gallerySdpMockup: "SDP mockup",
+    galleryPlaygroundPiece01: "Composition study",
+    galleryPlaygroundPiece02: "Typographic exploration",
+    galleryPlaygroundPiece03: "Visual concept",
+    galleryPlaygroundPiece04: "Experimental piece",
+    galleryPlaygroundPiece05: "Free art direction",
+    galleryPlaygroundPiece06: "Save Our Seas",
+    galleryPlaygroundPiece07: "Free visual study",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     moreAboutName: "Sarah Aliriel Dumitrache",
     moreAboutRole1: "Video Editor",
     moreAboutRole2: "Designer",
@@ -410,7 +740,7 @@ const DICT = {
     moreAboutStory2025Body: "I entered digital marketing, working on content for social media. I learned to balance creativity and strategy, creating pieces designed to communicate, connect and drive results.",
     moreAboutStory2026Title: "Design, video and code in the same process",
     moreAboutStory2026Body: "Today I combine design, video and development to create intentional digital experiences. Every detail, from the concept to the final interaction, is designed to communicate something, make an impact and leave a lasting impression.",
-    moreAboutMovesKicker: "What moves me",
+
     moreAboutMovesQuote: "I love creating experiences that make people stop, feel and remember.",
     moreAboutHelpTitle: "I CAN HELP YOU WITH...",
     moreAboutHelp01Title: "Design",
@@ -434,7 +764,7 @@ const DICT = {
     moreAboutCtaLine2: "an idea to life?",
     moreAboutCtaButton: "LET'S TALK",
     moreAboutCtaResume: "Download résumé",
-    moreAboutCtaEyebrow: "An idea can start here",
+
     moreAboutFooterEdition: "Edition",
     moreAboutFooterLocalTime: "Local time · Portugal",
     moreAboutFooterSocials: "Socials",
@@ -449,10 +779,10 @@ const DICT = {
     menuClose: "Cerrar menú",
     menuNav: "NAVEGACIÓN",
     menuSocial: "REDES",
-    menuFun: "Vamos a crear algo fuera de lo común XD",
+
     linkAbout: "Sobre mí",
     linkWork: "Proyectos",
-    linkGallery: "Galería",
+
     linkContact: "Contacto",
 
     introStarting: "iniciando",
@@ -476,84 +806,61 @@ const DICT = {
     moreAboutMovesCta: "+ SOBRE MÍ",
     moreAboutMovesCtaHover: "LEER HISTORIA",
 
-    projectsTitle: "Proyectos Seleccionados",
-    projectsEntries: "entradas",
-    projectsCuration: "Curaduría editorial",
-    projectsDesc:
-      "Trabajos seleccionados con foco en rendimiento y estética: estructura narrativa, ritmo de corte, consistencia visual y ejecución pensada para plataformas sociales.",
-    projectsColClient: "CLIENT",
-    projectsColLocation: "LOCATION",
-    projectsColServices: "SERVICES",
-    projectsColYear: "YEAR",
-    projectsOpen: "ABRIR",
-    projectsPlay: "Play",
-    projectsModalAria: "Video del proyecto",
-    projectsClose: "Cerrar",
-    projectsNoVideoTitle: "Sin video asociado",
-    projectsNoVideoBody: "Agrega el campo video en este proyecto para abrirlo aquí.",
-    projectsClickOutside: "clic fuera para cerrar",
-    projectsServicesLabel: "SERVICES",
-    projectsModalHeadline: "Campañas social first y digitales para marcas que todo el mundo reconoce.",
-    projectsModalBody: "Muestra el proyecto con un layout editorial. Cambia este texto por un mini caso: objetivo, enfoque, herramientas y resultado.",
-    projectsModalMeta1Title: "SERVICIOS",
-    projectsModalMeta2Title: "UBICACIÓN",
-    projectsModalMeta3Title: "AÑO",
-    projectsBack: "Volver",
+
+
 
     allprojectsHeroTitle: "Archivo Motion",
     allprojectsFormatLabel: "formato",
+    allprojectsActiveLabel: "activo",
+    allprojectsTagsLabel: "tags",
+    allprojectsToolsLabel: "tools",
 
-    allprojectsKicker1: "capítulo 01",
+
     allprojectsTitle1: "MOTION LAB",
-    allprojectsDesc1: "Ediciones experimentales donde exploro ritmo, transiciones, glitch y tipografía en movimiento. Aquí mi lenguaje motion se hace más fuerte.",
 
-    allprojectsKicker2: "capítulo 02",
+
     allprojectsTitle2: "SHORT-FORM & SOCIAL",
-    allprojectsDesc2: "Ediciones short-form enfocadas en retención, claridad y ritmo. Pensadas para TikTok, Reels, Shorts y campañas en movimiento.",
 
-    allprojectsKicker4: "capítulo 04",
+
     allprojectsTitle4: "VIDEO STORYTELLING",
-    allprojectsDesc4: "Ediciones centradas en estructura narrativa, pacing, atmósfera y flow.",
 
-    allprojectsCount: "videos",
-    allprojectsView: "ver",
-    allprojectsClipLabel: "clip",
-    allprojectsClipTitle: "Edición seleccionada",
-    allprojectsFloating: "mini player",
+
+
+
+
+
     allprojectsSelectEdit: "Seleccionar edición",
 
     allprojectsClose: "Cerrar",
     allprojectsMinimize: "Minimizar",
-    allprojectsExpand: "Expandir",
+
     allprojectsSoundOn: "Activar sonido",
     allprojectsSoundOff: "Silenciar",
 
-    projectsAllCta: "Todas las ediciones →",
 
-    selectedWorkKicker: "Portfolio en foco",
     selectedWorkCount: "03 seleccionados",
     selectedWorkTitle: "Trabajos Seleccionados",
     selectedWorkGhost: "Seleccionados",
     selectedWorkDescription: "Una selección de diseños y mockups creados para captar la atención, traducir ideas y dar consistencia visual a la comunicación.",
     selectedWorkDesign: "Diseño",
-    selectedWorkCategory: "Categoría",
-    selectedWorkTools: "Herramientas",
-    selectedWorkCtaEyebrow: "Archivo completo",
+
+
+
     selectedWorkCta: "Explorar colección",
     selectedWorkCtaHover: "Galería de diseño",
-    selectedWorkCtaDescription: "Una colección dedicada a piezas de diseño, mockups y presencia visual.",
+
     motionSelectedKicker: "curaduría de video",
     motionSelectedTitle: "Proyectos en movimiento",
     motionSelectedCopy: "El diseño crea la primera impresión. El video hace que permanezca.",
     motionSelectedWatch: "ver",
     motionSelectedCta: "Ver todas las ediciones",
-    projectCtaEyebrow: "El próximo capítulo",
-    projectCtaTitle: "Quizá el próximo proyecto sea el tuyo.",
+
+
     projectCtaLine1: "El próximo proyecto",
     projectCtaLine2: "podría ser el tuyo",
-    projectCtaLine3: "imposible de ignorar?",
-    projectCtaBody: "Diseño, vídeo y código trabajando juntos para crear presencia, ritmo y memoria.",
-    projectCtaButton: "Hablemos",
+
+
+
     projectCtaScroll: "Sigue deslizando",
     selectedWork01Title: "Frigideira AI",
     selectedWork01Category: "DIRECCIÓN DE ARTE • SOCIAL MEDIA",
@@ -564,54 +871,242 @@ const DICT = {
     selectedWork03Title: "SDP",
     selectedWork03Category: "SOCIAL MEDIA • COMUNIDAD TECH",
     selectedWork03Description: "Desarrollo de una identidad visual consistente para una de las mayores comunidades tecnológicas de Brasil. Además de crear contenidos para redes sociales, participé en la organización de eventos, campañas y comunicación visual, fortaleciendo la presencia digital de la comunidad y la interacción con miles de miembros.",
-    p1Client: "Cortes con ritmo y retención",
-    p1Services: "Edición short-form, Motion",
-    p1Location: "Lisboa, PT",
 
-    p2Client: "Contenido editorial para marca",
-    p2Services: "Dirección, Edición, Identidad",
-    p2Location: "Porto, PT",
 
-    p3Client: "Storytelling con cortes invisibles",
-    p3Services: "Edición long-form, Sonido",
-    p3Location: "Remoto",
 
-    p4Client: "UGC Blablabla",
-    p4Services: "Edición",
-    p4Location: "Remoto",
 
-    galleryTitle: "Diseños que frenan el scroll",
-    galleryDesc:
-      "Selección de piezas creadas para Instagram y LinkedIn, incluyendo feed, stories y carruseles. El foco es claridad, ritmo visual y consistencia de marca entre formatos.",
-    galleryTagFeed: "feed",
-    galleryTagStory: "story",
-    galleryTagCarousel: "carrusel",
-    galleryCaptionA: "Movimiento continuo para mostrar variedad.",
-    galleryCaptionB: "Pausa en hover para observar tipografía, jerarquía y tratamiento visual.",
 
-    contactKicker: "contacto",
-    contactTitle: "HABLEMOS",
-    contactBody:
-      "¿Tienes un proyecto en mente, necesitas una edición profesional o quieres intercambiar ideas? Envíame un mensaje y empezamos por ahí.",
-    contactNamePh: "Tu nombre",
-    contactEmailPh: "Tu email",
-    contactMsgPh: "Cuéntame sobre el proyecto",
-    contactSend: "Enviar mensaje",
-    contactSending: "enviando",
-    contactOkKicker: "Enviado con éxito",
-    contactOkTitle: "¡Mensaje recibido!",
-    contactOkBody:
-      "Gracias por confiar en mi trabajo. Si es urgente, también puedes contactarme por mis redes sociales. ¡Quedo atenta para hablar de tu proyecto!",
-    contactSendAnother: "Enviar otro mensaje",
-    contactErrSend: "No se pudo enviar ahora.",
-    contactErrGeneric: "Ocurrió un error.",
 
-    moreAboutMetaTitle: "Más Sobre Sarah Aliriel Dumitrache",
-    moreAboutMetaDescription:
-      "Conoce la evolución creativa de Sarah Aliriel Dumitrache entre video, diseño y desarrollo frontend.",
-    moreAboutHeroTitle1: "MÁS",
-    moreAboutHeroTitle2: "SOBRE",
-    moreAboutHeroTitle3: "MÍ",
+
+
+
+
+
+
+
+
+
+
+
+
+
+    galleryMetaTitle: "Galería de Diseño | Sarah Aliriel Dumitrache",
+    galleryMetaDescription: "Explora proyectos de diseño, social media, mockups, posts, stories y carruseles creados por Sarah Aliriel Dumitrache.",
+    galleryArchiveGhost: "Archivo",
+    galleryHeroArchiveLabel: "archivo visual",
+    galleryHeroSocialArchive: "archivo de social media",
+    galleryHeroTitle: "Design Gallery",
+    galleryHeroProjectsLabel: "proyectos",
+    galleryHeroPiecesLabel: "piezas",
+    galleryHeroOrderLabel: "orden",
+    galleryHeroOrderValue: "manual",
+    gallerySelectedEyebrow: "capítulos seleccionados",
+    gallerySelectedTitle: "Trabajos Seleccionados",
+    gallerySelectedDescription: "Una selección de proyectos donde estrategia, identidad y ejecución visual trabajan juntas para generar impacto real.",
+    gallerySelectedArchiveLink: "sobre el archivo",
+    galleryPieceCountLabel: "piezas",
+    galleryViewMorePieces: "Ver más piezas",
+
+    galleryPlaygroundEyebrow: "estudios y conceptos",
+    galleryPlaygroundTitle: "Creative Playground",
+    galleryPlaygroundDescription: "Estudios sueltos, composiciones libres y experimentos visuales que no nacieron como proyectos completos, pero ayudaron a explorar lenguaje, contraste y dirección visual.",
+    galleryPlaygroundAnnex: "anexo 01",
+    galleryFinalEyebrow: "próximo paso",
+    galleryFinalTitle: "Vamos a crear presencia.",
+    galleryFinalDescription: "Diseño, vídeo y código trabajando juntos para transformar una idea en una experiencia clara, memorable y lista para circular.",
+    galleryFinalButton: "Hablemos",
+    gallerySocialEmail: "Email",
+    gallerySocialLinkedIn: "LinkedIn",
+    gallerySocialGitHub: "GitHub",
+    gallerySocialInstagram: "Instagram",
+    galleryDetailMetaSuffix: "Caso de Estudio de Diseño",
+    galleryDetailBack: "Volver",
+    galleryProcessKicker: "Proceso",
+    galleryProcessHeading: "El razonamiento detrás de la identidad.",
+    galleryProcessContext: "Contexto",
+    galleryProcessDirection: "Direc",
+    galleryProcessImpact: "Impacto",
+    galleryProcessChallenge: "Desafío",
+    galleryProcessChallengeBody: "Hablar de inteligencia artificial suele llevar a los mismos códigos visuales: degradados, robots, interfaces futuristas y una estética tecnológica genérica. El desafío era crear una presencia accesible, reconocible y con personalidad, capaz de transformar temas complejos en contenidos claros y fáciles de compartir.",
+    galleryProcessFollowers: "Nuevos seguidores",
+    galleryProcessDirectionBody: "La dirección visual se construyó a partir de títulos grandes, alto contraste, composiciones modulares y un lenguaje editorial directo. Cada publicación debía comprenderse en pocos segundos sin perder profundidad, consistencia o identidad.",
+    galleryProcessViews: "Visualizaciones",
+    galleryProcessResult: "Result",
+    galleryProcessResultBody: "El proyecto ganó un sistema visual consistente, memorable y fácil de ampliar. La identidad pasó a organizar temas complejos en narrativas simples, reconocibles y adaptables a diferentes formatos de contenido.",
+    galleryProcessActive: "Activo",
+    galleryProcessVisualSystem: "Sistema visual",
+    galleryProcessSelectedPieces: "9 piezas seleccionadas",
+    galleryProcessNext: "Próximo capítulo",
+    galleryProcessOneYear: "año de actividad",
+    galleryProcessFiveMonths: "meses de actividad",
+    galleryVisualSystem: "Sistema visual",
+    galleryVisualObjective: "Objetivo",
+    galleryVisualPurpose: "El propósito de la identidad",
+    galleryVisualCharacteristics: "Características",
+    galleryVisualTypographyAndColors: "Tipografía & Colores",
+    galleryVisualTypography: "Tipografía",
+    galleryVisualColors: "Colores",
+    galleryVisualDesigns: "Diseños",
+    galleryVisualDisplay: "Display",
+    galleryVisualBody: "Body",
+    galleryVisualPrimaryColor: "Color principal",
+    galleryVisualSupportColor: "Color de apoyo",
+    galleryVisualHighlights: "Destacados",
+    galleryVisualBackground: "Background",
+    galleryVisualContrast: "Contraste",
+    galleryVisualEditorial: "Editorial",
+    galleryVisualModular: "Modular",
+    galleryVisualConsistent: "Consistente",
+    galleryVisualClear: "Clara",
+    galleryVisualMemorable: "Memorable",
+    galleryVisualAccessible: "Accesible",
+    galleryVisualDirect: "Directa",
+    galleryVisualStrong: "Fuerte",
+    galleryVisualDynamic: "Dinámica",
+    galleryVisualCollective: "Colectiva",
+    galleryVisualIdeas: "Ideas",
+    galleryVisualEurope: "Europa",
+    galleryVisualExecution: "Ejecución",
+    galleryVisualBusiness: "Negocios",
+    galleryVisualAI: "IA",
+    galleryVisualAuthority: "Autoridad",
+    galleryVisualVision: "Visión",
+    galleryVisualCode: "Código",
+    galleryVisualCommunity: "Comunidad",
+    galleryVisualEvents: "Eventos",
+    galleryVisualFuture: "Futuro",
+    galleryVisualFrigideiraObjective: "Hacer que la inteligencia artificial sea más clara, memorable y compartible.",
+    galleryVisualFrigideiraObjectiveBody: "La identidad transforma temas técnicos en contenidos accesibles, reconocibles y fáciles de consumir en las redes sociales.",
+    galleryVisualTochaObjective: "Transformar conocimiento denso en una presencia clara y reconocible.",
+    galleryVisualTochaObjectiveBody: "La identidad organiza ideas de negocio y comunicación en contenidos directos, fuertes y preparados para generar autoridad en redes sociales.",
+    galleryVisualSdpObjective: "Dar unidad y energía a una comunidad tecnológica en movimiento.",
+    galleryVisualSdpObjectiveBody: "El sistema conecta campañas, eventos y contenidos recurrentes mediante un lenguaje accesible, reconocible y fácil de ampliar.",
+
+
+
+
+
+
+
+
+
+    galleryDetailAssetMockup: "Mockup",
+    galleryDetailAssetPost: "Post estático",
+    galleryDetailAssetStory: "Story",
+    galleryDetailAssetSlides: "slides",
+    galleryDetailEditorialEyebrow: "Galería editorial",
+    galleryDetailEditorialTitle: "Piezas a escala editorial.",
+    galleryDetailEditorialDescription: "Un archivo visual con ritmo de revista: piezas menores, respiros largos y variaciones de escala para dejar que la mirada circule.",
+    galleryDetailCtaEyebrow: "CTA final",
+    galleryDetailCtaTitle: "Próximo capítulo visual.",
+    galleryDetailCtaBody: "Explora otro caso de la galería o vuelve al archivo completo para ver cómo la misma estructura se adapta a proyectos diferentes.",
+    galleryDetailCtaGallery: "Galería",
+    galleryDetailViewerClose: "Cerrar visualizador",
+    galleryDetailViewerPrevious: "Slide anterior",
+    galleryDetailViewerNext: "Siguiente slide",
+    galleryDetailViewerGoToSlide: "Ir al slide",
+    galleryDetailCarouselCoverAlt: "Portada del carrusel",
+    galleryDetailCarouselSlideAlt: "Slide",
+    galleryFormatPosts: "posts",
+    galleryFormatCarousels: "carruseles",
+    galleryFormatEditorialCovers: "portadas editoriales",
+    galleryFormatStories: "stories",
+    galleryFormatMockups: "mockups",
+    galleryFormatCampaignPosts: "posts de campaña",
+    galleryFormatEditorialSequences: "secuencias editoriales",
+    galleryMetricStaticPosts: "posts estáticos",
+    galleryMetricEditorialCarousels: "carruseles editoriales",
+    galleryMetricVisualSystem: "sistema visual",
+    galleryMetricCarousels: "carruseles",
+    galleryMetricStories: "stories",
+    galleryMetricSequences: "secuencias",
+    galleryMetricSlides: "slides",
+    galleryMetricCommunity: "comunidad",
+    galleryProjectFrigideiraName: "Frigideira AI",
+    galleryProjectFrigideiraType: "Dirección de arte · Social media",
+    galleryProjectFrigideiraRole: "Dirección de arte, diseño editorial y social media",
+    galleryProjectFrigideiraDescription: "Contenido visual para hacer que la tecnología, la IA y la cultura digital sean más claras, memorables y compartibles.",
+    galleryProjectFrigideiraIntro: "Un sistema editorial para traducir tecnología en contenido deseable, con ritmo social-first y un lenguaje visual listo para circular entre curiosidad, humor y autoridad.",
+    galleryProjectFrigideiraChallenge: "El tema necesitaba parecer accesible sin perder profundidad. La marca hablaba de IA, herramientas y cultura digital, pero debía evitar una estética tecnológica genérica y crear reconocimiento inmediato en el feed.",
+    galleryProjectFrigideiraSolution: "Construí una dirección visual con títulos grandes, alto contraste, composiciones modulares y portadas de lectura instantánea. Cada pieza fue pensada como una entrada editorial: clara en el primer segundo, pero con suficiente detalle para mantener la atención.",
+    galleryProjectFrigideiraResult: "La presencia visual se volvió más consistente y memorable, con piezas que organizan temas complejos en narrativas simples, compartibles y fáciles de reconocer dentro de una rutina de contenido.",
+    galleryFrigideiraPiece01: "Post manifiesto",
+    galleryFrigideiraPiece02: "Pieza educativa",
+    galleryFrigideiraPiece03: "Llamada editorial",
+    galleryFrigideiraPiece04: "Contenido técnico",
+    galleryFrigideiraPiece05: "Frame de autoridad",
+    galleryFrigideiraCarousel01: "IA aplicada al día a día",
+    galleryFrigideiraCarousel02: "Proceso visual y claridad",
+    galleryFrigideiraCarousel03: "Narrativa de tecnología",
+    galleryFrigideiraCarousel04: "Contenido para comunidad",
+    galleryFrigideiraMockup: "Mockup Frigideira AI",
+    galleryProjectTochaName: "The Real Tocha",
+    galleryProjectTochaType: "Identidad visual · Contenido de autoridad",
+    galleryProjectTochaRole: "Identidad visual, dirección de arte y contenido de autoridad",
+    galleryProjectTochaDescription: "Piezas para transformar temas densos de emprendimiento, inversión y comunicación en una presencia digital clara y fuerte.",
+    galleryProjectTochaIntro: "Una presencia visual construida para la autoridad: directa, densa y editorial, con piezas que transforman ideas de negocio, inversión y comunicación en contenido de impacto.",
+    galleryProjectTochaChallenge: "El proyecto necesitaba sostener temas serios sin parecer frío. La comunicación debía transmitir confianza, crear retención y mantener una estética fuerte incluso en formatos rápidos como stories y carruseles.",
+    galleryProjectTochaSolution: "Desarrollé un lenguaje con jerarquía tipográfica agresiva, recortes precisos, ritmo de portadas y secuencias que guían la mirada. La estructura visual permite alternar análisis, opinión y llamada a comunidad sin perder unidad.",
+    galleryProjectTochaResult: "El archivo pasó a funcionar como un sistema de autoridad: reconocible, expansible y preparado para distintos niveles de profundidad, desde un post único hasta una secuencia completa.",
+    galleryTochaPiece01: "Post de autoridad",
+    galleryTochaPiece02: "Frame de análisis",
+    galleryTochaPiece03: "Pieza de posicionamiento",
+    galleryTochaPiece04: "Contenido educativo",
+    galleryTochaPiece05: "Post de retención",
+    galleryTochaPiece06: "Llamada social",
+    galleryTochaPiece07: "Post de comunidad",
+    galleryTochaCarousel01: "Narrativa para negocios digitales",
+    galleryTochaCarousel02: "Autoridad y presencia",
+    galleryTochaCarousel03: "Educación visual",
+    galleryTochaCarousel04: "Ritmo editorial",
+    galleryTochaCarousel05: "Inversión y comunicación",
+    galleryTochaCarousel06: "Construcción de repertorio",
+    galleryTochaCarousel07: "Secuencia de autoridad",
+    galleryTochaCarousel08: "Claridad para conversión",
+    galleryTochaCarousel09: "Mensaje de impacto",
+    galleryTochaStory01: "Story de apertura",
+    galleryTochaStory02: "Story de secuencia",
+    galleryTochaStory03: "Story de desarrollo",
+    galleryTochaStory04: "Story de cierre",
+    galleryTochaMockup: "Mockup The Real Tocha",
+    galleryProjectSdpName: "SDP",
+    galleryProjectSdpHeroTitle: "Servidor dos Programadores",
+    galleryProjectSdpType: "Comunidad tech · Social media",
+    galleryProjectSdpRole: "Sistema visual, campañas y comunicación de comunidad",
+    galleryProjectSdpDescription: "Sistema visual para una comunidad de tecnología en crecimiento, uniendo campañas, eventos y comunicación recurrente.",
+    galleryProjectSdpIntro: "Un sistema visual para comunidad tech, pensado para organizar información, crear energía de campaña y dar unidad a contenidos recurrentes sin rigidizar la comunicación.",
+    galleryProjectSdpChallenge: "La comunidad necesitaba comunicar eventos, llamadas y contenidos educativos con claridad, pero también transmitir movimiento y pertenencia. El riesgo era parecer solo informativa, sin personalidad visual.",
+    galleryProjectSdpSolution: "La solución combina grids directos, portadas de lectura rápida y secuencias de carrusel que crean progresión. El template visual da espacio al código, la comunidad y llamadas fuertes sin competir con el mensaje principal.",
+    galleryProjectSdpResult: "El proyecto ganó una base flexible para campañas y comunicación continua, con piezas más fáciles de escalar y adaptar a diferentes momentos de la comunidad.",
+    gallerySdpCarousel01: "Comunidad en movimiento",
+    gallerySdpCarousel02: "Programación y comunidad",
+    gallerySdpCarousel03: "Llamada editorial",
+    gallerySdpCarousel04: "Campaña tech",
+    gallerySdpCarousel05: "Engagement de la comunidad",
+    gallerySdpCarousel06: "Secuencia especial",
+    gallerySdpMockup: "Mockup SDP",
+    galleryPlaygroundPiece01: "Estudio de composición",
+    galleryPlaygroundPiece02: "Exploración tipográfica",
+    galleryPlaygroundPiece03: "Concepto visual",
+    galleryPlaygroundPiece04: "Pieza experimental",
+    galleryPlaygroundPiece05: "Dirección visual libre",
+    galleryPlaygroundPiece06: "Save Our Seas",
+    galleryPlaygroundPiece07: "Estudio visual libre",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     moreAboutName: "Sarah Aliriel Dumitrache",
     moreAboutRole1: "Editora de Video",
     moreAboutRole2: "Diseñadora",
@@ -627,7 +1122,7 @@ const DICT = {
     moreAboutStory2025Body: "Entré en el marketing digital trabajando con contenidos para redes sociales. Aprendí a equilibrar creatividad y estrategia, creando piezas pensadas para comunicar, conectar y generar resultados.",
     moreAboutStory2026Title: "Diseño, vídeo y código en un mismo proceso",
     moreAboutStory2026Body: "Hoy combino diseño, vídeo y desarrollo para crear experiencias digitales con intención. Cada detalle, desde el concepto hasta la interacción final, está pensado para comunicar algo, generar impacto y dejar una impresión duradera.",
-    moreAboutMovesKicker: "Lo que me mueve",
+
     moreAboutMovesQuote: "Me gusta crear experiencias que hagan que las personas se detengan, sientan y recuerden.",
     moreAboutHelpTitle: "PUEDO AYUDAR CON...",
     moreAboutHelp01Title: "Diseño",
@@ -651,7 +1146,7 @@ const DICT = {
     moreAboutCtaLine2: "una idea a la realidad?",
     moreAboutCtaButton: "HABLEMOS",
     moreAboutCtaResume: "Descargar currículum",
-    moreAboutCtaEyebrow: "Una idea puede empezar aquí",
+
     moreAboutFooterEdition: "Edición",
     moreAboutFooterLocalTime: "Hora local · Portugal",
     moreAboutFooterSocials: "Redes",

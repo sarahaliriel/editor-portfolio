@@ -170,11 +170,9 @@ export default function NarrativeOrb() {
 
   const orbX = useTransform(() => x.get() + magnetX.get())
   const orbY = useTransform(() => y.get() + magnetY.get())
-  const textOpacity = useTransform(transitionProgress, [CTA_REVEAL_START, 0.92], [0, 1])
-  const textScale = useTransform(transitionProgress, [CTA_REVEAL_START, 0.94], [0.86, 1])
-  const arrowOpacity = useTransform(transitionProgress, [0.84, 0.94], [0, 1])
   const reducedOpacity = useTransform(scrollYProgress, [0.88, 0.94], [0, 1])
-  const orbOpacity = useTransform(() => (reducedMotion.get() ? reducedOpacity.get() : 1))
+  const ctaFade = useTransform(transitionProgress, [0.68, CTA_REVEAL_START], [1, 0])
+  const orbOpacity = useTransform(() => (reducedMotion.get() ? reducedOpacity.get() : ctaFade.get()))
   const glow = useTransform(
     proximitySpring,
     [0, 1],
@@ -224,11 +222,8 @@ export default function NarrativeOrb() {
   }, [magneticX, magneticY, prefersReducedMotion, proximity, stretchX, stretchY, x, y])
 
   return (
-    <motion.a
-      href={isCta ? "mailto:dumitrachebusiness@gmail.com" : undefined}
-      aria-hidden={!isCta}
-      aria-label={isCta ? "Vamos conversar por email" : undefined}
-      tabIndex={isCta ? 0 : -1}
+    <motion.div
+      aria-hidden="true"
       data-narrative-orb
       data-orb-state={isCta ? "cta" : "journey"}
       className="narrative-orb fixed left-0 top-0 grid place-items-center rounded-full text-[#e8e7e7] outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-4 focus-visible:ring-offset-[#e8e7e7]"
@@ -236,7 +231,7 @@ export default function NarrativeOrb() {
         boxShadow: glow,
         height: size,
         opacity: orbOpacity,
-        pointerEvents: isCta ? "auto" : "none",
+        pointerEvents: "none",
         scaleX,
         scaleY,
         width: size,
@@ -247,24 +242,6 @@ export default function NarrativeOrb() {
     >
       <span className="narrative-orb__surface" aria-hidden="true" />
       <motion.span className="narrative-orb__ripple" aria-hidden="true" style={{ opacity: rippleOpacity, scale: rippleScale }} />
-
-      <motion.span
-        className="relative z-10 flex flex-col items-center font-display text-[clamp(0.67rem,1.08vw,0.96rem)] font-semibold uppercase leading-[0.94] tracking-[-0.025em]"
-        style={{ opacity: textOpacity, scale: textScale }}
-      >
-        <span>VAMOS</span>
-        <span>CONVERSAR</span>
-      </motion.span>
-
-      <motion.svg
-        viewBox="0 0 24 24"
-        fill="none"
-        aria-hidden="true"
-        className="absolute right-[19%] top-[17%] z-10 h-[clamp(12px,1.2vw,18px)] w-[clamp(12px,1.2vw,18px)]"
-        style={{ opacity: arrowOpacity }}
-      >
-        <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-      </motion.svg>
-    </motion.a>
+    </motion.div>
   )
 }

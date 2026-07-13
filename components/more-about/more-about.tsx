@@ -4,6 +4,7 @@ import { motion, useInView, useReducedMotion, useScroll, useSpring, useTransform
 import type { Variants } from "framer-motion"
 import Image from "next/image"
 import Link from "next/link"
+import RollingText from "@/components/shared/rolling-text"
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import Menu from "@/components/layout/menu"
 import ScrollProgress from "@/components/layout/scroll-progress"
@@ -56,32 +57,6 @@ function useCompactViewport() {
 
 export default function MoreAboutPage() {
   const { t } = useI18n()
-
-  useLayoutEffect(() => {
-    const html = document.documentElement
-    const prevScrollRestoration = window.history.scrollRestoration
-    const prevScrollBehavior = html.style.scrollBehavior
-
-    window.history.scrollRestoration = "manual"
-    html.style.scrollBehavior = "auto"
-
-    const resetScroll = () => window.scrollTo({ top: 0, left: 0, behavior: "auto" })
-
-    resetScroll()
-    const frame = requestAnimationFrame(resetScroll)
-    const timer = window.setTimeout(() => {
-      resetScroll()
-      html.style.scrollBehavior = prevScrollBehavior
-      window.history.scrollRestoration = prevScrollRestoration
-    }, 120)
-
-    return () => {
-      cancelAnimationFrame(frame)
-      window.clearTimeout(timer)
-      html.style.scrollBehavior = prevScrollBehavior
-      window.history.scrollRestoration = prevScrollRestoration
-    }
-  }, [])
 
   const timeline = useMemo<TimelineItem[]>(
     () => [
@@ -536,7 +511,7 @@ function FinalCta({ titleLines, button }: { titleLines: string[]; button: string
                       >
                         <span className="absolute inset-0 origin-bottom scale-y-0 rounded-full bg-[#e8e7e7] transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100" aria-hidden="true" />
                         <span className="relative z-10 flex items-center gap-2.5">
-                          {button} <span className="text-base transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1">↗</span>
+                          <RollingText variant="strong">{button}</RollingText> <span className="text-base transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1">↗</span>
                         </span>
                       </Link>
                     </motion.div>
@@ -556,14 +531,14 @@ function FinalCta({ titleLines, button }: { titleLines: string[]; button: string
                     className="absolute inset-0 origin-bottom scale-y-0 rounded-full bg-[#e8e7e7] transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100"
                     aria-hidden="true"
                   />
-                  <span className="relative z-10">dumitrachebusiness@gmail.com</span>
+                  <RollingText variant="subtle" className="relative z-10">dumitrachebusiness@gmail.com</RollingText>
                 </a>
                 <a href={RESUME_HREF} download className={pillClassName} aria-label={t("moreAboutCtaResume")}>
                   <span
                     className="absolute inset-0 origin-bottom scale-y-0 rounded-full bg-[#e8e7e7] transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100"
                     aria-hidden="true"
                   />
-                  <span className="relative z-10 uppercase">{t("moreAboutCtaResume")}</span>
+                  <RollingText variant="strong" className="relative z-10 uppercase">{t("moreAboutCtaResume")}</RollingText>
                 </a>
               </motion.div>
             </div>
@@ -585,7 +560,7 @@ function FinalCta({ titleLines, button }: { titleLines: string[]; button: string
                       rel="noreferrer"
                       className="link-underline-invert normal-case text-[#e8e7e7]/82"
                     >
-                      {social.label}
+                      <RollingText variant="subtle">{social.label}</RollingText>
                     </a>
                   ))}
                 </div>

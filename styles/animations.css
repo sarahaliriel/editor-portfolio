@@ -187,25 +187,6 @@
 }
 
 
-@keyframes contactDot{
-  0%{ transform: scale(1); opacity: .85; }
-  50%{ transform: scale(1.35); opacity: 1; }
-  100%{ transform: scale(1); opacity: .85; }
-}
-
-
-@keyframes marqueeScroll {
-  0% { transform: translate3d(0,0,0); }
-  100% { transform: translate3d(-50%,0,0); }
-}
-
-
-@keyframes galleryMarqueeLeft {
-  0% { transform: translate3d(0,0,0); }
-  100% { transform: translate3d(-50%,0,0); }
-}
-
-
 @keyframes sarahPing {
   0% {
     transform: translate3d(0, 0, 0) scale(0.7);

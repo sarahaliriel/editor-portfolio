@@ -1,316 +1,319 @@
 "use client"
 
 import Image from "next/image"
-import { useEffect, useMemo, useState } from "react"
+import Link from "next/link"
+import RollingText from "@/components/shared/rolling-text"
+import { useEffect, useMemo } from "react"
+import { type I18nKey, useI18n } from "@/components/providers/i18n"
 import MotionCta from "@/components/shared/motion-cta"
-import { galleryPreviewImages, galleryProjects, playgroundPieces, type GalleryCarousel, type GalleryImage, type GalleryProject } from "@/data/gallery"
+import ScrollProgress from "@/components/layout/scroll-progress"
+import ArrowDownRight from "@/components/gallery/arrow-down-right"
+import { getTranslatedGalleryProjects, getTranslatedPlaygroundPieces, type GalleryImage, type GalleryProject } from "@/data/gallery"
 
-type ViewerState = {
-  project: string
-  carousel: GalleryCarousel
-  index: number
-}
+const playgroundClass = [
+  "lg:absolute lg:left-[3%] lg:top-[8%] lg:w-[27%] lg:rotate-[-4deg]",
+  "lg:absolute lg:left-[34%] lg:top-[10%] lg:w-[21%]",
+  "lg:absolute lg:left-[59%] lg:top-[7%] lg:w-[24%] lg:rotate-[4deg]",
+  "lg:absolute lg:left-[2%] lg:top-[50%] lg:w-[19%]",
+  "lg:absolute lg:left-[24%] lg:top-[52%] lg:w-[18%]",
+  "lg:absolute lg:left-[46%] lg:top-[51%] lg:w-[34%] lg:rotate-[1deg]",
+  "lg:absolute lg:left-[83%] lg:top-[52%] lg:w-[14%] lg:rotate-[5deg]",
+]
 
-const pieceClass = {
-  feature: "lg:col-span-5 lg:row-span-2",
-  wide: "lg:col-span-4",
-  tall: "lg:col-span-3 lg:row-span-2",
-  default: "lg:col-span-3",
-}
+const playgroundAspect = [
+  "aspect-[1.42/1]",
+  "aspect-square",
+  "aspect-[0.82/1]",
+  "aspect-[0.78/1]",
+  "aspect-[0.9/1]",
+  "aspect-[1.7/1]",
+  "aspect-[0.66/1]",
+]
 
-function PieceCard({ piece, index }: { piece: GalleryImage; index: number }) {
-  const shape = piece.shape ?? "default"
+const socialLinks = [
+  { labelKey: "gallerySocialEmail", href: "mailto:dumitrachebusiness@gmail.com" },
+  { labelKey: "gallerySocialLinkedIn", href: "https://www.linkedin.com/in/sarah-dumitrache/" },
+  { labelKey: "gallerySocialGitHub", href: "https://github.com/sarahaliriel" },
+  { labelKey: "gallerySocialInstagram", href: "https://www.instagram.com/chazinhodociel/" },
+]
 
+function countProjectPieces(project: GalleryProject) {
   return (
-    <figure className={`group relative overflow-hidden border border-[#1e1e1e]/10 bg-[#dedddd] ${pieceClass[shape]}`}>
-      <div className={`relative ${shape === "wide" ? "aspect-5/4" : shape === "tall" ? "aspect-4/5 lg:h-full" : "aspect-4/5"}`}>
-        <Image
-          src={piece.src}
-          alt={piece.alt}
-          fill
-          sizes="(max-width: 768px) 92vw, 34vw"
-          className="object-cover transition duration-700 group-hover:scale-[1.025]"
-          priority={index < 3}
-        />
-      </div>
-      <figcaption className="flex items-center justify-between gap-4 border-t border-[#1e1e1e]/10 px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#1e1e1e]/56">
-        <span>{piece.title}</span>
-        <span>{String(index + 1).padStart(2, "0")}</span>
-      </figcaption>
-    </figure>
+    project.pieces.length +
+    (project.stories?.length ?? 0) +
+    (project.mockups?.length ?? 0) +
+    (project.carousels?.reduce((total, carousel) => total + carousel.slides.length, 0) ?? 0)
   )
 }
 
-function CarouselCard({ project, carousel, onOpen }: { project: string; carousel: GalleryCarousel; onOpen: () => void }) {
-  const cover = carousel.slides[0]
-
-  return (
-    <button
-      type="button"
-      onClick={onOpen}
-      className="group relative grid min-h-[360px] overflow-hidden border border-[#1e1e1e]/12 bg-[#1e1e1e] text-left text-[#e8e7e7] outline-none transition duration-500 hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1800ad]"
-      aria-label={`Abrir carrossel ${carousel.title}`}
-    >
-      <Image src={cover.src} alt={cover.alt} fill sizes="(max-width: 768px) 92vw, 42vw" className="object-cover opacity-72 transition duration-700 group-hover:scale-[1.035] group-hover:opacity-48" />
-      <span className="absolute left-5 top-5 rounded-full border border-[#e8e7e7]/35 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em]">
-        carrossel
-      </span>
-      <span className="absolute right-5 top-5 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#e8e7e7]/68">
-        {carousel.slides.length} slides
-      </span>
-      <span className="relative z-10 mt-auto block p-5 sm:p-7">
-        <span className="block text-[11px] font-semibold uppercase tracking-[0.2em] text-[#e8e7e7]/62">{project}</span>
-        <span className="mt-3 block font-display text-[clamp(2rem,5vw,4.6rem)] font-extrabold leading-[0.88] tracking-[-0.055em]">
-          {carousel.title}
-        </span>
-        <span className="mt-6 inline-flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#e8e7e7]">
-          abrir <span className="text-lg transition-transform duration-500 group-hover:translate-x-1">↗</span>
-        </span>
-      </span>
-    </button>
-  )
+function getProjectCover(project: GalleryProject) {
+  if (project.slug === "the-real-tocha") return project.mockups?.[0] ?? project.pieces[0]
+  if (project.slug === "sdp") return project.carousels?.[0]?.slides[0] ?? project.mockups?.[0]
+  return project.pieces[0] ?? project.mockups?.[0] ?? project.carousels?.[0]?.slides[0]
 }
 
-function StoriesStrip({ stories }: { stories: GalleryImage[] }) {
-  return (
-    <div className="mt-8 border-t border-[#1e1e1e]/10 pt-8">
-      <div className="mb-5 flex items-end justify-between gap-6">
-        <h4 className="font-display text-[clamp(1.8rem,4vw,3.8rem)] font-extrabold leading-none tracking-[-0.05em]">Stories</h4>
-        <p className="max-w-[24ch] text-right text-xs uppercase tracking-[0.16em] text-[#1e1e1e]/46">formato vertical</p>
-      </div>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        {stories.map((story, index) => (
-          <figure key={story.src} className="overflow-hidden border border-[#1e1e1e]/10 bg-[#dedddd]">
-            <div className="relative mx-auto aspect-9/16 max-h-160">
-              <Image src={story.src} alt={story.alt} fill sizes="(max-width: 768px) 86vw, 28vw" className="object-cover" />
-            </div>
-            <figcaption className="border-t border-[#1e1e1e]/10 px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#1e1e1e]/54">
-              Story {String(index + 1).padStart(2, "0")}
-            </figcaption>
-          </figure>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function ProjectSection({ project, onOpen }: { project: GalleryProject; onOpen: (carousel: GalleryCarousel) => void }) {
-  const pieceCount = project.pieces.length + (project.stories?.length ?? 0) + (project.carousels?.reduce((total, carousel) => total + carousel.slides.length, 0) ?? 0)
+function GalleryHero({ projectCount, pieceCount }: { projectCount: number; pieceCount: number }) {
+  const { t } = useI18n()
 
   return (
-    <section className="border-t border-[#1e1e1e]/12 py-[clamp(56px,10vw,128px)]">
-      <div className="grid gap-8 lg:grid-cols-[minmax(220px,0.72fr)_minmax(0,1.5fr)] lg:gap-14">
-        <div className="lg:sticky lg:top-8 lg:self-start">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#1800ad]">{project.year}</p>
-          <h2 className="mt-4 max-w-[8ch] font-display text-[clamp(3.2rem,8vw,8rem)] font-extrabold leading-[0.82] tracking-[-0.075em]">
-            {project.name}
-          </h2>
-          <div className="mt-8 grid grid-cols-2 gap-4 border-y border-[#1e1e1e]/12 py-5 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#1e1e1e]/58 sm:grid-cols-3 lg:grid-cols-1">
-            <span>{project.type}</span>
-            <span>{pieceCount} peças</span>
-            <span>ordem manual</span>
-          </div>
-          <p className="mt-6 max-w-[38ch] text-sm leading-relaxed text-[#1e1e1e]/68 sm:text-base">{project.description}</p>
+    <section className="container-bleed relative isolate min-h-svh overflow-hidden pb-8 pt-12 sm:pt-13 lg:pb-12">
+      <p
+        aria-hidden="true"
+        className="pointer-events-none absolute left-[3.3vw] top-[21svh] -z-10 hidden w-[80vw] font-sans text-[15.2vw] font-black uppercase leading-none text-transparent lg:block"
+        style={{ WebkitTextStroke: "2px rgba(24, 0, 173, 0.075)" }}
+      >
+        {t("galleryArchiveGhost")}
+      </p>
+      <p
+        aria-hidden="true"
+        className="pointer-events-none absolute -left-[0.08em] top-[16svh] -z-10 font-sans text-[32vw] font-black uppercase leading-none text-transparent sm:text-[24vw] lg:hidden"
+        style={{ WebkitTextStroke: "1px rgba(24, 0, 173, 0.08)" }}
+      >
+        {t("galleryArchiveGhost")}
+      </p>
+
+      <div className="grid grid-cols-[1fr_auto] items-start gap-6 pr-20 text-[10px] font-black uppercase tracking-[0.22em] text-[#1e1e1e]/50 sm:grid-cols-3 sm:pr-22">
+        <span>{t("galleryHeroArchiveLabel")}</span>
+        <span className="hidden justify-self-center text-[#1800ad] sm:block">{t("galleryHeroSocialArchive")}</span>
+        <span className="justify-self-end">2025 - 2026</span>
+      </div>
+
+      <div className="relative min-h-[calc(100svh-108px)] lg:min-h-[calc(100svh-104px)]">
+        <div className="absolute left-0 top-[40svh] sm:top-[41svh] lg:left-[3.3vw] lg:top-[43svh]">
+          <h1 className="whitespace-nowrap text-[clamp(3.9rem,15.6vw,7.2rem)] font-black leading-[0.76] text-[#030303] sm:text-[clamp(6.8rem,10.2vw,11.2rem)] lg:text-[clamp(7.6rem,9.2vw,11.8rem)]">
+            {t("galleryHeroTitle")}
+          </h1>
         </div>
 
-        <div className="min-w-0">
-          <div className="grid auto-rows-auto grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-8 lg:gap-5">
-            {project.pieces.map((piece, index) => (
-              <PieceCard key={piece.src} piece={piece} index={index} />
-            ))}
-          </div>
+        <div className="absolute left-0 top-[74svh] sm:top-[75svh] lg:top-[72svh]">
+          <a
+            href="#selected-projects"
+            className="group inline-flex w-max items-center gap-5 text-[10px] font-black uppercase tracking-[0.16em] text-[#1e1e1e]/78 transition hover:text-[#1800ad] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1800ad] sm:text-[11px]"
+          >
+            <span className="transition group-hover:translate-y-1">
+              <ArrowDownRight />
+            </span>
+          </a>
+        </div>
 
-          {project.carousels?.length ? (
-            <div className="mt-5 grid gap-5 lg:grid-cols-2">
-              {project.carousels.map((carousel) => (
-                <CarouselCard key={carousel.title} project={project.name} carousel={carousel} onOpen={() => onOpen(carousel)} />
-              ))}
+        <div className="absolute right-0 top-[74svh] w-full max-w-155 sm:top-[75svh] lg:top-[72svh]">
+          <dl className="grid border-t border-[#1e1e1e]/18 pt-7 text-[10px] font-black uppercase tracking-[0.14em] text-[#1e1e1e]/50 sm:grid-cols-[1fr_auto_1fr_auto_1fr] sm:items-center">
+            <div className="grid gap-1 border-b border-[#1e1e1e]/10 py-3 sm:border-b-0 sm:py-0">
+              <dt className="order-2">{t("galleryHeroProjectsLabel")}</dt>
+              <dd className="order-1 text-base leading-none text-[#1e1e1e]">{String(projectCount).padStart(2, "0")}</dd>
             </div>
-          ) : null}
-
-          {project.stories?.length ? <StoriesStrip stories={project.stories} /> : null}
+            <span aria-hidden="true" className="hidden size-1.5 rounded-full bg-[#1800ad] sm:block" />
+            <div className="grid gap-1 border-b border-[#1e1e1e]/10 py-3 sm:border-b-0 sm:justify-self-center sm:py-0">
+              <dt className="order-2">{t("galleryHeroPiecesLabel")}</dt>
+              <dd className="order-1 text-base leading-none text-[#1e1e1e]">{String(pieceCount).padStart(2, "0")}</dd>
+            </div>
+            <span aria-hidden="true" className="hidden size-1.5 rounded-full bg-[#1800ad] sm:block" />
+            <div className="grid gap-1 py-3 sm:justify-self-end sm:py-0">
+              <dt className="order-2">{t("galleryHeroOrderLabel")}</dt>
+              <dd className="order-1 text-base leading-none text-[#1e1e1e]">{t("galleryHeroOrderValue")}</dd>
+            </div>
+          </dl>
         </div>
       </div>
     </section>
   )
 }
 
-function CarouselViewer({ viewer, onClose, onStep, onSelect }: { viewer: ViewerState; onClose: () => void; onStep: (direction: 1 | -1) => void; onSelect: (index: number) => void }) {
-  const slide = viewer.carousel.slides[viewer.index]
-
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose()
-      if (event.key === "ArrowRight") onStep(1)
-      if (event.key === "ArrowLeft") onStep(-1)
-    }
-
-    document.body.style.overflow = "hidden"
-    window.addEventListener("keydown", onKeyDown)
-    return () => {
-      document.body.style.overflow = ""
-      window.removeEventListener("keydown", onKeyDown)
-    }
-  }, [onClose, onStep])
+function SelectedProjectsIntro() {
+  const { t } = useI18n()
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#1e1e1e]/92 px-4 py-5 text-[#e8e7e7] backdrop-blur-md sm:px-8" role="dialog" aria-modal="true" aria-label={viewer.carousel.title}>
-      <div className="mx-auto flex h-full max-w-7xl flex-col">
-        <div className="flex items-center justify-between gap-4 border-b border-[#e8e7e7]/14 pb-4">
-          <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#e8e7e7]/54">{viewer.project}</p>
-            <h3 className="mt-1 font-display text-[clamp(1.8rem,4vw,4rem)] font-extrabold leading-none tracking-[-0.055em]">{viewer.carousel.title}</h3>
-          </div>
-          <button type="button" onClick={onClose} className="grid size-11 place-items-center rounded-full border border-[#e8e7e7]/25 text-2xl transition hover:bg-[#e8e7e7] hover:text-[#1e1e1e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#e8e7e7]" aria-label="Fechar viewer">
-            ×
-          </button>
+    <section id="selected-projects" className="container-bleed relative isolate overflow-hidden pb-[clamp(42px,6vw,76px)] pt-[clamp(56px,9vw,112px)]">
+      <div className="relative mt-[clamp(58px,12vw,132px)] grid gap-9 border-b border-[#1e1e1e]/14 pb-[clamp(42px,7vw,82px)] lg:grid-cols-[minmax(0,0.58fr)_minmax(360px,0.42fr)] lg:items-end">
+        <p
+          aria-hidden="true"
+          className="pointer-events-none absolute left-[8vw] top-[-0.26em] -z-10 hidden font-sans text-[15vw] font-black leading-none text-transparent lg:block"
+          style={{ WebkitTextStroke: "2px rgba(24, 0, 173, 0.07)" }}
+        >
+          03
+        </p>
+
+        <div>
+          <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#1800ad]">{t("gallerySelectedEyebrow")}</p>
+          <h1 className="mt-5 max-w-[9ch] text-[clamp(3.35rem,12vw,6.4rem)] font-black leading-[0.92] text-[#030303] sm:text-[clamp(5.2rem,8.2vw,7.5rem)] lg:text-[clamp(4.6rem,6.2vw,6.8rem)]">
+            {t("gallerySelectedTitle")}
+          </h1>
         </div>
 
-        <div className="grid min-h-0 flex-1 items-center gap-4 py-5 sm:grid-cols-[56px_minmax(0,1fr)_56px]">
-          <button type="button" onClick={() => onStep(-1)} className="hidden size-12 place-items-center rounded-full border border-[#e8e7e7]/24 text-2xl transition hover:bg-[#e8e7e7] hover:text-[#1e1e1e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#e8e7e7] sm:grid" aria-label="Slide anterior">
-            ←
-          </button>
-
-          <div className="relative mx-auto h-full min-h-105 w-full max-w-[min(86vw,760px)]">
-            <Image src={slide.src} alt={slide.alt} fill sizes="(max-width: 768px) 92vw, 760px" className="object-contain" priority />
-          </div>
-
-          <button type="button" onClick={() => onStep(1)} className="hidden size-12 place-items-center rounded-full border border-[#e8e7e7]/24 text-2xl transition hover:bg-[#e8e7e7] hover:text-[#1e1e1e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#e8e7e7] sm:grid" aria-label="Próximo slide">
-            →
-          </button>
-        </div>
-
-        <div className="flex items-center justify-between gap-4 border-t border-[#e8e7e7]/14 pt-4">
-          <button type="button" onClick={() => onStep(-1)} className="grid size-11 place-items-center rounded-full border border-[#e8e7e7]/24 text-xl sm:hidden" aria-label="Slide anterior">
-            ←
-          </button>
-          <div className="flex flex-1 items-center justify-center gap-2">
-            {viewer.carousel.slides.map((item, index) => (
-              <button
-                key={item.src}
-                type="button"
-                onClick={() => onSelect(index)}
-                className={`h-1.5 rounded-full transition-all ${index === viewer.index ? "w-10 bg-[#e8e7e7]" : "w-4 bg-[#e8e7e7]/28"}`}
-                aria-label={`Ir para slide ${index + 1}`}
-                aria-current={index === viewer.index}
-              />
-            ))}
-          </div>
-          <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#e8e7e7]/58">
-            {String(viewer.index + 1).padStart(2, "0")} / {String(viewer.carousel.slides.length).padStart(2, "0")}
-          </span>
-          <button type="button" onClick={() => onStep(1)} className="grid size-11 place-items-center rounded-full border border-[#e8e7e7]/24 text-xl sm:hidden" aria-label="Próximo slide">
-            →
-          </button>
+        <div className="max-w-[44ch] lg:justify-self-end lg:pb-3">
+          <p className="text-base font-semibold leading-relaxed text-[#1e1e1e]/58 sm:text-xl">
+            {t("gallerySelectedDescription")}
+          </p>
+          <a
+            href="#gallery-projects"
+            className="group mt-6 inline-flex w-max items-center gap-3 text-[10px] font-black uppercase tracking-[0.16em] text-[#1800ad] transition hover:text-[#1e1e1e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1800ad] sm:text-[11px]"
+          >
+            <span className="transition group-hover:translate-y-1">
+              <ArrowDownRight />
+            </span>
+            <RollingText>{t("gallerySelectedArchiveLink")}</RollingText>
+          </a>
         </div>
       </div>
-    </div>
+    </section>
+  )
+}
+
+function SelectedProjectCard({ project, index }: { project: GalleryProject; index: number }) {
+  const { t } = useI18n()
+  const cover = getProjectCover(project)
+  const pieceCount = countProjectPieces(project)
+
+  return (
+    <article className="border-b border-[#1e1e1e]/12 pb-9 lg:border-b-0 lg:pb-0">
+      <div className="mb-3 grid grid-cols-[1fr_auto] items-end gap-4">
+        <div>
+          <p className="text-[11px] font-black uppercase tracking-[0.18em] text-[#1800ad]">{String(index + 1).padStart(2, "0")}</p>
+          <h2 className="mt-2 text-[clamp(1.55rem,5vw,2rem)] font-black leading-none text-[#030303]">{project.name}</h2>
+        </div>
+        <span className="pb-1 text-[10px] font-black uppercase tracking-[0.16em] text-[#1e1e1e]/46">{pieceCount} {t("galleryPieceCountLabel")}</span>
+      </div>
+
+      {cover ? (
+        <Link href={`/gallery/${project.slug}`} className="group block overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1800ad]">
+          <span className="relative block aspect-[2.45/1] lg:aspect-square">
+            <Image
+              src={cover.src}
+              alt={cover.alt}
+              fill
+              sizes="(max-width: 768px) 92vw, 30vw"
+              className="object-contain transition duration-700 group-hover:scale-[1.02]"
+              priority={index < 3}
+            />
+          </span>
+        </Link>
+      ) : null}
+
+      <div className="mt-4 flex items-center justify-between gap-4 border-b border-[#1e1e1e]/12 pb-4 text-[10px] font-black uppercase tracking-[0.15em] text-[#1e1e1e]/48 lg:border-b-0">
+        <span>{project.type}</span>
+        <span className="hidden lg:inline">{pieceCount} {t("galleryPieceCountLabel")}</span>
+      </div>
+
+      <p className="mt-5 hidden text-base leading-relaxed text-[#1e1e1e]/62 lg:block">{project.description}</p>
+      <Link
+        href={`/gallery/${project.slug}`}
+        className="mt-6 inline-flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.18em] text-[#1800ad] transition hover:gap-5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1800ad]"
+      >
+        <RollingText>{t("galleryViewMorePieces")}</RollingText> <span aria-hidden="true">→</span>
+      </Link>
+    </article>
+  )
+}
+
+function SelectedProjects({ projects }: { projects: GalleryProject[] }) {
+  return (
+    <section id="gallery-projects" className="container-bleed pb-[clamp(56px,9vw,112px)]">
+      <div className="grid gap-9 lg:grid-cols-3 lg:gap-12">
+        {projects.map((project, index) => (
+          <SelectedProjectCard key={project.slug} project={project} index={index} />
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function PlaygroundPiece({ piece, index }: { piece: GalleryImage; index: number }) {
+  return (
+    <figure className={`relative overflow-visible transition duration-500 hover:-translate-y-1 ${playgroundClass[index % playgroundClass.length]}`}>
+      {index === 3 ? (
+        <span aria-hidden="true" className="absolute -right-5 -top-3 z-10 hidden h-8 w-22 rotate-12 bg-[#1800ad]/78 lg:block" />
+      ) : null}
+      <div className={`relative overflow-hidden border border-[#1e1e1e]/10 shadow-[0_18px_45px_rgba(30,30,30,0.08)] ${playgroundAspect[index % playgroundAspect.length]}`}>
+        <Image
+          src={piece.src}
+          alt={piece.alt}
+          fill
+          sizes="(max-width: 768px) 44vw, 24vw"
+          className="object-contain"
+        />
+      </div>
+      <figcaption className="sr-only">{piece.title}</figcaption>
+    </figure>
+  )
+}
+
+function PlaygroundSection({ pieces }: { pieces: GalleryImage[] }) {
+  const { t } = useI18n()
+
+  return (
+    <section id="creative-playground" className="container-bleed border-t border-[#1e1e1e]/12 py-[clamp(56px,8vw,96px)]">
+      <div className="grid gap-10 lg:grid-cols-[minmax(260px,0.36fr)_minmax(0,1fr)] lg:items-center lg:gap-14">
+        <div className="lg:pr-6">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#1800ad]">{t("galleryPlaygroundEyebrow")}</p>
+          <h2 className="mt-5 max-w-[10ch] text-[clamp(3rem,7vw,5.8rem)] font-black leading-[0.9] text-[#030303]">
+            {t("galleryPlaygroundTitle")}
+          </h2>
+          <p className="mt-8 max-w-[34ch] text-base font-semibold leading-relaxed text-[#1e1e1e]/58">
+            {t("galleryPlaygroundDescription")}
+          </p>
+          <p className="mt-12 text-[10px] font-black uppercase tracking-[0.22em] text-[#1800ad]">{t("galleryPlaygroundAnnex")}</p>
+        </div>
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:relative lg:h-130 lg:grid-cols-none lg:gap-0">
+          {pieces.map((piece, index) => (
+            <PlaygroundPiece key={piece.src} piece={piece} index={index} />
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function FinalGalleryCta() {
+  const { t } = useI18n()
+
+  return (
+    <section className="bg-[#1e1e1e] px-4 py-[clamp(78px,12vw,148px)] text-[#e8e7e7] sm:px-6">
+      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.42fr)] lg:items-end">
+        <div>
+          <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#e8e7e7]/46">{t("galleryFinalEyebrow")}</p>
+          <h2 className="mt-5 max-w-[10ch] font-display text-[clamp(4rem,11vw,11rem)] font-extrabold leading-[0.78] tracking-[-0.08em]">
+            {t("galleryFinalTitle")}
+          </h2>
+        </div>
+        <div>
+          <p className="max-w-[38ch] text-base leading-relaxed text-[#e8e7e7]/66 sm:text-lg">
+            {t("galleryFinalDescription")}
+          </p>
+          <MotionCta href="/#contact" className="mt-8">
+            {t("galleryFinalButton")}
+          </MotionCta>
+          <div className="mt-10 flex flex-wrap gap-x-5 gap-y-3 text-[10px] font-black uppercase tracking-[0.18em] text-[#e8e7e7]/44">
+            {socialLinks.map((link) => (
+              <a key={link.labelKey} href={link.href} className="transition hover:text-[#e8e7e7] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#e8e7e7]">
+                <RollingText variant="subtle">{t(link.labelKey as I18nKey)}</RollingText>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
   )
 }
 
 export default function DesignGallery() {
-  const [viewer, setViewer] = useState<ViewerState | null>(null)
-  const totalPieces = useMemo(
-    () =>
-      galleryProjects.reduce(
-        (total, project) =>
-          total +
-          project.pieces.length +
-          (project.stories?.length ?? 0) +
-          (project.carousels?.reduce((carouselTotal, carousel) => carouselTotal + carousel.slides.length, 0) ?? 0),
-        playgroundPieces.length,
-      ),
-    [],
-  )
+  const { t } = useI18n()
+  const projects = useMemo(() => getTranslatedGalleryProjects(t), [t])
+  const playground = useMemo(() => getTranslatedPlaygroundPieces(t), [t])
+  const totalPieces = projects.reduce((total, project) => total + countProjectPieces(project), playground.length)
 
-  const openCarousel = (project: string, carousel: GalleryCarousel) => {
-    setViewer({ project, carousel, index: 0 })
-  }
-
-  const stepViewer = (direction: 1 | -1) => {
-    setViewer((current) => {
-      if (!current) return current
-      const total = current.carousel.slides.length
-      return { ...current, index: (current.index + direction + total) % total }
-    })
-  }
+  useEffect(() => {
+    document.title = t("galleryMetaTitle")
+    document.querySelector('meta[name="description"]')?.setAttribute("content", t("galleryMetaDescription"))
+  }, [t])
 
   return (
     <div className="min-h-svh bg-[#e8e7e7] text-[#1e1e1e]">
-      <section className="container-bleed flex min-h-[92svh] flex-col justify-between pb-[clamp(34px,7vw,88px)] pt-[clamp(92px,13vw,154px)]">
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.65fr)] lg:items-end">
-          <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#1800ad]">arquivo visual</p>
-            <h1 className="mt-6 max-w-[9ch] font-display text-[clamp(4.8rem,16vw,15.5rem)] font-extrabold leading-[0.76] tracking-[-0.085em]">
-              Design Gallery
-            </h1>
-          </div>
-          <div className="lg:pb-5">
-            <p className="max-w-[40ch] text-[clamp(1rem,2vw,1.45rem)] leading-snug text-[#1e1e1e]/70">
-              Uma coleção de posts, carrosséis e peças visuais criadas para transformar ideias em presença digital.
-            </p>
-            <div className="mt-8 grid grid-cols-3 border-y border-[#1e1e1e]/12 py-5 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#1e1e1e]/58">
-              <span>{galleryProjects.length} projetos</span>
-              <span>{totalPieces} peças</span>
-              <span>manual order</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-16 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {galleryPreviewImages.map((item, index) => (
-            <figure key={item.src} className={`relative overflow-hidden border border-[#1e1e1e]/10 bg-[#dedddd] ${index % 2 ? "mt-8" : ""}`}>
-              <div className="relative aspect-4/5">
-                <Image src={item.src} alt={item.alt} fill sizes="(max-width: 768px) 44vw, 22vw" className="object-cover grayscale transition duration-700 hover:grayscale-0" priority />
-              </div>
-            </figure>
-          ))}
-        </div>
-      </section>
-
-      <div className="container-bleed">
-        {galleryProjects.map((project) => (
-          <ProjectSection key={project.name} project={project} onOpen={(carousel) => openCarousel(project.name, carousel)} />
-        ))}
-
-        <section className="border-t border-[#1e1e1e]/12 py-[clamp(56px,10vw,128px)]">
-          <div className="grid gap-8 lg:grid-cols-[minmax(220px,0.72fr)_minmax(0,1.5fr)] lg:gap-14">
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#1800ad]">estudos e conceitos</p>
-              <h2 className="mt-4 max-w-[10ch] font-display text-[clamp(3.2rem,8vw,8rem)] font-extrabold leading-[0.82] tracking-[-0.075em]">
-                Creative Playground
-              </h2>
-              <p className="mt-6 max-w-[42ch] text-sm leading-relaxed text-[#1e1e1e]/68 sm:text-base">
-                Nem toda ideia vira um projeto completo. Algumas existem para testar linguagem, experimentar composições e descobrir novas direções visuais.
-              </p>
-            </div>
-            <div className="grid auto-rows-auto grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-8 lg:gap-5">
-              {playgroundPieces.map((piece, index) => (
-                <PieceCard key={piece.src} piece={piece} index={index} />
-              ))}
-            </div>
-          </div>
-        </section>
-      </div>
-
-      <section className="bg-[#1e1e1e] px-4 py-[clamp(72px,12vw,148px)] text-[#e8e7e7] sm:px-6">
-        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
-          <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#e8e7e7]/46">motion</p>
-            <h2 className="mt-5 max-w-[12ch] font-display text-[clamp(3.6rem,9vw,9rem)] font-extrabold leading-[0.82] tracking-[-0.075em]">
-              Quando o design começa a se mover.
-            </h2>
-          </div>
-          <div className="max-w-[38ch]">
-            <p className="text-base leading-relaxed text-[#e8e7e7]/64">
-              Depois da composição, vem o ritmo. Veja como algumas ideias ganham narrativa através da edição.
-            </p>
-            <MotionCta href="/allprojects" className="mt-8">Ver projetos em vídeo</MotionCta>
-          </div>
-        </div>
-      </section>
-
-      {viewer ? <CarouselViewer viewer={viewer} onClose={() => setViewer(null)} onStep={stepViewer} onSelect={(index) => setViewer((current) => (current ? { ...current, index } : current))} /> : null}
+      <ScrollProgress />
+      <GalleryHero projectCount={projects.length} pieceCount={totalPieces} />
+      <SelectedProjectsIntro />
+      <SelectedProjects projects={projects} />
+      <PlaygroundSection pieces={playground} />
+      <FinalGalleryCta />
     </div>
   )
 }

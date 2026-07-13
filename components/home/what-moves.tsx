@@ -6,6 +6,7 @@ import Link from "next/link"
 import type { PointerEvent } from "react"
 import { useRef } from "react"
 import { useI18n } from "@/components/providers/i18n"
+import RollingText from "@/components/shared/rolling-text"
 
 const moveKeywords = /^(pararem|sentirem|lembrarem|stop|feel|remember|detengan|sientan|recuerden)[,.]?$/i
 
@@ -102,12 +103,7 @@ function MagneticAboutButton({ reducedMotion }: { reducedMotion: boolean }) {
           className="relative z-10 grid min-w-[8.5em] place-items-center tracking-[0.04em]"
           style={reducedMotion ? undefined : { x: innerX, y: innerY }}
         >
-          <span className="col-start-1 row-start-1 transition-[transform,opacity] duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:-translate-y-2 group-hover:opacity-0">
-            {t("moreAboutMovesCta")}
-          </span>
-          <span className="col-start-1 row-start-1 translate-y-2 opacity-0 transition-[transform,opacity] duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:translate-y-0 group-hover:opacity-100">
-            {t("moreAboutMovesCtaHover")}
-          </span>
+          <RollingText variant="strong" hoverText={t("moreAboutMovesCtaHover")}>{t("moreAboutMovesCta")}</RollingText>
         </motion.span>
       </Link>
     </motion.div>

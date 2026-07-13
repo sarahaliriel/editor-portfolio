@@ -1,6 +1,5 @@
 "use client"
 
-import Image from "next/image"
 import type { MouseEvent, RefObject } from "react"
 import { ProjectControlIcon, ProjectControls, projectControlClass } from "@/components/allprojects/project-controls"
 import type { ArchiveProject } from "@/data/all-projects"
@@ -28,7 +27,6 @@ type ProjectPlayerProps = {
   videoRef: RefObject<HTMLVideoElement | null>
   playerRef: RefObject<HTMLDivElement | null>
   videoSrc: string
-  activeIndex: number
   onBeginSeek: () => void
   onClose: () => void
   onCommitSeek: () => void
@@ -46,7 +44,6 @@ type ProjectPlayerProps = {
 }
 
 export function ProjectPlayer({
-  activeIndex,
   closeLabel,
   current,
   currentTime,
@@ -113,13 +110,11 @@ export function ProjectPlayer({
           <button type="button" onClick={onTogglePlay} className="absolute inset-0 z-10" aria-label={playing ? "Pausar" : "Reproduzir"} />
 
           <div key={`video-stage-${current.id}`} className="absolute inset-0 animate-[apMediaIn_560ms_cubic-bezier(.2,.9,.2,1)_both]">
-            <Image src={current.poster} alt="" fill priority={activeIndex === 0} className="object-cover opacity-80" sizes="(max-width: 1024px) 100vw, 1080px" />
-            <div className="absolute inset-0 bg-black/28" />
             {videoSrc ? (
               <video
                 ref={videoRef}
                 key={`video-${current.id}-${videoSrc}`}
-                poster={current.poster}
+                autoPlay
                 playsInline
                 muted={muted || volume <= 0}
                 controls={false}
@@ -133,7 +128,7 @@ export function ProjectPlayer({
                 <div>
                   <div className="text-[11px] uppercase tracking-[0.2em] text-[#e8e7e7]/60">video source pending</div>
                   <div className="mt-3 max-w-[42ch] text-[14px] leading-snug text-[#e8e7e7]/78">
-                    Add a direct MP4 URL or a Google Drive share link in <span className="text-white">src</span>.
+                    Add a direct MP4 URL in <span className="text-white">src</span>.
                   </div>
                 </div>
               </div>

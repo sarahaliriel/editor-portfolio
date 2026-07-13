@@ -1,4 +1,5 @@
 import Link from "next/link"
+import RollingText from "@/components/shared/rolling-text"
 
 type MotionCtaProps = {
   href: string
@@ -16,7 +17,7 @@ export default function MotionCta({ href, children, ariaLabel, className = "" }:
     >
       <span className="absolute inset-0 origin-left scale-x-0 bg-[#1800ad] transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-x-100" aria-hidden="true" />
       <span className="relative z-10 flex items-center gap-3">
-        {children}
+        <RollingText variant="strong">{children}</RollingText>
         <span className="transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">↗</span>
       </span>
     </Link>

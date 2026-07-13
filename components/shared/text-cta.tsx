@@ -1,4 +1,5 @@
 import Link from "next/link"
+import RollingText from "@/components/shared/rolling-text"
 
 type TextCtaProps = {
   href: string
@@ -19,7 +20,7 @@ export default function TextCta({ href, children, ariaLabel, tone = "dark", clas
       aria-label={ariaLabel ?? children}
       className={`group/cta inline-flex w-fit items-center gap-3 border-b border-[#1800ad] pb-1 text-[11px] font-semibold uppercase tracking-[0.18em] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-4 ${colorClass} ${className}`}
     >
-      {children}
+      <RollingText>{children}</RollingText>
       <span className="transition-transform duration-300 group-hover/cta:translate-x-1" aria-hidden="true">→</span>
     </Link>
   )

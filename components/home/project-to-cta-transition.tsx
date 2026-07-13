@@ -19,6 +19,7 @@ export default function ProjectToCtaTransition() {
   const sectionRef = useRef<HTMLElement>(null)
   const buttonAnchorRef = useRef<HTMLDivElement>(null)
   const [contentActive, setContentActive] = useState(reducedMotion)
+  const [buttonVisible, setButtonVisible] = useState(reducedMotion)
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start end", "end end"] })
 
   useEffect(() => {
@@ -37,8 +38,9 @@ export default function ProjectToCtaTransition() {
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     if (reducedMotion) return
+    if (latest >= 0.72) setButtonVisible(true)
     setContentActive((current) => {
-      const next = latest >= 0.72
+      const next = latest >= 0.84
       return current === next ? current : next
     })
   })
@@ -72,7 +74,7 @@ export default function ProjectToCtaTransition() {
           buttonAnchorRef={buttonAnchorRef}
           interactive={reducedMotion || contentActive}
           animateReveal={false}
-          externalButton
+          buttonVisible={buttonVisible}
           style={reducedMotion ? undefined : { opacity: contentOpacity, y: contentY, filter: contentBlur }}
         />
 
