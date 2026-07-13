@@ -27,7 +27,7 @@ const reveal: Variants = {
   },
 }
 
-function LocalTime({ label }: { label: string }) {
+function LocalTime({ label, dark = false }: { label: string; dark?: boolean }) {
   const [localTime, setLocalTime] = useState("--:--:--")
   const [localZone, setLocalZone] = useState("Lisboa")
 
@@ -53,8 +53,8 @@ function LocalTime({ label }: { label: string }) {
 
   return (
     <div className="text-center">
-      <span className="block text-[#1e1e1e]/48">{label}</span>
-      <time className="mt-1.5 block font-medium tabular-nums tracking-[0.08em] text-[#1e1e1e]/82 sm:mt-2">
+      <span className={`block ${dark ? "text-[#e8e7e7]/48" : "text-[#1e1e1e]/48"}`}>{label}</span>
+      <time className={`mt-1.5 block font-medium tabular-nums tracking-[0.08em] sm:mt-2 ${dark ? "text-[#e8e7e7]/82" : "text-[#1e1e1e]/82"}`}>
         {localTime} {localZone}
       </time>
     </div>
@@ -70,6 +70,7 @@ type FinalCtaContentProps = {
   buttonVisible?: boolean
   interactive?: boolean
   animateReveal?: boolean
+  theme?: "light" | "dark"
 }
 
 export default function FinalCtaContent({
@@ -81,6 +82,7 @@ export default function FinalCtaContent({
   buttonVisible = true,
   interactive = true,
   animateReveal = true,
+  theme = "light",
 }: FinalCtaContentProps) {
   const { t } = useI18n()
   const reducedMotion = Boolean(useReducedMotion())
@@ -91,8 +93,15 @@ export default function FinalCtaContent({
   const revealProps = animateReveal && !reducedMotion
     ? { variants: reveal, initial: "hidden" as const, whileInView: "show" as const, viewport: { once: true, amount: 0.18 } }
     : {}
-  const pillClassName =
-    "group relative inline-flex h-13 w-full max-w-sm items-center justify-center overflow-hidden rounded-full border border-[#1e1e1e]/30 px-5 text-center text-[11px] font-medium text-[#1e1e1e]/86 transition-[border-color,color,transform] duration-500 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-0.5 hover:border-[#1e1e1e]/70 hover:text-[#e8e7e7] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1e1e1e] sm:h-16 sm:w-72 sm:px-7 sm:text-[13px] lg:h-18"
+  const isDark = theme === "dark"
+  const mutedInk = isDark ? "text-[#e8e7e7]/48" : "text-[#1e1e1e]/48"
+  const detailInk = isDark ? "text-[#e8e7e7]/82" : "text-[#1e1e1e]/82"
+  const pillClassName = `group relative inline-flex h-13 w-full max-w-sm items-center justify-center overflow-hidden rounded-full border px-5 text-center text-[11px] font-medium transition-[border-color,color,transform] duration-500 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 sm:h-16 sm:w-72 sm:px-7 sm:text-[13px] lg:h-18 ${
+    isDark
+      ? "border-[#e8e7e7]/30 text-[#e8e7e7]/86 hover:border-[#e8e7e7]/70 hover:text-[#1e1e1e] focus-visible:outline-[#e8e7e7]"
+      : "border-[#1e1e1e]/30 text-[#1e1e1e]/86 hover:border-[#1e1e1e]/70 hover:text-[#e8e7e7] focus-visible:outline-[#1e1e1e]"
+  }`
+  const pillFill = isDark ? "bg-[#e8e7e7]" : "bg-[#1e1e1e]"
 
   const move = (event: PointerEvent<HTMLElement>) => {
     if (reducedMotion || !interactive || event.pointerType === "touch") return
@@ -115,7 +124,7 @@ export default function FinalCtaContent({
       style={style}
       onPointerMove={move}
       onPointerLeave={reset}
-      className="relative flex min-h-svh w-full overflow-hidden bg-[#e8e7e7] px-4 pb-7 pt-10 text-[#1e1e1e] sm:px-8 sm:pb-9 sm:pt-16 lg:px-12 lg:pb-10 lg:pt-20"
+      className={`relative flex min-h-svh w-full overflow-hidden px-4 pb-7 pt-10 sm:px-8 sm:pb-9 sm:pt-16 lg:px-12 lg:pb-10 lg:pt-20 ${isDark ? "bg-[#1e1e1e] text-[#e8e7e7]" : "bg-[#e8e7e7] text-[#1e1e1e]"}`}
     >
       <div className="relative mx-auto flex w-full max-w-370 flex-1 flex-col justify-between gap-8 sm:gap-10">
         <div className="flex flex-1 flex-col items-center justify-center text-center sm:items-stretch sm:pb-10 sm:text-left lg:pb-14">
@@ -135,7 +144,7 @@ export default function FinalCtaContent({
             ))}
           </motion.h2>
 
-          <div className="relative z-20 mt-14 w-full border-t border-[#1e1e1e]/28 sm:mt-[clamp(2.5rem,6vh,5.5rem)]">
+          <div className={`relative z-20 mt-14 w-full border-t sm:mt-[clamp(2.5rem,6vh,5.5rem)] ${isDark ? "border-[#e8e7e7]/28" : "border-[#1e1e1e]/28"}`}>
             <div
               ref={buttonAnchorRef}
               className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 sm:left-auto sm:right-[clamp(1rem,8vw,8rem)] sm:translate-x-0"
@@ -152,9 +161,9 @@ export default function FinalCtaContent({
                     href="mailto:dumitrachebusiness@gmail.com"
                     aria-label={button}
                     tabIndex={interactive ? undefined : -1}
-                    className="group relative inline-flex aspect-square w-[clamp(112px,13vw,202px)] items-center justify-center overflow-hidden rounded-full bg-[#1800ad] p-5 text-center font-display text-[clamp(.68rem,.9vw,.88rem)] font-semibold uppercase leading-tight text-[#e8e7e7] transition-[transform,box-shadow,color] duration-700 hover:scale-[1.07] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1e1e1e]"
+                    className={`group relative inline-flex aspect-square w-[clamp(112px,13vw,202px)] items-center justify-center overflow-hidden rounded-full bg-[#1800ad] p-5 text-center font-display text-[clamp(.68rem,.9vw,.88rem)] font-semibold uppercase leading-tight text-[#e8e7e7] transition-[transform,box-shadow,color] duration-700 hover:scale-[1.07] focus-visible:outline-2 focus-visible:outline-offset-4 ${isDark ? "hover:text-[#1800ad] focus-visible:outline-[#e8e7e7]" : "focus-visible:outline-[#1e1e1e]"}`}
                   >
-                    <span aria-hidden="true" className="absolute inset-0 origin-bottom scale-y-0 rounded-full bg-[#1e1e1e] transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100" />
+                    <span aria-hidden="true" className={`absolute inset-0 origin-bottom scale-y-0 rounded-full transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100 ${isDark ? "bg-[#e8e7e7]" : "bg-[#1e1e1e]"}`} />
                     <span className="relative z-10 flex items-center gap-2.5">
                       <RollingText variant="strong">{button}</RollingText>
                       <span aria-hidden="true" className="text-base transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1">↗</span>
@@ -170,27 +179,27 @@ export default function FinalCtaContent({
             {...revealProps}
           >
             <a href="mailto:dumitrachebusiness@gmail.com" tabIndex={interactive ? undefined : -1} className={pillClassName}>
-              <span aria-hidden="true" className="absolute inset-0 origin-bottom scale-y-0 rounded-full bg-[#1e1e1e] transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100" />
+              <span aria-hidden="true" className={`absolute inset-0 origin-bottom scale-y-0 rounded-full transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100 ${pillFill}`} />
               <RollingText variant="subtle" className="relative z-10">dumitrachebusiness@gmail.com</RollingText>
             </a>
             <a href={RESUME_HREF} download tabIndex={interactive ? undefined : -1} className={pillClassName} aria-label={t("moreAboutCtaResume")}>
-              <span aria-hidden="true" className="absolute inset-0 origin-bottom scale-y-0 rounded-full bg-[#1e1e1e] transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100" />
+              <span aria-hidden="true" className={`absolute inset-0 origin-bottom scale-y-0 rounded-full transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100 ${pillFill}`} />
               <RollingText variant="strong" className="relative z-10 uppercase">{t("moreAboutCtaResume")}</RollingText>
             </a>
           </motion.div>
         </div>
 
-        <footer className="grid gap-4 border-t border-[#1e1e1e]/16 pt-4 text-center text-[9px] uppercase tracking-[0.12em] sm:grid-cols-[1fr_1fr_1fr] sm:items-end sm:gap-6 sm:border-0 sm:pt-0 sm:text-left sm:text-[11px] lg:text-xs">
+        <footer className={`grid gap-4 border-t pt-4 text-center text-[9px] uppercase tracking-[0.12em] sm:grid-cols-[1fr_1fr_1fr] sm:items-end sm:gap-6 sm:border-0 sm:pt-0 sm:text-left sm:text-[11px] lg:text-xs ${isDark ? "border-[#e8e7e7]/16" : "border-[#1e1e1e]/16"}`}>
           <div className="sm:text-left">
-            <span className="block text-[#1e1e1e]/48">{t("moreAboutFooterEdition")}</span>
-            <span className="mt-1.5 block tracking-normal text-[#1e1e1e]/82 sm:mt-2">2026 © Sarah Aliriel</span>
+            <span className={`block ${mutedInk}`}>{t("moreAboutFooterEdition")}</span>
+            <span className={`mt-1.5 block tracking-normal sm:mt-2 ${detailInk}`}>2026 © Sarah Aliriel</span>
           </div>
-          <LocalTime label={t("moreAboutFooterLocalTime")} />
+          <LocalTime label={t("moreAboutFooterLocalTime")} dark={isDark} />
           <nav aria-label={t("moreAboutFooterSocials")}>
-            <span className="block text-[#1e1e1e]/48 sm:text-right">{t("moreAboutFooterSocials")}</span>
+            <span className={`block sm:text-right ${mutedInk}`}>{t("moreAboutFooterSocials")}</span>
             <div className="mt-1.5 flex flex-wrap justify-center gap-x-4 gap-y-1.5 tracking-normal sm:mt-2 sm:justify-end sm:gap-x-5 sm:gap-y-2">
               {SOCIALS.map((social) => (
-                <a key={social.label} href={social.href} target="_blank" rel="noreferrer" tabIndex={interactive ? undefined : -1} className="link-underline-invert normal-case text-[#1e1e1e]/82">
+                <a key={social.label} href={social.href} target="_blank" rel="noreferrer" tabIndex={interactive ? undefined : -1} className={`link-underline-invert normal-case ${detailInk}`}>
                   <RollingText variant="subtle">{social.label}</RollingText>
                 </a>
               ))}

@@ -2,54 +2,91 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion"
 import RollingText from "@/components/shared/rolling-text"
-import { useEffect, useMemo } from "react"
-import { type I18nKey, useI18n } from "@/components/providers/i18n"
-import MotionCta from "@/components/shared/motion-cta"
+import { createPortal } from "react-dom"
+import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react"
+import { useI18n } from "@/components/providers/i18n"
+import FinalCtaContent from "@/components/shared/final-cta-content"
 import ScrollProgress from "@/components/layout/scroll-progress"
 import ArrowDownRight from "@/components/gallery/arrow-down-right"
 import { getTranslatedGalleryProjects, getTranslatedPlaygroundPieces, type GalleryImage, type GalleryProject } from "@/data/gallery"
 
-const playgroundClass = [
-  "lg:absolute lg:left-[3%] lg:top-[8%] lg:w-[27%] lg:rotate-[-4deg]",
-  "lg:absolute lg:left-[34%] lg:top-[10%] lg:w-[21%]",
-  "lg:absolute lg:left-[59%] lg:top-[7%] lg:w-[24%] lg:rotate-[4deg]",
-  "lg:absolute lg:left-[2%] lg:top-[50%] lg:w-[19%]",
-  "lg:absolute lg:left-[24%] lg:top-[52%] lg:w-[18%]",
-  "lg:absolute lg:left-[46%] lg:top-[51%] lg:w-[34%] lg:rotate-[1deg]",
-  "lg:absolute lg:left-[83%] lg:top-[52%] lg:w-[14%] lg:rotate-[5deg]",
-]
+const playgroundOffset = ["", "mt-3", "mt-1", "mt-2", "", "mt-2", "mt-1"]
 
-const playgroundAspect = [
-  "aspect-[1.42/1]",
-  "aspect-square",
-  "aspect-[0.82/1]",
-  "aspect-[0.78/1]",
-  "aspect-[0.9/1]",
-  "aspect-[1.7/1]",
-  "aspect-[0.66/1]",
-]
+type ViewCursorHandlers = {
+  onPointerEnter: (event: ReactPointerEvent<HTMLElement>) => void
+  onPointerMove: (event: ReactPointerEvent<HTMLElement>) => void
+  onPointerLeave: () => void
+}
 
-const socialLinks = [
-  { labelKey: "gallerySocialEmail", href: "mailto:dumitrachebusiness@gmail.com" },
-  { labelKey: "gallerySocialLinkedIn", href: "https://www.linkedin.com/in/sarah-dumitrache/" },
-  { labelKey: "gallerySocialGitHub", href: "https://github.com/sarahaliriel" },
-  { labelKey: "gallerySocialInstagram", href: "https://www.instagram.com/chazinhodociel/" },
-]
+function useViewCursor() {
+  const { t } = useI18n()
+  const reducedMotion = Boolean(useReducedMotion())
+  const [canHover, setCanHover] = useState(false)
+  const [hovered, setHovered] = useState(false)
+  const pointerX = useMotionValue(0)
+  const pointerY = useMotionValue(0)
+  const cursorX = useSpring(pointerX, { stiffness: 105, damping: 22, mass: 0.72 })
+  const cursorY = useSpring(pointerY, { stiffness: 105, damping: 22, mass: 0.72 })
+
+  useEffect(() => {
+    const hoverQuery = window.matchMedia("(hover: hover) and (pointer: fine)")
+    const update = () => {
+      const enabled = hoverQuery.matches && !reducedMotion
+      setCanHover(enabled)
+      if (!enabled) setHovered(false)
+    }
+
+    update()
+    hoverQuery.addEventListener("change", update)
+    return () => hoverQuery.removeEventListener("change", update)
+  }, [reducedMotion])
+
+  const move = (event: ReactPointerEvent<HTMLElement>) => {
+    if (!canHover) return
+    pointerX.set(event.clientX)
+    pointerY.set(event.clientY)
+  }
+
+  const handlers: ViewCursorHandlers = {
+    onPointerEnter: (event) => {
+      if (!canHover) return
+      move(event)
+      setHovered(true)
+    },
+    onPointerMove: move,
+    onPointerLeave: () => setHovered(false),
+  }
+
+  const cursor = canHover ? (
+    <motion.div
+      aria-hidden="true"
+      className="pointer-events-none fixed left-0 top-0 z-30001"
+      style={{ x: cursorX, y: cursorY }}
+      initial={false}
+      animate={hovered ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.72 }}
+      transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
+    >
+      <span className="grid size-20 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-[#1800ad] px-3 text-center font-display text-[10px] font-semibold uppercase tracking-[0.14em] text-white shadow-[0_14px_40px_rgba(24,0,173,0.28)]">
+        {t("cursorView")}
+      </span>
+    </motion.div>
+  ) : null
+
+  return { handlers, cursor }
+}
 
 function countProjectPieces(project: GalleryProject) {
   return (
     project.pieces.length +
     (project.stories?.length ?? 0) +
-    (project.mockups?.length ?? 0) +
     (project.carousels?.reduce((total, carousel) => total + carousel.slides.length, 0) ?? 0)
   )
 }
 
 function getProjectCover(project: GalleryProject) {
-  if (project.slug === "the-real-tocha") return project.mockups?.[0] ?? project.pieces[0]
-  if (project.slug === "sdp") return project.carousels?.[0]?.slides[0] ?? project.mockups?.[0]
-  return project.pieces[0] ?? project.mockups?.[0] ?? project.carousels?.[0]?.slides[0]
+  return project.heroMockup ?? project.pieces[0] ?? project.carousels?.[0]?.slides[0]
 }
 
 function GalleryHero({ projectCount, pieceCount }: { projectCount: number; pieceCount: number }) {
@@ -119,7 +156,7 @@ function GalleryHero({ projectCount, pieceCount }: { projectCount: number; piece
   )
 }
 
-function SelectedProjectsIntro() {
+function SelectedProjectsIntro({ projectCount }: { projectCount: number }) {
   const { t } = useI18n()
 
   return (
@@ -130,7 +167,7 @@ function SelectedProjectsIntro() {
           className="pointer-events-none absolute left-[8vw] top-[-0.26em] -z-10 hidden font-sans text-[15vw] font-black leading-none text-transparent lg:block"
           style={{ WebkitTextStroke: "2px rgba(24, 0, 173, 0.07)" }}
         >
-          03
+          {String(projectCount).padStart(2, "0")}
         </p>
 
         <div>
@@ -159,7 +196,7 @@ function SelectedProjectsIntro() {
   )
 }
 
-function SelectedProjectCard({ project, index }: { project: GalleryProject; index: number }) {
+function SelectedProjectCard({ project, index, viewCursor }: { project: GalleryProject; index: number; viewCursor: ViewCursorHandlers }) {
   const { t } = useI18n()
   const cover = getProjectCover(project)
   const pieceCount = countProjectPieces(project)
@@ -175,7 +212,14 @@ function SelectedProjectCard({ project, index }: { project: GalleryProject; inde
       </div>
 
       {cover ? (
-        <Link href={`/gallery/${project.slug}`} className="group block overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1800ad]">
+        <Link
+          href={`/gallery/${project.slug}`}
+          data-cursor="hidden"
+          onPointerEnter={viewCursor.onPointerEnter}
+          onPointerMove={viewCursor.onPointerMove}
+          onPointerLeave={viewCursor.onPointerLeave}
+          className="group block overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1800ad]"
+        >
           <span className="relative block aspect-[2.45/1] lg:aspect-square">
             <Image
               src={cover.src}
@@ -206,32 +250,59 @@ function SelectedProjectCard({ project, index }: { project: GalleryProject; inde
 }
 
 function SelectedProjects({ projects }: { projects: GalleryProject[] }) {
+  const viewCursor = useViewCursor()
+
   return (
-    <section id="gallery-projects" className="container-bleed pb-[clamp(56px,9vw,112px)]">
-      <div className="grid gap-9 lg:grid-cols-3 lg:gap-12">
-        {projects.map((project, index) => (
-          <SelectedProjectCard key={project.slug} project={project} index={index} />
-        ))}
-      </div>
-    </section>
+    <>
+      <section id="gallery-projects" className="container-bleed pb-[clamp(56px,9vw,112px)]">
+        <div className="grid gap-9 lg:grid-cols-3 lg:gap-12">
+          {projects.map((project, index) => (
+            <SelectedProjectCard key={project.slug} project={project} index={index} viewCursor={viewCursor.handlers} />
+          ))}
+        </div>
+      </section>
+      {viewCursor.cursor}
+    </>
   )
 }
 
-function PlaygroundPiece({ piece, index }: { piece: GalleryImage; index: number }) {
+function PlaygroundPiece({
+  piece,
+  index,
+  onOpen,
+  onPointerEnter,
+  onPointerMove,
+  onPointerLeave,
+}: {
+  piece: GalleryImage
+  index: number
+  onOpen: () => void
+  onPointerEnter: (event: ReactPointerEvent<HTMLButtonElement>) => void
+  onPointerMove: (event: ReactPointerEvent<HTMLButtonElement>) => void
+  onPointerLeave: () => void
+}) {
+  const { t } = useI18n()
+
   return (
-    <figure className={`relative overflow-visible transition duration-500 hover:-translate-y-1 ${playgroundClass[index % playgroundClass.length]}`}>
-      {index === 3 ? (
-        <span aria-hidden="true" className="absolute -right-5 -top-3 z-10 hidden h-8 w-22 rotate-12 bg-[#1800ad]/78 lg:block" />
-      ) : null}
-      <div className={`relative overflow-hidden border border-[#1e1e1e]/10 shadow-[0_18px_45px_rgba(30,30,30,0.08)] ${playgroundAspect[index % playgroundAspect.length]}`}>
+    <figure className={`min-w-0 transition-[opacity,transform] duration-500 ease-out group-hover/playground:opacity-55 hover:!opacity-100 hover:-translate-y-0.5 focus-within:!opacity-100 motion-reduce:transform-none motion-reduce:transition-none ${playgroundOffset[index % playgroundOffset.length]}`}>
+      <button
+        type="button"
+        onClick={onOpen}
+        data-cursor="hidden"
+        onPointerEnter={onPointerEnter}
+        onPointerMove={onPointerMove}
+        onPointerLeave={onPointerLeave}
+        aria-label={`${t("galleryPlaygroundOpen")}: ${piece.title}`}
+        className="relative block aspect-4/5 w-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1800ad]"
+      >
         <Image
           src={piece.src}
           alt={piece.alt}
           fill
-          sizes="(max-width: 768px) 44vw, 24vw"
-          className="object-contain"
+          sizes="(max-width: 379px) 94vw, (max-width: 639px) 47vw, (max-width: 1023px) 32vw, 24vw"
+          className="object-contain transition-transform duration-500 ease-out hover:scale-[1.008] motion-reduce:transition-none"
         />
-      </div>
+      </button>
       <figcaption className="sr-only">{piece.title}</figcaption>
     </figure>
   )
@@ -239,27 +310,85 @@ function PlaygroundPiece({ piece, index }: { piece: GalleryImage; index: number 
 
 function PlaygroundSection({ pieces }: { pieces: GalleryImage[] }) {
   const { t } = useI18n()
+  const viewCursor = useViewCursor()
+  const [activeIndex, setActiveIndex] = useState<number | null>(null)
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
+  const activePiece = activeIndex === null ? null : pieces[activeIndex]
+  const activePosition = activeIndex ?? 0
+
+  useEffect(() => {
+    if (activeIndex === null) return
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    closeButtonRef.current?.focus()
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setActiveIndex(null)
+      if (event.key === "ArrowRight") setActiveIndex((current) => current === null ? null : (current + 1) % pieces.length)
+      if (event.key === "ArrowLeft") setActiveIndex((current) => current === null ? null : (current - 1 + pieces.length) % pieces.length)
+    }
+
+    window.addEventListener("keydown", onKeyDown)
+    return () => {
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener("keydown", onKeyDown)
+    }
+  }, [activeIndex, pieces.length])
 
   return (
-    <section id="creative-playground" className="container-bleed border-t border-[#1e1e1e]/12 py-[clamp(56px,8vw,96px)]">
-      <div className="grid gap-10 lg:grid-cols-[minmax(260px,0.36fr)_minmax(0,1fr)] lg:items-center lg:gap-14">
-        <div className="lg:pr-6">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#1800ad]">{t("galleryPlaygroundEyebrow")}</p>
-          <h2 className="mt-5 max-w-[10ch] text-[clamp(3rem,7vw,5.8rem)] font-black leading-[0.9] text-[#030303]">
+    <>
+      <section id="creative-playground" aria-labelledby="playground-title" className="container-bleed border-t border-[#1e1e1e]/12 pb-[clamp(56px,7vw,88px)] pt-[clamp(52px,7vw,84px)]">
+        <header className="grid gap-7 border-b border-[#1e1e1e]/18 pb-[clamp(32px,5vw,56px)] lg:grid-cols-[minmax(0,0.58fr)_minmax(320px,0.42fr)] lg:items-end">
+          <h2 id="playground-title" className="text-[clamp(3.1rem,9vw,7.6rem)] font-black uppercase leading-[0.84] tracking-[-0.065em] text-[#1e1e1e]">
             {t("galleryPlaygroundTitle")}
           </h2>
-          <p className="mt-8 max-w-[34ch] text-base font-semibold leading-relaxed text-[#1e1e1e]/58">
-            {t("galleryPlaygroundDescription")}
-          </p>
-          <p className="mt-12 text-[10px] font-black uppercase tracking-[0.22em] text-[#1800ad]">{t("galleryPlaygroundAnnex")}</p>
-        </div>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:relative lg:h-130 lg:grid-cols-none lg:gap-0">
+          <div className="lg:justify-self-end">
+            <p className="max-w-[44ch] text-base font-semibold leading-relaxed text-[#1e1e1e]/62 sm:text-lg">{t("galleryPlaygroundDescription")}</p>
+            <p className="mt-6 text-[10px] font-black uppercase tracking-[0.22em] text-[#1800ad]">
+              {String(pieces.length).padStart(2, "0")} {t("galleryPlaygroundCount")}
+            </p>
+          </div>
+        </header>
+
+        <div className="group/playground mt-4 grid grid-cols-1 items-start gap-x-1.5 gap-y-2 min-[380px]:grid-cols-2 sm:grid-cols-3 sm:gap-x-2 lg:grid-cols-4">
           {pieces.map((piece, index) => (
-            <PlaygroundPiece key={piece.src} piece={piece} index={index} />
+            <PlaygroundPiece
+              key={piece.src}
+              piece={piece}
+              index={index}
+              onOpen={() => setActiveIndex(index)}
+              onPointerEnter={viewCursor.handlers.onPointerEnter}
+              onPointerMove={viewCursor.handlers.onPointerMove}
+              onPointerLeave={viewCursor.handlers.onPointerLeave}
+            />
           ))}
         </div>
-      </div>
-    </section>
+      </section>
+
+      {viewCursor.cursor}
+
+      {activePiece && typeof document !== "undefined" ? createPortal(
+        <div role="dialog" aria-modal="true" aria-label={activePiece.title} className="fixed inset-0 z-20000 grid place-items-center bg-[#1e1e1e]/96 p-3 text-[#e8e7e7] sm:p-6">
+          <button type="button" onClick={() => setActiveIndex(null)} aria-label={t("galleryPlaygroundClose")} className="absolute inset-0 cursor-default" />
+          <div className="pointer-events-none relative z-10 flex h-full max-h-[calc(100svh-1.5rem)] w-full max-w-7xl flex-col sm:max-h-[calc(100svh-3rem)]">
+            <div className="pointer-events-auto flex items-center justify-between border-b border-[#e8e7e7]/18 pb-3 text-[10px] font-black uppercase tracking-[0.2em]">
+              <span className="text-[#e8e7e7]/58">{String(activePosition + 1).padStart(2, "0")} / {String(pieces.length).padStart(2, "0")}</span>
+              <button ref={closeButtonRef} type="button" onClick={() => setActiveIndex(null)} className="transition hover:text-[#1800ad] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#e8e7e7]">{t("galleryPlaygroundClose")}</button>
+            </div>
+            <figure className="relative min-h-0 flex-1">
+              <Image src={activePiece.src} alt={activePiece.alt} fill sizes="100vw" className="object-contain py-4" priority />
+              <figcaption className="sr-only">{activePiece.title}</figcaption>
+            </figure>
+            <div className="pointer-events-auto flex items-center justify-between border-t border-[#e8e7e7]/18 pt-3 text-[10px] font-black uppercase tracking-[0.18em]">
+              <button type="button" onClick={() => setActiveIndex((activePosition - 1 + pieces.length) % pieces.length)} aria-label={t("galleryPlaygroundPrevious")} className="min-h-11 px-3 transition hover:text-[#1800ad] focus-visible:outline-2 focus-visible:outline-[#e8e7e7]">← {t("galleryPlaygroundPrevious")}</button>
+              <button type="button" onClick={() => setActiveIndex((activePosition + 1) % pieces.length)} aria-label={t("galleryPlaygroundNext")} className="min-h-11 px-3 transition hover:text-[#1800ad] focus-visible:outline-2 focus-visible:outline-[#e8e7e7]">{t("galleryPlaygroundNext")} →</button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      ) : null}
+    </>
   )
 }
 
@@ -267,31 +396,12 @@ function FinalGalleryCta() {
   const { t } = useI18n()
 
   return (
-    <section className="bg-[#1e1e1e] px-4 py-[clamp(78px,12vw,148px)] text-[#e8e7e7] sm:px-6">
-      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.42fr)] lg:items-end">
-        <div>
-          <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#e8e7e7]/46">{t("galleryFinalEyebrow")}</p>
-          <h2 className="mt-5 max-w-[10ch] font-display text-[clamp(4rem,11vw,11rem)] font-extrabold leading-[0.78] tracking-[-0.08em]">
-            {t("galleryFinalTitle")}
-          </h2>
-        </div>
-        <div>
-          <p className="max-w-[38ch] text-base leading-relaxed text-[#e8e7e7]/66 sm:text-lg">
-            {t("galleryFinalDescription")}
-          </p>
-          <MotionCta href="/#contact" className="mt-8">
-            {t("galleryFinalButton")}
-          </MotionCta>
-          <div className="mt-10 flex flex-wrap gap-x-5 gap-y-3 text-[10px] font-black uppercase tracking-[0.18em] text-[#e8e7e7]/44">
-            {socialLinks.map((link) => (
-              <a key={link.labelKey} href={link.href} className="transition hover:text-[#e8e7e7] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#e8e7e7]">
-                <RollingText variant="subtle">{t(link.labelKey as I18nKey)}</RollingText>
-              </a>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
+    <FinalCtaContent
+      id="gallery-final-cta"
+      titleLines={[t("galleryFinalLine1"), t("galleryFinalLine2")]}
+      button={t("galleryFinalButton")}
+      theme="dark"
+    />
   )
 }
 
@@ -310,7 +420,7 @@ export default function DesignGallery() {
     <div className="min-h-svh bg-[#e8e7e7] text-[#1e1e1e]">
       <ScrollProgress />
       <GalleryHero projectCount={projects.length} pieceCount={totalPieces} />
-      <SelectedProjectsIntro />
+      <SelectedProjectsIntro projectCount={projects.length} />
       <SelectedProjects projects={projects} />
       <PlaygroundSection pieces={playground} />
       <FinalGalleryCta />

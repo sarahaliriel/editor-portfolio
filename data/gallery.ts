@@ -31,7 +31,7 @@ export type GalleryMetric = {
 }
 
 type GalleryMetricConfig = {
-  value: string
+  count: "pieces" | "carousels" | "stories" | "slides" | "mockup"
   labelKey: I18nKey
 }
 
@@ -75,7 +75,6 @@ export type GalleryProject = {
   pieces: GalleryImage[]
   carousels?: GalleryCarousel[]
   stories?: GalleryImage[]
-  mockups?: GalleryImage[]
 }
 
 export type GalleryProjectConfig = {
@@ -107,7 +106,6 @@ export type GalleryProjectConfig = {
   pieces: GalleryImageConfig[]
   carousels?: GalleryCarouselConfig[]
   stories?: GalleryImageConfig[]
-  mockups?: GalleryImageConfig[]
 }
 
 const image = (src: string, titleKey: I18nKey, shape?: GalleryImage["shape"]): GalleryImageConfig => ({
@@ -174,9 +172,9 @@ export const galleryProjects: GalleryProjectConfig[] = [
       solutionKey: "galleryProjectFrigideiraSolution",
       resultKey: "galleryProjectFrigideiraResult",
       metrics: [
-        { value: "05", labelKey: "galleryMetricStaticPosts" },
-        { value: "04", labelKey: "galleryMetricEditorialCarousels" },
-        { value: "01", labelKey: "galleryMetricVisualSystem" },
+        { count: "pieces", labelKey: "galleryMetricStaticPosts" },
+        { count: "carousels", labelKey: "galleryMetricEditorialCarousels" },
+        { count: "slides", labelKey: "galleryMetricSlides" },
       ],
     },
     visualSystem: {
@@ -202,7 +200,6 @@ export const galleryProjects: GalleryProjectConfig[] = [
       staticImage("frigideira-ai", "01.png", "galleryFrigideiraPiece01", "feature"),
       staticImage("frigideira-ai", "02.png", "galleryFrigideiraPiece02"),
       staticImage("frigideira-ai", "03.png", "galleryFrigideiraPiece03", "tall"),
-      staticImage("frigideira-ai", "04.png", "galleryFrigideiraPiece04"),
       staticImage("frigideira-ai", "05.png", "galleryFrigideiraPiece05", "wide"),
     ],
     carousels: [
@@ -211,7 +208,6 @@ export const galleryProjects: GalleryProjectConfig[] = [
       carouselSlides("frigideira-ai", 3, [1, 2, 3, 4, 5], "galleryFrigideiraCarousel03"),
       carouselSlides("frigideira-ai", 4, [1, 2, 3, 4, 5], "galleryFrigideiraCarousel04"),
     ],
-    mockups: [image("/images/projects/frigideiraAI.png", "galleryFrigideiraMockup")],
   },
   {
     nameKey: "galleryProjectTochaName",
@@ -230,9 +226,9 @@ export const galleryProjects: GalleryProjectConfig[] = [
       solutionKey: "galleryProjectTochaSolution",
       resultKey: "galleryProjectTochaResult",
       metrics: [
-        { value: "09", labelKey: "galleryMetricCarousels" },
-        { value: "07", labelKey: "galleryMetricStaticPosts" },
-        { value: "04", labelKey: "galleryMetricStories" },
+        { count: "carousels", labelKey: "galleryMetricCarousels" },
+        { count: "pieces", labelKey: "galleryMetricStaticPosts" },
+        { count: "stories", labelKey: "galleryMetricStories" },
       ],
     },
     visualSystem: {
@@ -256,9 +252,6 @@ export const galleryProjects: GalleryProjectConfig[] = [
       objectiveMockup: image("/images/projects/therealtochamock.png", "galleryTochaMockup"),
     },
     pieces: [
-      staticImage("the-real-tocha", "01.png", "galleryTochaPiece01", "feature"),
-      staticImage("the-real-tocha", "02.png", "galleryTochaPiece02"),
-      staticImage("the-real-tocha", "03.png", "galleryTochaPiece03", "tall"),
       staticImage("the-real-tocha", "04.png", "galleryTochaPiece04"),
       staticImage("the-real-tocha", "05.png", "galleryTochaPiece05", "wide"),
       staticImage("the-real-tocha", "06.png", "galleryTochaPiece06"),
@@ -266,7 +259,6 @@ export const galleryProjects: GalleryProjectConfig[] = [
     ],
     carousels: [
       carouselSlides("the-real-tocha", 1, [1, 2, 3, 4, 5], "galleryTochaCarousel01"),
-      carouselSlides("the-real-tocha", 2, [1, 2, 3, 4, 5], "galleryTochaCarousel02"),
       carouselSlides("the-real-tocha", 3, [1, 2, 3, 4, 5, 6, 7], "galleryTochaCarousel03"),
       carouselSlides("the-real-tocha", 4, [1, 2, 3, 4, 5, 6], "galleryTochaCarousel04"),
       carouselSlides("the-real-tocha", 5, [1, 2, 3, 4, 5, 6, 7], "galleryTochaCarousel05"),
@@ -281,7 +273,6 @@ export const galleryProjects: GalleryProjectConfig[] = [
       storyImage("03.png", "galleryTochaStory03"),
       storyImage("04.png", "galleryTochaStory04"),
     ],
-    mockups: [image("/images/projects/therealtochamock.png", "galleryTochaMockup")],
   },
   {
     nameKey: "galleryProjectSdpName",
@@ -301,9 +292,9 @@ export const galleryProjects: GalleryProjectConfig[] = [
       solutionKey: "galleryProjectSdpSolution",
       resultKey: "galleryProjectSdpResult",
       metrics: [
-        { value: "06", labelKey: "galleryMetricSequences" },
-        { value: "22", labelKey: "galleryMetricSlides" },
-        { value: "01", labelKey: "galleryMetricCommunity" },
+        { count: "carousels", labelKey: "galleryMetricSequences" },
+        { count: "slides", labelKey: "galleryMetricSlides" },
+        { count: "mockup", labelKey: "galleryMetricMockups" },
       ],
     },
     visualSystem: {
@@ -330,13 +321,19 @@ export const galleryProjects: GalleryProjectConfig[] = [
       carouselSlides("servidor-programadores", 3, [1, 2], "gallerySdpCarousel03"),
       carouselSlides("servidor-programadores", 4, [1, 2, 3], "gallerySdpCarousel04"),
       carouselSlides("servidor-programadores", 5, [1, 2], "gallerySdpCarousel05"),
-      carouselSlides("servidor-programadores", 6, [4, 5, 6, 7, 8, 9, 10], "gallerySdpCarousel06"),
     ],
-    mockups: [image("/images/projects/sdpmock.png", "gallerySdpMockup")],
   },
 ]
 
 export const getGalleryProjectConfigBySlug = (slug: string) => galleryProjects.find((project) => project.slug === slug)
+
+const countProjectMetric = (project: GalleryProjectConfig, count: GalleryMetricConfig["count"]) => {
+  if (count === "pieces") return project.pieces.length
+  if (count === "carousels") return project.carousels?.length ?? 0
+  if (count === "stories") return project.stories?.length ?? 0
+  if (count === "mockup") return project.heroMockup.src ? 1 : 0
+  return project.carousels?.reduce((total, carousel) => total + carousel.slides.length, 0) ?? 0
+}
 
 export const getTranslatedGalleryProject = (project: GalleryProjectConfig, t: Translate): GalleryProject => ({
   name: t(project.nameKey),
@@ -356,7 +353,7 @@ export const getTranslatedGalleryProject = (project: GalleryProjectConfig, t: Tr
     solution: t(project.caseStudy.solutionKey),
     result: t(project.caseStudy.resultKey),
     metrics: project.caseStudy.metrics.map((metric) => ({
-      value: metric.value,
+      value: String(countProjectMetric(project, metric.count)).padStart(2, "0"),
       label: t(metric.labelKey),
     })),
   },
@@ -370,7 +367,6 @@ export const getTranslatedGalleryProject = (project: GalleryProjectConfig, t: Tr
   pieces: project.pieces.map((item) => translateImage(item, t)),
   carousels: project.carousels?.map((carousel) => translateCarousel(carousel, t)),
   stories: project.stories?.map((item) => translateImage(item, t)),
-  mockups: project.mockups?.map((item) => translateImage(item, t)),
 })
 
 export const getTranslatedGalleryProjects = (t: Translate) => galleryProjects.map((project) => getTranslatedGalleryProject(project, t))
@@ -387,6 +383,7 @@ const playgroundPieces: GalleryImageConfig[] = [
   staticImage("playground", "03.png", "galleryPlaygroundPiece03", "tall"),
   staticImage("playground", "04.png", "galleryPlaygroundPiece04"),
   staticImage("playground", "05.png", "galleryPlaygroundPiece05", "wide"),
+  staticImage("playground", "6-save-our-seas-logo.png", "galleryPlaygroundPiece08"),
   staticImage("playground", "06-save-our-seas.png", "galleryPlaygroundPiece06", "feature"),
   staticImage("playground", "07.png", "galleryPlaygroundPiece07"),
 ]

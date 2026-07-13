@@ -21,6 +21,7 @@ export default function CustomCursor() {
   const [enabled, setEnabled] = useState(false)
   const [mode, setMode] = useState<CursorMode>("default")
   const [showLabel, setShowLabel] = useState(false)
+  const [hidden, setHidden] = useState(false)
   const [fsHost, setFsHost] = useState<HTMLElement | null>(null)
 
   const openTimer = useRef<NodeJS.Timeout | null>(null)
@@ -131,11 +132,20 @@ export default function CustomCursor() {
       const targetEl = e.target as HTMLElement | null
       if (!targetEl) return
 
+      if (targetEl.closest('[data-cursor="hidden"]')) {
+        setHidden(true)
+        return
+      }
+
       const viewTarget = targetEl.closest('[data-cursor="view"]')
       if (viewTarget) setViewOn()
     }
 
     const onPointerOut = (e: PointerEvent) => {
+      const hiddenFrom = (e.target as HTMLElement | null)?.closest('[data-cursor="hidden"]')
+      const hiddenTo = (e.relatedTarget as HTMLElement | null)?.closest('[data-cursor="hidden"]')
+      if (hiddenFrom && !hiddenTo) setHidden(false)
+
       const from = (e.target as HTMLElement | null)?.closest('[data-cursor="view"]')
       const to = (e.relatedTarget as HTMLElement | null)?.closest('[data-cursor="view"]')
       if (from && !to) setViewOff()
@@ -159,7 +169,7 @@ export default function CustomCursor() {
   if (!enabled) return null
 
   const cursorNode = (
-    <div ref={cursorRef} className="fixed left-0 top-0 z-30000 pointer-events-none">
+    <div ref={cursorRef} className={`fixed left-0 top-0 z-30000 pointer-events-none transition-opacity duration-150 ${hidden ? "opacity-0" : "opacity-100"}`}>
       <div
         className={[
           "relative grid place-items-center",

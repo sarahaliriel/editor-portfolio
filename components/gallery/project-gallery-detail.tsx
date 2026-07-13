@@ -2,8 +2,8 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { motion, useReducedMotion } from "framer-motion"
-import { useEffect, useMemo, useState, type CSSProperties } from "react"
+import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion"
+import { useEffect, useMemo, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react"
 import { useI18n } from "@/components/providers/i18n"
 import ScrollProgress from "@/components/layout/scroll-progress"
 import ArrowDownRight from "@/components/gallery/arrow-down-right"
@@ -11,107 +11,7 @@ import RollingText from "@/components/shared/rolling-text"
 import { VisualSystem } from "@/components/gallery/visual-system"
 import { getNextGalleryProject, getTranslatedGalleryProject, type GalleryCarousel, type GalleryImage, type GalleryProject, type GalleryProjectConfig } from "@/data/gallery"
 
-type ViewerState = {
-  carousel: GalleryCarousel
-  index: number
-}
-
-type EditorialAsset = {
-  image: GalleryImage
-  label: string
-  kind: "mockup" | "post" | "story" | "carousel"
-  priority?: boolean
-  carousel?: GalleryCarousel
-}
-
-type ProjectRhythm = {
-  galleryOffset: number
-  mockupOffset: number
-  storyAlign: ["left" | "right", "left" | "right", "left" | "right"]
-}
-
 const EASE = [0.16, 1, 0.3, 1] as const
-
-const galleryGroupVariants = {
-  hidden: {},
-  show: {
-    transition: {
-      staggerChildren: 0.07,
-      delayChildren: 0.08,
-    },
-  },
-}
-
-const galleryItemVariants = {
-  hidden: { opacity: 0, y: 34, scale: 0.985, filter: "blur(10px)" },
-  show: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    filter: "blur(0px)",
-    transition: { duration: 0.85, ease: EASE },
-  },
-}
-
-const galleryLayout = [
-  "col-span-1 sm:col-span-2 lg:col-span-3 lg:col-start-2",
-  "col-span-1 sm:col-span-2 lg:col-span-2 lg:col-start-7 lg:mt-18",
-  "col-span-1 sm:col-span-2 lg:col-span-3 lg:col-start-10 lg:mt-4",
-  "col-span-1 sm:col-span-2 lg:col-span-2 lg:col-start-4 lg:-mt-6",
-  "col-span-2 sm:col-span-2 lg:col-span-4 lg:col-start-7 lg:mt-20",
-  "col-span-1 sm:col-span-2 lg:col-span-2 lg:col-start-2 lg:mt-10",
-  "col-span-1 sm:col-span-2 lg:col-span-3 lg:col-start-5 lg:mt-2",
-  "col-span-2 sm:col-span-2 lg:col-span-2 lg:col-start-10 lg:mt-24",
-]
-
-const mockupLayout = [
-  "col-span-2 sm:col-span-3 lg:col-span-5 lg:col-start-1 lg:mt-10",
-  "col-span-2 sm:col-span-3 lg:col-span-5 lg:col-start-8 lg:mt-16",
-  "col-span-2 sm:col-span-3 lg:col-span-4 lg:col-start-4 lg:mt-4",
-]
-
-const projectRhythm: Record<string, ProjectRhythm> = {
-  "frigideira-ai": { galleryOffset: 0, mockupOffset: 0, storyAlign: ["left", "right", "left"] },
-  "the-real-tocha": { galleryOffset: 2, mockupOffset: 1, storyAlign: ["right", "left", "right"] },
-  sdp: { galleryOffset: 4, mockupOffset: 2, storyAlign: ["left", "left", "right"] },
-}
-
-function getRhythm(slug: string): ProjectRhythm {
-  return projectRhythm[slug] ?? { galleryOffset: 0, mockupOffset: 0, storyAlign: ["left", "right", "left"] }
-}
-
-function buildEditorialAssets(project: GalleryProject, labels: { mockup: string; post: string; story: string; slides: string }): EditorialAsset[] {
-  const mockups =
-    project.mockups?.map((image, index) => ({
-      image,
-      label: labels.mockup,
-      kind: "mockup" as const,
-      priority: index === 0,
-    })) ?? []
-
-  const posts = project.pieces.map((image) => ({
-    image,
-    label: labels.post,
-    kind: "post" as const,
-  }))
-
-  const stories =
-    project.stories?.map((image) => ({
-      image,
-      label: labels.story,
-      kind: "story" as const,
-    })) ?? []
-
-  const carousels =
-    project.carousels?.map((carousel) => ({
-      image: carousel.slides[0],
-      label: `${carousel.slides.length} ${labels.slides}`,
-      kind: "carousel" as const,
-      carousel,
-    })) ?? []
-
-  return [...mockups, ...posts, ...carousels, ...stories]
-}
 
 function HeroSection({ project, backLabel }: { project: GalleryProject; backLabel: string }) {
   const prefersReducedMotion = useReducedMotion()
@@ -123,7 +23,7 @@ function HeroSection({ project, backLabel }: { project: GalleryProject; backLabe
     <section className="relative z-10 isolate min-h-svh max-w-full bg-[#e8e7e7] px-5 pb-20 pt-[clamp(76px,9vh,112px)] text-[#1e1e1e] sm:px-8 lg:flex lg:min-h-[clamp(760px,100svh,1080px)] lg:items-stretch lg:px-[clamp(40px,4.6vw,88px)] lg:pb-[clamp(72px,9vh,108px)]">
       <div className="relative z-20 flex min-w-0 w-full flex-col lg:w-[61%] lg:pr-[clamp(16px,1.5vw,30px)]">
         <motion.div initial={prefersReducedMotion ? false : { opacity: 0, y: -14 }} animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }} transition={{ duration: 0.75, ease: EASE }}>
-          <Link href="/gallery" className="w-max text-[11px] font-black uppercase tracking-[0.24em] text-[var(--project-accent-dark)] transition hover:text-[var(--project-accent)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--project-accent)]">
+          <Link href="/gallery" className="w-max text-[11px] font-black uppercase tracking-[0.24em] text-(--project-accent-dark) transition hover:text-(--project-accent) focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--project-accent)">
             <RollingText>{backLabel}</RollingText>
           </Link>
         </motion.div>
@@ -142,13 +42,13 @@ function HeroSection({ project, backLabel }: { project: GalleryProject; backLabe
           <motion.dl initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }} animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: EASE, delay: 0.48 }} className="mt-[clamp(44px,6vh,72px)] grid w-full max-w-3xl grid-cols-3 gap-[clamp(22px,4.5vw,72px)] border-y border-[#1e1e1e]/15 py-[clamp(22px,2.7vh,32px)] lg:mt-auto">
             {project.caseStudy.metrics.map((metric) => (
               <div key={metric.label}>
-                <dd className="font-display text-[clamp(2.25rem,4.2vw,4.6rem)] font-black leading-none tracking-[-0.04em] text-[var(--project-accent-dark)]">{metric.value}</dd>
+                <dd className="font-display text-[clamp(2.25rem,4.2vw,4.6rem)] font-black leading-none tracking-[-0.04em] text-(--project-accent-dark)">{metric.value}</dd>
                 <dt className="mt-2.5 max-w-[14ch] text-[7px] font-black uppercase leading-[1.45] tracking-[0.18em] text-[#1e1e1e]/48 sm:text-[8px]">{metric.label}</dt>
               </div>
             ))}
           </motion.dl>
 
-          <button type="button" onClick={scrollToStory} aria-label="Ir para a próxima seção" className="group mt-[clamp(28px,3.5vh,42px)] grid size-11 place-items-center text-[#1e1e1e]/72 transition hover:translate-y-1 hover:text-[var(--project-accent)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--project-accent)]">
+          <button type="button" onClick={scrollToStory} aria-label="Ir para a próxima seção" className="group mt-[clamp(28px,3.5vh,42px)] grid size-11 place-items-center text-[#1e1e1e]/72 transition hover:translate-y-1 hover:text-(--project-accent) focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--project-accent)">
             <ArrowDownRight />
           </button>
         </div>
@@ -188,7 +88,6 @@ type ProcessLabels = {
   resultBody: string
   active: string
   visualSystem: string
-  selectedPieces: string
   next: string
   oneYear: string
   fiveMonths: string
@@ -236,7 +135,7 @@ function ProjectProcess({ project, labels }: { project: GalleryProject; labels: 
         transition={{ duration: 0.85, ease: EASE }}
         className="grid gap-3 border-b border-[#e8e7e7]/14 pb-[clamp(28px,4vw,52px)] lg:grid-cols-[7.5rem_1fr] lg:items-end"
       >
-        <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[var(--project-accent-soft)]">{labels.kicker}</p>
+        <p className="text-[10px] font-black uppercase tracking-[0.24em] text-(--project-accent-soft)">{labels.kicker}</p>
         <h2 className="max-w-[22ch] font-display text-[clamp(1.8rem,3.2vw,3.8rem)] font-black leading-[0.95] tracking-[-0.035em]">{labels.heading}</h2>
       </motion.header>
 
@@ -251,7 +150,7 @@ function ProjectProcess({ project, labels }: { project: GalleryProject; labels: 
             className="grid gap-7 border-b border-[#e8e7e7]/14 py-[clamp(38px,5vw,72px)] md:grid-cols-[6rem_minmax(0,1fr)_minmax(16rem,1.1fr)] md:gap-x-8 lg:grid-cols-[7.5rem_minmax(17rem,0.9fr)_minmax(22rem,1.15fr)_minmax(12rem,0.55fr)] lg:items-center lg:gap-x-[clamp(28px,4vw,72px)]"
           >
             <div className="flex items-center justify-between md:block">
-              <span className="font-display text-sm font-black tracking-[-0.03em] text-[var(--project-accent-soft)]">{item.number}</span>
+              <span className="font-display text-sm font-black tracking-[-0.03em] text-(--project-accent-soft)">{item.number}</span>
               <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[#e8e7e7]/38 md:mt-3 md:block">{item.eyebrow}</span>
             </div>
             <h3 className="font-display text-[clamp(2.7rem,5.6vw,6.6rem)] font-black uppercase leading-[0.78] tracking-[-0.065em]">{item.title}</h3>
@@ -265,7 +164,7 @@ function ProjectProcess({ project, labels }: { project: GalleryProject; labels: 
             >
               <dd className="font-display text-[clamp(3.5rem,6.4vw,7.5rem)] font-black uppercase leading-[0.72] tracking-[-0.075em]">{item.metric}</dd>
               <dt className="mt-4 text-[10px] font-black uppercase tracking-[0.2em] text-[#e8e7e7]/58">{item.metricLabel}</dt>
-              {item.detail ? <dt className="mt-2 text-[9px] font-black uppercase tracking-[0.18em] text-[var(--project-accent-soft)]">{item.detail}</dt> : null}
+              {item.detail ? <dt className="mt-2 text-[9px] font-black uppercase tracking-[0.18em] text-(--project-accent-soft)">{item.detail}</dt> : null}
             </motion.dl>
           </motion.article>
         ))}
@@ -274,7 +173,7 @@ function ProjectProcess({ project, labels }: { project: GalleryProject; labels: 
       <a href="#visual-system" className="group ml-auto mt-[clamp(36px,5vw,64px)] flex w-max items-end gap-5 text-right focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#e8e7e7]">
         <span>
           <span className="block text-[9px] font-black uppercase tracking-[0.22em] text-[#e8e7e7]/38">{labels.next}</span>
-          <span className="mt-2 block font-display text-[clamp(1.4rem,2.5vw,2.8rem)] font-black uppercase leading-none tracking-[-0.04em] transition group-hover:text-[var(--project-accent-soft)]">{labels.visualSystem}</span>
+          <span className="mt-2 block font-display text-[clamp(1.4rem,2.5vw,2.8rem)] font-black uppercase leading-none tracking-[-0.04em] transition group-hover:text-(--project-accent-soft)">{labels.visualSystem}</span>
         </span>
         <span className="transition group-hover:translate-y-1"><ArrowDownRight /></span>
       </a>
@@ -282,199 +181,239 @@ function ProjectProcess({ project, labels }: { project: GalleryProject; labels: 
   )
 }
 
-function GalleryFigure({ asset, index, rhythm, onOpen, reducedMotion }: { asset: EditorialAsset; index: number; rhythm: ProjectRhythm; onOpen: (carousel: GalleryCarousel) => void; reducedMotion: boolean }) {
-  const isMockup = asset.kind === "mockup"
-  const isStory = asset.kind === "story"
-  const layoutClass = isMockup ? mockupLayout[(index + rhythm.mockupOffset) % mockupLayout.length] : galleryLayout[(index + rhythm.galleryOffset) % galleryLayout.length]
-  const aspectClass = isMockup ? "aspect-[16/10]" : isStory ? "aspect-[9/16]" : (index + rhythm.galleryOffset) % 5 === 4 ? "aspect-square" : "aspect-[4/5]"
-  const motionProps = reducedMotion
-    ? {}
-    : {
-        variants: galleryItemVariants,
-        whileHover: { y: -6, scale: 1.012, transition: { duration: 0.45, ease: EASE } },
-      }
-
-  const content = (
-    <>
-      <span className={`relative block overflow-visible ${aspectClass}`}>
-        <Image
-          src={asset.image.src}
-          alt={asset.image.alt}
-          fill
-          sizes={isMockup ? "(max-width: 768px) 86vw, 42vw" : "(max-width: 768px) 42vw, 22vw"}
-          className="object-contain drop-shadow-[0_22px_55px_rgba(30,30,30,0.08)] transition duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.018] group-hover:drop-shadow-[0_30px_70px_rgba(30,30,30,0.12)]"
-          priority={asset.priority}
-        />
-      </span>
-      <span className="mt-4 flex items-center justify-between gap-5 border-t border-[#1e1e1e]/10 pt-3 text-[10px] font-black uppercase tracking-[0.16em] text-[#1e1e1e]/42">
-        <span>{asset.label}</span>
-        <span>{String(index + 1).padStart(2, "0")}</span>
-      </span>
-      <span className="mt-2 block max-w-[24ch] text-xs font-semibold leading-snug text-[#1e1e1e]/58 sm:text-sm">{asset.carousel?.title ?? asset.image.title}</span>
-    </>
+function FormatHeader({ title, count }: { title: string; count: number }) {
+  return (
+    <header className="border-t border-[#1e1e1e]/22 pt-3">
+      <h3 className="text-[10px] font-black uppercase tracking-[0.22em] text-[#1e1e1e]/68">{String(count).padStart(2, "0")} {title}</h3>
+    </header>
   )
+}
 
-  if (asset.carousel) {
-    return (
-      <motion.button
-        type="button"
-        onClick={() => onOpen(asset.carousel as GalleryCarousel)}
-        className={`group text-left outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--project-accent)] ${layoutClass}`}
-        aria-label={`Abrir carrossel ${asset.carousel.title}`}
-        {...motionProps}
-      >
-        {content}
-      </motion.button>
-    )
+const itemOffset = ["", "mt-3", "mt-1", "mt-2", "", "mt-2"]
+
+function EditorialImage({ image, index, sizes, tall = false }: { image: GalleryImage; index: number; sizes: string; tall?: boolean }) {
+  return (
+    <figure className={`min-w-0 ${itemOffset[index % itemOffset.length]}`}>
+      <div className={`relative w-full ${tall ? "aspect-9/16" : "aspect-4/5"}`}>
+        <Image src={image.src} alt={image.alt} fill sizes={sizes} className="object-contain" />
+      </div>
+      <figcaption className="sr-only">{image.title}</figcaption>
+    </figure>
+  )
+}
+
+function StaticPosts({ images }: { images: GalleryImage[] }) {
+  return (
+    <div className="grid grid-cols-2 items-start gap-x-1.5 gap-y-2 sm:grid-cols-3 sm:gap-x-2 lg:grid-cols-4">
+      {images.map((image, index) => (
+        <EditorialImage key={image.src} image={image} index={index} sizes="(max-width: 767px) 48vw, (max-width: 1023px) 32vw, 24vw" />
+      ))}
+    </div>
+  )
+}
+
+function CarouselCard({ carousel, index }: { carousel: GalleryCarousel; index: number }) {
+  const [slide, setSlide] = useState(0)
+  const total = carousel.slides.length
+  const step = (direction: 1 | -1) => setSlide((current) => (current + direction + total) % total)
+  return (
+    <article className={`min-w-0 ${itemOffset[index % itemOffset.length]}`}>
+      <div className="relative aspect-4/5 w-full">
+        <Image src={carousel.slides[slide].src} alt={carousel.slides[slide].alt} fill sizes="(max-width: 767px) 48vw, (max-width: 1023px) 32vw, 24vw" className="object-contain" />
+      </div>
+      <div className="mt-1 flex items-center justify-center gap-2 text-[#1e1e1e]/60">
+        <button type="button" onClick={() => step(-1)} aria-label={`Slide anterior de ${carousel.title}`} className="grid size-7 place-items-center text-sm transition hover:text-(--project-accent-dark) focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-(--project-accent)">←</button>
+        <span className="text-[9px] font-black tabular-nums tracking-[0.12em]">{String(slide + 1).padStart(2, "0")}/{String(total).padStart(2, "0")}</span>
+        <button type="button" onClick={() => step(1)} aria-label={`Próximo slide de ${carousel.title}`} className="grid size-7 place-items-center text-sm transition hover:text-(--project-accent-dark) focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-(--project-accent)">→</button>
+      </div>
+    </article>
+  )
+}
+
+function Stories({ images }: { images: GalleryImage[] }) {
+  return <div className="mt-4 grid grid-cols-2 items-start gap-x-1.5 gap-y-2 sm:grid-cols-3 sm:gap-x-2 lg:grid-cols-4">
+    {images.map((image, index) => <EditorialImage key={image.src} image={image} index={index} tall sizes="(max-width: 639px) 48vw, (max-width: 1023px) 32vw, 24vw" />)}
+  </div>
+}
+
+type GalleryLabels = { posts: string; carousels: string; stories: string }
+
+function EditorialGallery({ project, labels }: { project: GalleryProject; labels: GalleryLabels }) {
+  return (
+    <section id="designs" aria-label="Designs" className="scroll-mt-0 px-2 pb-[clamp(56px,7vw,96px)] sm:px-3 lg:px-4">
+      <div className="space-y-[clamp(44px,5vw,72px)]">
+        {project.pieces.length ? <section><FormatHeader title={labels.posts} count={project.pieces.length} /><div className="mt-4"><StaticPosts images={project.pieces} /></div></section> : null}
+        {project.carousels?.length ? <section><FormatHeader title={labels.carousels} count={project.carousels.length} /><div className="mt-4 grid grid-cols-2 items-start gap-x-1.5 gap-y-3 sm:grid-cols-3 sm:gap-x-2 lg:grid-cols-4">{project.carousels.map((carousel, index) => <CarouselCard key={carousel.title} carousel={carousel} index={index} />)}</div></section> : null}
+        {project.stories?.length ? <section><FormatHeader title={labels.stories} count={project.stories.length} /><Stories images={project.stories} /></section> : null}
+      </div>
+    </section>
+  )
+}
+
+const chapterSlugs = ["frigideira-ai", "the-real-tocha", "sdp"] as const
+
+const ctaReveal = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.13, delayChildren: 0.08 } },
+}
+
+const ctaRevealItem = {
+  hidden: { opacity: 0, y: 28 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.9, ease: EASE } },
+}
+
+const ctaSocials = [
+  { label: "Instagram", href: "https://www.instagram.com/chazinhodociel/" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/sarah-dumitrache/" },
+  { label: "GitHub", href: "https://github.com/sarahaliriel" },
+  { label: "Discord", href: "https://discord.com/users/942126894478950530" },
+] as const
+
+function CtaLocalTime({ label }: { label: string }) {
+  const [time, setTime] = useState("--:--:--")
+
+  useEffect(() => {
+    const formatter = new Intl.DateTimeFormat("pt-PT", { timeZone: "Europe/Lisbon", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false, timeZoneName: "short" })
+    const update = () => setTime(formatter.format(new Date()))
+    update()
+    const interval = window.setInterval(update, 1000)
+    return () => window.clearInterval(interval)
+  }, [])
+
+  return <div className="text-center"><span className="block text-[#e8e7e7]/38">{label}</span><time className="mt-2 block tracking-[0.08em] text-[#e8e7e7]/82">{time}</time></div>
+}
+
+function FinalCta({ currentProject, nextProject, labels }: { currentProject: GalleryProject; nextProject: GalleryProject; labels: { eyebrow: string; continue: string; viewProject: string; edition: string; localTime: string; socials: string } }) {
+  const reducedMotion = Boolean(useReducedMotion())
+  const [canHover, setCanHover] = useState(false)
+  const [mockupHovered, setMockupHovered] = useState(false)
+  const pointerX = useMotionValue(0)
+  const pointerY = useMotionValue(0)
+  const cursorX = useSpring(pointerX, { stiffness: 105, damping: 22, mass: 0.72 })
+  const cursorY = useSpring(pointerY, { stiffness: 105, damping: 22, mass: 0.72 })
+  const currentIndex = Math.max(0, chapterSlugs.indexOf(currentProject.slug as (typeof chapterSlugs)[number]))
+  const nextTitle = nextProject.heroTitle ?? nextProject.name
+  const compactTitle = nextTitle.length > 18
+  const cursorAccent = nextProject.slug === "frigideira-ai" ? nextProject.theme.accentSoft : nextProject.slug === "the-real-tocha" ? nextProject.theme.accentDark : nextProject.theme.accent
+  const cursorText = nextProject.slug === "frigideira-ai" ? "#1e1e1e" : "#e8e7e7"
+
+  useEffect(() => {
+    const hoverQuery = window.matchMedia("(hover: hover) and (pointer: fine)")
+    const update = () => {
+      const enabled = hoverQuery.matches && !reducedMotion
+      setCanHover(enabled)
+      if (!enabled) setMockupHovered(false)
+    }
+    update()
+    hoverQuery.addEventListener("change", update)
+    return () => hoverQuery.removeEventListener("change", update)
+  }, [reducedMotion])
+
+  const moveMockupCursor = (event: ReactPointerEvent<HTMLElement>) => {
+    if (!canHover) return
+    pointerX.set(event.clientX)
+    pointerY.set(event.clientY)
   }
 
   return (
-    <motion.figure className={`group ${layoutClass}`} {...motionProps}>
-      {content}
-    </motion.figure>
-  )
-}
+    <motion.section
+      initial={reducedMotion ? false : "hidden"}
+      whileInView={reducedMotion ? undefined : "show"}
+      viewport={{ once: true, amount: 0.18 }}
+      variants={ctaReveal}
+      aria-labelledby="next-project-title"
+      className="relative flex min-h-svh overflow-hidden bg-[#1e1e1e] px-5 pb-6 pt-[clamp(48px,6vh,76px)] text-[#e8e7e7] sm:px-8 sm:pb-8 lg:px-12 lg:pb-9"
+    >
+      <div className="relative mx-auto flex w-full max-w-450 flex-1 flex-col">
+        <div className="flex flex-1 flex-col items-center pt-[clamp(46px,6vh,72px)] text-center">
+        <motion.div variants={ctaRevealItem} className="order-2 relative mt-[clamp(4px,1vh,12px)] h-[clamp(245px,35vh,390px)] w-[min(86vw,550px)]">
+          <Link
+            href={`/gallery/${nextProject.slug}`}
+            aria-label={`${labels.viewProject}: ${nextProject.name}`}
+            onPointerEnter={(event) => {
+              if (!canHover) return
+              pointerX.set(event.clientX)
+              pointerY.set(event.clientY)
+              setMockupHovered(true)
+            }}
+            onPointerMove={moveMockupCursor}
+            onPointerLeave={() => setMockupHovered(false)}
+            className="absolute inset-x-0 bottom-0 top-[clamp(-104px,-9vh,-72px)] overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--project-accent)"
+          >
+            <motion.span
+              initial={false}
+              animate={canHover && mockupHovered ? { y: -88, scale: 1.035 } : { y: 0, scale: 1 }}
+              transition={{ duration: 0.95, ease: EASE }}
+              className="absolute inset-x-0 -bottom-24 top-[clamp(72px,9vh,104px)] origin-top"
+            >
+              <Image src={nextProject.heroMockup.src} alt={nextProject.heroMockup.alt} fill unoptimized sizes="(max-width: 640px) 86vw, 550px" className="object-cover object-top drop-shadow-[0_28px_70px_rgba(0,0,0,0.32)]" />
+            </motion.span>
+          </Link>
+        </motion.div>
 
-function EditorialGallery({ project, assets, labels, rhythm, onOpen }: { project: GalleryProject; assets: EditorialAsset[]; labels: { eyebrow: string; title: string; description: string }; rhythm: ProjectRhythm; onOpen: (carousel: GalleryCarousel) => void }) {
-  const reducedMotion = useReducedMotion()
+        <motion.header variants={{ hidden: { opacity: 0, y: 22, filter: "blur(10px)" }, show: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.95, ease: EASE } } }} className="order-1 relative z-10">
+          <p className="font-display text-[clamp(1rem,1.2vw,1.35rem)] font-medium tracking-[-0.035em] text-[#e8e7e7]/72">{labels.eyebrow}</p>
+          <motion.h2 initial={false} animate={canHover && mockupHovered ? { opacity: 0.16 } : { opacity: 1 }} transition={{ duration: 0.8, ease: EASE }} id="next-project-title" className={`mx-auto mt-[clamp(8px,1.5vh,16px)] max-w-[96vw] text-balance font-display font-black uppercase leading-[0.78] tracking-[-0.065em] ${compactTitle ? "text-[clamp(2.55rem,6.2vw,7.25rem)]" : "text-[clamp(4.8rem,10vw,11.5rem)]"}`}>
+            {nextTitle}
+          </motion.h2>
+        </motion.header>
 
-  return (
-    <section id="designs" className="min-h-svh scroll-mt-0 border-t border-[#1e1e1e]/12 px-4 py-[clamp(64px,9vw,128px)] sm:px-6">
-      <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
-        <div className="lg:col-span-7">
-          <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[var(--project-accent-dark)]">{labels.eyebrow}</p>
-          <h2 className="mt-5 max-w-[10ch] text-balance font-display text-[clamp(3.6rem,10vw,10.8rem)] font-black leading-[0.8] tracking-[0] text-[#030303]">
-            {labels.title}
-          </h2>
-          <p className="mt-5 max-w-[48ch] text-[10px] font-black uppercase tracking-[0.18em] text-[#1e1e1e]/42">{project.formats.join(" · ")}</p>
+        <motion.div variants={{ hidden: { scaleX: 0 }, show: { scaleX: 1, transition: { duration: 1.05, ease: EASE } } }} className="order-3 relative z-10 -mt-px h-3px w-[min(88vw,960px)] origin-left rounded-full bg-[#e8e7e7]" />
+
+        <motion.ol variants={ctaRevealItem} aria-label="Progresso dos projetos" className="order-4 mt-4 grid w-[min(82vw,760px)] grid-cols-3">
+            {chapterSlugs.map((slug, index) => {
+              const active = index === currentIndex
+              return (
+                <li key={slug} aria-current={active ? "step" : undefined} className="grid justify-items-center gap-2 text-[9px] font-black tracking-[0.18em] text-[#e8e7e7]/32">
+                  <span aria-hidden="true" className={`size-1.5 rounded-full border ${active ? "border-(--project-accent) bg-(--project-accent) shadow-[0_0_14px_var(--project-glow)]" : "border-[#e8e7e7]/32"}`} />
+                  <span className={active ? "text-[#e8e7e7]/82" : undefined}>{String(index + 1).padStart(2, "0")}</span>
+                </li>
+              )
+            })}
+        </motion.ol>
+
+          <motion.div variants={ctaRevealItem} className="order-5 mt-[clamp(22px,3vh,34px)]">
+            <Link href={`/gallery/${nextProject.slug}`} aria-label={`${labels.continue}: ${nextProject.name}`} className="group relative inline-flex h-13 w-[min(68vw,300px)] items-center justify-center overflow-hidden rounded-full border border-[#e8e7e7]/20 px-8 font-display text-[10px] font-semibold uppercase tracking-[0.24em] text-[#e8e7e7] transition-[border-color,transform] duration-500 hover:-translate-y-0.5 hover:border-[#e8e7e7]/60 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--project-accent) sm:h-15 sm:w-74 sm:text-[11px]">
+              <span aria-hidden="true" className="absolute inset-0 origin-bottom scale-y-0 rounded-full bg-[#e8e7e7] transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100" />
+              <span className="relative z-10 flex items-center gap-4 transition-colors duration-500 group-hover:text-[#1e1e1e]"><RollingText variant="strong">{labels.continue}</RollingText><span aria-hidden="true" className="text-base transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1">↗</span></span>
+            </Link>
+          </motion.div>
         </div>
-        <p className="max-w-[34ch] text-lg font-semibold leading-relaxed text-[#1e1e1e]/60 sm:text-xl lg:col-span-4 lg:col-start-9">
-          {labels.description}
-        </p>
+
+        <motion.footer variants={ctaRevealItem} className="mt-[clamp(38px,5vh,66px)] grid gap-5 text-center text-[9px] uppercase tracking-[0.14em] sm:grid-cols-3 sm:items-end sm:text-[11px] sm:text-left">
+          <div><span className="block text-[#e8e7e7]/38">{labels.edition}</span><span className="mt-2 block tracking-normal text-[#e8e7e7]/82">2026 © Sarah Aliriel</span></div>
+          <CtaLocalTime label={labels.localTime} />
+          <nav aria-label={labels.socials}>
+            <span className="block text-[#e8e7e7]/38 sm:text-right">{labels.socials}</span>
+            <div className="mt-2 flex flex-wrap justify-center gap-x-5 gap-y-2 normal-case tracking-normal sm:justify-end">
+              {ctaSocials.map((social) => <a key={social.label} href={social.href} target="_blank" rel="noreferrer" className="text-[#e8e7e7]/82 transition hover:text-[#e8e7e7]"><RollingText variant="subtle">{social.label}</RollingText></a>)}
+            </div>
+          </nav>
+        </motion.footer>
       </div>
 
-      <motion.div
-        variants={reducedMotion ? undefined : galleryGroupVariants}
-        initial={reducedMotion ? false : "hidden"}
-        whileInView={reducedMotion ? undefined : "show"}
-        viewport={{ once: true, amount: 0.12 }}
-        className="mt-[clamp(46px,8vw,112px)] grid auto-rows-auto grid-cols-2 items-start gap-x-[clamp(22px,5vw,86px)] gap-y-[clamp(56px,9vw,150px)] sm:grid-cols-4 lg:grid-cols-12"
-      >
-        {assets.map((asset, index) => (
-          <GalleryFigure key={`${asset.kind}-${asset.image.src}`} asset={asset} index={index} rhythm={rhythm} onOpen={onOpen} reducedMotion={Boolean(reducedMotion)} />
-        ))}
-      </motion.div>
-    </section>
-  )
-}
-
-function FinalCta({ nextProject, labels }: { nextProject: GalleryProject; labels: { eyebrow: string; title: string; body: string; gallery: string } }) {
-  return (
-    <section className="grid min-h-[92svh] items-end bg-[#1e1e1e] px-4 py-[clamp(72px,10vw,132px)] text-[#e8e7e7] sm:px-6">
-      <div className="mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.38fr)] lg:items-end">
-        <div>
-          <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#e8e7e7]/48">{labels.eyebrow}</p>
-          <h2 className="mt-5 max-w-[10ch] text-balance font-display text-[clamp(3.8rem,10vw,11rem)] font-black leading-[0.78] tracking-[0]">
-            {labels.title}
-          </h2>
-        </div>
-        <div>
-          <p className="max-w-[36ch] text-lg font-semibold leading-relaxed text-[#e8e7e7]/64">
-            {labels.body}
-          </p>
-          <div className="mt-9 flex flex-wrap gap-4">
-            <Link href="/gallery" className="inline-flex items-center justify-center border border-[#e8e7e7]/24 px-6 py-4 text-[11px] font-black uppercase tracking-[0.16em] transition hover:bg-[#e8e7e7] hover:text-[#1e1e1e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#e8e7e7]">
-              <RollingText variant="strong">{labels.gallery}</RollingText>
-            </Link>
-            <Link href={`/gallery/${nextProject.slug}`} className="inline-flex items-center justify-center bg-[#e8e7e7] px-6 py-4 text-[11px] font-black uppercase tracking-[0.16em] text-[#1e1e1e] transition hover:bg-[var(--project-accent)] hover:text-[#e8e7e7] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--project-accent)]">
-              <RollingText variant="strong">{nextProject.name}</RollingText>
-            </Link>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function CarouselViewer({ viewer, projectName, labels, onClose, onStep, onSelect }: { viewer: ViewerState; projectName: string; labels: { close: string; previous: string; next: string; goToSlide: string }; onClose: () => void; onStep: (direction: 1 | -1) => void; onSelect: (index: number) => void }) {
-  const slide = viewer.carousel.slides[viewer.index]
-
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose()
-      if (event.key === "ArrowRight") onStep(1)
-      if (event.key === "ArrowLeft") onStep(-1)
-    }
-
-    document.body.style.overflow = "hidden"
-    window.addEventListener("keydown", onKeyDown)
-    return () => {
-      document.body.style.overflow = ""
-      window.removeEventListener("keydown", onKeyDown)
-    }
-  }, [onClose, onStep])
-
-  return (
-    <div className="fixed inset-0 z-50 bg-[#1e1e1e]/94 px-4 py-5 text-[#e8e7e7] backdrop-blur-md sm:px-8" role="dialog" aria-modal="true" aria-label={viewer.carousel.title}>
-      <div className="mx-auto flex h-full max-w-7xl flex-col">
-        <div className="flex items-center justify-between gap-4 border-b border-[#e8e7e7]/14 pb-4">
-          <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#e8e7e7]/54">{projectName}</p>
-            <h3 className="mt-1 font-display text-[clamp(1.8rem,4vw,4rem)] font-black leading-none tracking-[0]">{viewer.carousel.title}</h3>
-          </div>
-          <button type="button" onClick={onClose} className="grid size-11 place-items-center rounded-full border border-[#e8e7e7]/25 text-2xl transition hover:bg-[#e8e7e7] hover:text-[#1e1e1e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#e8e7e7]" aria-label={labels.close}>
-            ×
-          </button>
-        </div>
-
-        <div className="grid min-h-0 flex-1 items-center gap-4 py-5 sm:grid-cols-[56px_minmax(0,1fr)_56px]">
-          <button type="button" onClick={() => onStep(-1)} className="hidden size-12 place-items-center rounded-full border border-[#e8e7e7]/24 text-2xl transition hover:bg-[#e8e7e7] hover:text-[#1e1e1e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#e8e7e7] sm:grid" aria-label={labels.previous}>
-            ←
-          </button>
-
-          <div className="relative mx-auto h-full min-h-105 w-full max-w-[min(86vw,760px)]">
-            <Image src={slide.src} alt={slide.alt} fill sizes="(max-width: 768px) 92vw, 760px" className="object-contain" priority />
-          </div>
-
-          <button type="button" onClick={() => onStep(1)} className="hidden size-12 place-items-center rounded-full border border-[#e8e7e7]/24 text-2xl transition hover:bg-[#e8e7e7] hover:text-[#1e1e1e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#e8e7e7] sm:grid" aria-label={labels.next}>
-            →
-          </button>
-        </div>
-
-        <div className="flex items-center justify-between gap-4 border-t border-[#e8e7e7]/14 pt-4">
-          <button type="button" onClick={() => onStep(-1)} className="grid size-11 place-items-center rounded-full border border-[#e8e7e7]/24 text-xl sm:hidden" aria-label={labels.previous}>
-            ←
-          </button>
-          <div className="flex flex-1 items-center justify-center gap-2">
-            {viewer.carousel.slides.map((item, index) => (
-              <button
-                key={item.src}
-                type="button"
-                onClick={() => onSelect(index)}
-                className={`h-1.5 rounded-full transition-all focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--project-accent)] ${index === viewer.index ? "w-10 bg-[var(--project-accent)]" : "w-4 bg-[#e8e7e7]/28 hover:bg-[var(--project-accent-soft)]"}`}
-                aria-label={`${labels.goToSlide} ${index + 1}`}
-                aria-current={index === viewer.index}
-              />
-            ))}
-          </div>
-          <span className="text-[10px] font-black uppercase tracking-[0.18em] text-[#e8e7e7]/58">
-            {String(viewer.index + 1).padStart(2, "0")} / {String(viewer.carousel.slides.length).padStart(2, "0")}
+      {canHover ? (
+        <motion.div
+          aria-hidden="true"
+          className="pointer-events-none fixed left-0 top-0 z-30001"
+          style={{ x: cursorX, y: cursorY }}
+          initial={false}
+          animate={mockupHovered ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.72 }}
+          transition={{ duration: 0.38, ease: EASE }}
+        >
+          <span className="grid size-36 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full px-6 text-center font-display text-[11px] font-medium uppercase leading-tight tracking-[0.12em] shadow-[0_18px_54px_rgba(0,0,0,0.28)] backdrop-blur-sm" style={{ backgroundColor: cursorAccent, color: cursorText }}>
+            {labels.viewProject}
           </span>
-          <button type="button" onClick={() => onStep(1)} className="grid size-11 place-items-center rounded-full border border-[#e8e7e7]/24 text-xl sm:hidden" aria-label={labels.next}>
-            →
-          </button>
-        </div>
-      </div>
-    </div>
+        </motion.div>
+      ) : null}
+    </motion.section>
   )
 }
 
 export default function ProjectGalleryDetail({ project: projectConfig }: { project: GalleryProjectConfig }) {
   const { t } = useI18n()
-  const [viewer, setViewer] = useState<ViewerState | null>(null)
   const project = useMemo(() => getTranslatedGalleryProject(projectConfig, t), [projectConfig, t])
   const nextProject = useMemo(() => getNextGalleryProject(project.slug, t), [project.slug, t])
-  const rhythm = useMemo(() => getRhythm(project.slug), [project.slug])
   const labels = useMemo(
     () => ({
       hero: { back: t("galleryDetailBack") },
@@ -482,21 +421,19 @@ export default function ProjectGalleryDetail({ project: projectConfig }: { proje
         kicker: t("galleryProcessKicker"), heading: t("galleryProcessHeading"), context: t("galleryProcessContext"), direction: t("galleryProcessDirection"), impact: t("galleryProcessImpact"),
         challenge: t("galleryProcessChallenge"), challengeBody: t("galleryProcessChallengeBody"), followers: t("galleryProcessFollowers"), directionBody: t("galleryProcessDirectionBody"),
         views: t("galleryProcessViews"), result: t("galleryProcessResult"), resultBody: t("galleryProcessResultBody"), active: t("galleryProcessActive"), visualSystem: t("galleryProcessVisualSystem"),
-        selectedPieces: t("galleryProcessSelectedPieces"), next: t("galleryProcessNext"), oneYear: t("galleryProcessOneYear"), fiveMonths: t("galleryProcessFiveMonths"),
+        next: t("galleryProcessNext"), oneYear: t("galleryProcessOneYear"), fiveMonths: t("galleryProcessFiveMonths"),
       },
-      asset: { mockup: t("galleryDetailAssetMockup"), post: t("galleryDetailAssetPost"), story: t("galleryDetailAssetStory"), slides: t("galleryDetailAssetSlides") },
-      gallery: { eyebrow: t("galleryDetailEditorialEyebrow"), title: t("galleryDetailEditorialTitle"), description: t("galleryDetailEditorialDescription") },
+      gallery: {
+        posts: t("galleryDesignPosts"), carousels: t("galleryDesignCarousels"), stories: t("galleryDesignStories"),
+      },
       visualSystem: {
         system: t("galleryVisualSystem"), objective: t("galleryVisualObjective"), purpose: t("galleryVisualPurpose"),
         typography: t("galleryVisualTypography"), colors: t("galleryVisualColors"), next: t("galleryProcessNext"), designs: t("galleryVisualDesigns"),
       },
-      cta: { eyebrow: t("galleryDetailCtaEyebrow"), title: t("galleryDetailCtaTitle"), body: t("galleryDetailCtaBody"), gallery: t("galleryDetailCtaGallery") },
-      viewer: { close: t("galleryDetailViewerClose"), previous: t("galleryDetailViewerPrevious"), next: t("galleryDetailViewerNext"), goToSlide: t("galleryDetailViewerGoToSlide") },
+      cta: { eyebrow: t("galleryDetailCtaEyebrow"), continue: t("galleryDetailCtaContinue"), viewProject: t("galleryDetailCtaViewProject"), edition: t("moreAboutFooterEdition"), localTime: t("moreAboutFooterLocalTime"), socials: t("moreAboutFooterSocials") },
     }),
     [t],
   )
-  const assets = useMemo(() => buildEditorialAssets(project, labels.asset), [project, labels.asset])
-
   useEffect(() => {
     document.title = `${project.name} | ${t("galleryDetailMetaSuffix")}`
     document.querySelector('meta[name="description"]')?.setAttribute("content", project.description)
@@ -520,14 +457,6 @@ export default function ProjectGalleryDetail({ project: projectConfig }: { proje
     "--accent": project.theme.accent,
   } as CSSProperties
 
-  const stepViewer = (direction: 1 | -1) => {
-    setViewer((current) => {
-      if (!current) return current
-      const total = current.carousel.slides.length
-      return { ...current, index: (current.index + direction + total) % total }
-    })
-  }
-
   return (
     <div style={themeStyles} data-project-theme={project.slug} className="min-h-svh max-w-full overflow-x-clip bg-[#e8e7e7] text-[#1e1e1e]">
       <ScrollProgress />
@@ -535,10 +464,8 @@ export default function ProjectGalleryDetail({ project: projectConfig }: { proje
 
       <ProjectProcess project={project} labels={labels.process} />
       <VisualSystem system={project.visualSystem} labels={labels.visualSystem} />
-      <EditorialGallery project={project} assets={assets} labels={labels.gallery} rhythm={rhythm} onOpen={(carousel) => setViewer({ carousel, index: 0 })} />
-      <FinalCta nextProject={nextProject} labels={labels.cta} />
-
-      {viewer ? <CarouselViewer viewer={viewer} projectName={project.name} labels={labels.viewer} onClose={() => setViewer(null)} onStep={stepViewer} onSelect={(index) => setViewer((current) => (current ? { ...current, index } : current))} /> : null}
+      <EditorialGallery project={project} labels={labels.gallery} />
+      <FinalCta currentProject={project} nextProject={nextProject} labels={labels.cta} />
     </div>
   )
 }
