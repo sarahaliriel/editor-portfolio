@@ -6,6 +6,7 @@ import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, ty
 import { createPortal } from "react-dom"
 import { usePathname, useRouter } from "next/navigation"
 import { useI18n } from "@/components/providers/i18n"
+import RollingText from "@/components/shared/rolling-text"
 import { MENU_NAVIGATION_ITEMS, type MenuNavigationItem } from "@/data/menu-navigation"
 
 type FullscreenDocument = Document & {
@@ -291,7 +292,7 @@ export default function Menu() {
                 />
               ) : null}
 
-              <nav className="pointer-events-none relative z-10 mx-auto flex min-h-svh w-full max-w-248 flex-col px-5 pb-6 pt-24 sm:px-8 sm:pb-8 md:px-12 md:pb-9 md:pt-9 lg:px-16">
+              <nav className="pointer-events-none relative z-10 mx-auto flex min-h-svh w-full max-w-248 flex-col px-5 pb-6 pt-24 sm:px-8 sm:pb-8 md:px-12 md:py-9 lg:px-16">
                 <div className="flex flex-1 flex-col justify-center py-5 md:block md:flex-none md:py-0">
                   <motion.p
                     data-menu-safe
@@ -369,26 +370,26 @@ export default function Menu() {
                 <motion.footer
                   ref={footerZoneRef}
                   data-menu-footer-zone
-                  className="pointer-events-auto grid gap-5 border-t border-[#e8e7e7]/18 pt-4 text-[9px] uppercase tracking-[0.16em] text-[#e8e7e7]/48 sm:grid-cols-[1fr_auto] md:grid-cols-[1.4fr_1fr_1fr] md:items-end md:gap-8 md:pt-5"
+                  className="pointer-events-auto relative left-1/2 grid w-[calc(100vw-2rem)] max-w-370 -translate-x-1/2 gap-4 border-t border-[#e8e7e7]/16 pt-4 text-center text-[9px] uppercase tracking-[0.12em] sm:w-[calc(100vw-4rem)] sm:grid-cols-[1fr_1fr_1fr] sm:items-end sm:gap-6 sm:border-0 sm:pt-0 sm:text-left sm:text-[11px] lg:w-[calc(100vw-6rem)] lg:text-xs"
                   initial={{ opacity: 0, y: reducedMotion ? 0 : 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: reducedMotion ? 0 : 4, transition: { duration: fastDuration } }}
                   transition={{ duration: reducedMotion ? 0.1 : 0.35, delay: entranceDelay(0.65) }}
                 >
-                  <div data-menu-safe className="flex flex-wrap gap-x-4 gap-y-2 normal-case tracking-normal text-[#e8e7e7]/76 sm:col-span-2 md:col-span-1">
-                    {SOCIALS.map((social) => (
-                      <a key={social.label} href={social.href} target="_blank" rel="noreferrer" className="border-b border-transparent pb-0.5 transition-colors duration-200 hover:border-[#1800ad] hover:text-[#e8e7e7] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1800ad]">
-                        {social.label}
-                      </a>
-                    ))}
+                  <div data-menu-safe className="sm:text-left">
+                    <span className="block text-[#e8e7e7]/48">{t("moreAboutFooterEdition")}</span>
+                    <span className="mt-1.5 block tracking-normal text-[#e8e7e7]/82 sm:mt-2">2026 © Sarah Aliriel</span>
                   </div>
+                  <MenuLocalTime label={t("moreAboutFooterLocalTime")} />
                   <div data-menu-safe>
-                    <p>Póvoa de Varzim</p>
-                    <p className="mt-1 text-[#e8e7e7]/78">Portugal</p>
-                  </div>
-                  <div data-menu-safe className="sm:text-right">
-                    <p>{t("moreAboutFooterLocalTime")}</p>
-                    <MenuLocalTime />
+                    <span className="block text-[#e8e7e7]/48 sm:text-right">{t("moreAboutFooterSocials")}</span>
+                    <div className="mt-1.5 flex flex-wrap justify-center gap-x-4 gap-y-1.5 tracking-normal sm:mt-2 sm:justify-end sm:gap-x-5 sm:gap-y-2">
+                      {SOCIALS.map((social) => (
+                        <a key={social.label} href={social.href} target="_blank" rel="noreferrer" className="link-underline-invert normal-case text-[#e8e7e7]/82 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1800ad]">
+                          <RollingText variant="subtle">{social.label}</RollingText>
+                        </a>
+                      ))}
+                    </div>
                   </div>
                 </motion.footer>
               </nav>
@@ -941,7 +942,7 @@ function MenuObjects({
   )
 }
 
-function MenuLocalTime() {
+function MenuLocalTime({ label }: { label: string }) {
   const [time, setTime] = useState("--:--:--")
   const [zone, setZone] = useState("Lisboa")
 
@@ -965,5 +966,12 @@ function MenuLocalTime() {
     return () => window.clearInterval(interval)
   }, [])
 
-  return <time className="mt-1 block tabular-nums text-[#e8e7e7]/78">{time} {zone}</time>
+  return (
+    <div data-menu-safe className="text-center">
+      <span className="block text-[#e8e7e7]/48">{label}</span>
+      <time className="mt-1.5 block font-medium tabular-nums tracking-[0.08em] text-[#e8e7e7]/82 sm:mt-2">
+        {time} {zone}
+      </time>
+    </div>
+  )
 }
