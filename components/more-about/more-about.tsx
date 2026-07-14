@@ -1,14 +1,13 @@
 "use client"
 
-import { motion, useInView, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion"
+import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion"
 import type { Variants } from "framer-motion"
 import Image from "next/image"
-import Link from "next/link"
-import RollingText from "@/components/shared/rolling-text"
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import Menu from "@/components/layout/menu"
 import ScrollProgress from "@/components/layout/scroll-progress"
 import { useI18n } from "@/components/providers/i18n"
+import FinalCtaContent from "@/components/shared/final-cta-content"
 
 type TimelineItem = {
   year: string
@@ -23,8 +22,6 @@ type HelpColumn = {
   body?: string
   featured?: boolean
 }
-
-const RESUME_HREF = "/cv/Sarah-Design.CV.pdf"
 
 const reveal: Variants = {
   hidden: { opacity: 0, y: 34, filter: "blur(6px)" },
@@ -308,13 +305,6 @@ function Help({ title, columns }: { title: string; columns: HelpColumn[] }) {
 
 type Stat = { value: string; label: string; chapter: string }
 
-const SOCIALS = [
-  { label: "Instagram", href: "https://www.instagram.com/chazinhodociel/" },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/sarah-dumitrache/" },
-  { label: "GitHub", href: "https://github.com/sarahaliriel" },
-  { label: "Discord", href: "https://discord.com/users/942126894478950530" },
-] as const
-
 function SocialProof({ kicker, title, intro, stats }: { kicker: string; title: string; intro: string; stats: Stat[] }) {
   return (
     <section className="overflow-hidden px-4 py-28 sm:px-8 sm:py-40 lg:px-12 lg:py-48">
@@ -373,75 +363,13 @@ function SocialProof({ kicker, title, intro, stats }: { kicker: string; title: s
   )
 }
 
-function LocalTime({ label }: { label: string }) {
-  const [localTime, setLocalTime] = useState("--:--:--")
-  const [localZone, setLocalZone] = useState("Lisboa")
-
-  useEffect(() => {
-    const formatter = new Intl.DateTimeFormat("pt-PT", {
-      timeZone: "Europe/Lisbon",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false,
-      timeZoneName: "short",
-    })
-    const updateTime = () => {
-      const parts = formatter.formatToParts(new Date())
-      setLocalTime(parts.filter((part) => part.type !== "timeZoneName").map((part) => part.value).join("").trim())
-      setLocalZone(parts.find((part) => part.type === "timeZoneName")?.value ?? "Lisboa")
-    }
-
-    updateTime()
-    const interval = window.setInterval(updateTime, 1000)
-    return () => window.clearInterval(interval)
-  }, [])
-
-  return (
-    <div className="text-center">
-      <span className="block text-[#e8e7e7]/38">{label}</span>
-      <time className="mt-2 block font-medium tabular-nums tracking-[0.08em] text-[#e8e7e7]/82">
-        {localTime} {localZone}
-      </time>
-    </div>
-  )
-}
-
 function FinalCta({ titleLines, button }: { titleLines: string[]; button: string }) {
-  const { t } = useI18n()
   const prefersReducedMotion = useReducedMotion()
   const isCompactViewport = useCompactViewport()
   const disablePinnedTransition = Boolean(prefersReducedMotion) || isCompactViewport
   const transitionRef = useRef<HTMLElement | null>(null)
-  const sectionRef = useRef<HTMLElement | null>(null)
-  const lineRef = useRef<HTMLDivElement | null>(null)
-  const sphereAnchorRef = useRef<HTMLDivElement | null>(null)
   const { scrollYProgress } = useScroll({ target: transitionRef, offset: ["start start", "end end"] })
   const ctaY = useTransform(scrollYProgress, [0, 0.72], prefersReducedMotion ? ["0%", "0%"] : ["100%", "0%"])
-  const isInView = useInView(sectionRef, { once: true, amount: 0.18 })
-  const [sphereEntryX, setSphereEntryX] = useState<number | null>(null)
-  const sphereX = useSpring(0, { stiffness: 70, damping: 18, mass: 0.8 })
-  const sphereY = useSpring(0, { stiffness: 70, damping: 18, mass: 0.8 })
-
-  useLayoutEffect(() => {
-    const line = lineRef.current
-    const sphereAnchor = sphereAnchorRef.current
-    if (!line || !sphereAnchor) return
-
-    const updateEntryDistance = () => {
-      setSphereEntryX(-sphereAnchor.offsetLeft)
-    }
-
-    updateEntryDistance()
-    const resizeObserver = new ResizeObserver(updateEntryDistance)
-    resizeObserver.observe(line)
-    resizeObserver.observe(sphereAnchor)
-
-    return () => resizeObserver.disconnect()
-  }, [])
-
-  const pillClassName =
-    "group relative inline-flex h-16 w-full max-w-sm items-center justify-center overflow-hidden rounded-full border border-[#e8e7e7]/28 px-5 text-center text-[12px] font-medium text-[#e8e7e7]/86 transition-[border-color,color,transform] duration-500 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-0.5 hover:border-[#e8e7e7]/70 hover:text-[#1e1e1e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#e8e7e7] sm:w-72 sm:px-7 sm:text-[13px] lg:h-18"
 
   return (
     <section
@@ -450,124 +378,12 @@ function FinalCta({ titleLines, button }: { titleLines: string[]; button: string
       className={disablePinnedTransition ? "relative z-20" : "relative z-20 -mt-[100svh] h-[220svh]"}
     >
       <div className={disablePinnedTransition ? "relative" : "sticky top-0 h-svh overflow-hidden"}>
-        <motion.section
-          ref={sectionRef}
-          style={{ y: disablePinnedTransition ? 0 : ctaY }}
-          className={`relative flex min-h-svh bg-[#1e1e1e] px-4 pb-8 pt-16 text-[#e8e7e7] sm:px-8 sm:pb-9 sm:pt-22 lg:px-12 lg:pb-10 lg:pt-24 ${disablePinnedTransition ? "overflow-visible" : "overflow-hidden"}`}
-          onMouseMove={(event) => {
-            if (disablePinnedTransition) return
-            const rect = event.currentTarget.getBoundingClientRect()
-            sphereX.set(((event.clientX - rect.left) / rect.width - 0.5) * 24)
-            sphereY.set(((event.clientY - rect.top) / rect.height - 0.5) * 24)
-          }}
-          onMouseLeave={() => {
-            sphereX.set(0)
-            sphereY.set(0)
-          }}
-        >
-          <div className="relative mx-auto flex w-full max-w-370 flex-1 flex-col justify-between gap-14 sm:gap-10">
-            <div className="flex flex-1 flex-col items-center justify-center pb-0 text-center sm:items-stretch sm:pb-16 sm:text-left lg:pb-20">
-              <motion.h2
-                className="relative z-10 font-display uppercase"
-                style={{
-                  fontSize: "clamp(1.75rem, 8.2vw, 6rem)",
-                  fontWeight: 500,
-                  lineHeight: 0.83,
-                  letterSpacing: "-0.07em",
-                }}
-                variants={reveal}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, amount: 0.18 }}
-              >
-                {titleLines.map((line) => (
-                  <span key={line} className="block whitespace-nowrap">
-                    {line}
-                  </span>
-                ))}
-              </motion.h2>
-
-              <div ref={lineRef} className="relative z-20 mt-20 w-full border-t border-[#e8e7e7]/24 sm:mt-[clamp(2.5rem,6vh,5.5rem)]">
-                <div
-                  ref={sphereAnchorRef}
-                  className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 sm:left-auto sm:right-[clamp(1rem,8vw,8rem)] sm:translate-x-0"
-                >
-                  <motion.div style={{ x: sphereX, y: sphereY }}>
-                    <motion.div
-                      initial={false}
-                      animate={
-                        sphereEntryX === null
-                          ? { opacity: 0, scale: 0.72, x: 0 }
-                          : isInView || prefersReducedMotion
-                            ? { opacity: 1, scale: 1, x: 0 }
-                            : { opacity: 0, scale: 0.72, x: sphereEntryX }
-                      }
-                      transition={{ duration: prefersReducedMotion ? 0 : 1.35, ease: [0.22, 1, 0.36, 1] }}
-                    >
-                      <Link
-                        href="mailto:dumitrachebusiness@gmail.com"
-                        aria-label={button}
-                        className="group relative inline-flex aspect-square w-[clamp(112px,13vw,202px)] items-center justify-center overflow-hidden rounded-full bg-[#1800ad] p-5 text-center font-display text-[clamp(.68rem,.9vw,.88rem)] font-semibold uppercase leading-tight text-[#e8e7e7] transition-[transform,box-shadow,color] duration-700 hover:scale-[1.07] hover:text-[#1800ad] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#e8e7e7]"
-                      >
-                        <span className="absolute inset-0 origin-bottom scale-y-0 rounded-full bg-[#e8e7e7] transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100" aria-hidden="true" />
-                        <span className="relative z-10 flex items-center gap-2.5">
-                          <RollingText variant="strong">{button}</RollingText> <span className="text-base transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1">↗</span>
-                        </span>
-                      </Link>
-                    </motion.div>
-                  </motion.div>
-                </div>
-              </div>
-
-              <motion.div
-                className="mt-20 flex w-full max-w-sm flex-col items-center gap-3 sm:mt-9 sm:max-w-152 sm:flex-row sm:items-stretch sm:gap-4 lg:mt-11"
-                variants={reveal}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, amount: 0.3 }}
-              >
-                <a href="mailto:dumitrachebusiness@gmail.com" className={pillClassName}>
-                  <span
-                    className="absolute inset-0 origin-bottom scale-y-0 rounded-full bg-[#e8e7e7] transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100"
-                    aria-hidden="true"
-                  />
-                  <RollingText variant="subtle" className="relative z-10">dumitrachebusiness@gmail.com</RollingText>
-                </a>
-                <a href={RESUME_HREF} download className={pillClassName} aria-label={t("moreAboutCtaResume")}>
-                  <span
-                    className="absolute inset-0 origin-bottom scale-y-0 rounded-full bg-[#e8e7e7] transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100"
-                    aria-hidden="true"
-                  />
-                  <RollingText variant="strong" className="relative z-10 uppercase">{t("moreAboutCtaResume")}</RollingText>
-                </a>
-              </motion.div>
-            </div>
-
-            <footer className="grid gap-5 text-center text-[10px] uppercase tracking-[0.12em] sm:grid-cols-[1fr_1fr_1fr] sm:items-end sm:gap-6 sm:text-left sm:text-[11px] lg:text-xs">
-              <div className="sm:text-left">
-                <span className="block text-[#e8e7e7]/38">{t("moreAboutFooterEdition")}</span>
-                <span className="mt-2 block tracking-normal text-[#e8e7e7]/82">2026 © Sarah Aliriel</span>
-              </div>
-              <LocalTime label={t("moreAboutFooterLocalTime")} />
-              <nav aria-label="Redes sociais">
-                <span className="block text-[#e8e7e7]/38 sm:text-right">{t("moreAboutFooterSocials")}</span>
-                <div className="mt-2 flex flex-wrap justify-center gap-x-5 gap-y-2 tracking-normal sm:justify-end">
-                  {SOCIALS.map((social) => (
-                    <a
-                      key={social.label}
-                      href={social.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="link-underline-invert normal-case text-[#e8e7e7]/82"
-                    >
-                      <RollingText variant="subtle">{social.label}</RollingText>
-                    </a>
-                  ))}
-                </div>
-              </nav>
-            </footer>
-          </div>
-        </motion.section>
+        <FinalCtaContent
+          titleLines={titleLines}
+          button={button}
+          theme="dark"
+          style={disablePinnedTransition ? undefined : { y: ctaY }}
+        />
       </div>
     </section>
   )

@@ -124,7 +124,7 @@ export default function FinalCtaContent({
       style={style}
       onPointerMove={move}
       onPointerLeave={reset}
-      className={`relative flex min-h-svh w-full overflow-hidden px-4 pb-7 pt-10 sm:px-8 sm:pb-9 sm:pt-16 lg:px-12 lg:pb-10 lg:pt-20 ${isDark ? "bg-[#1e1e1e] text-[#e8e7e7]" : "bg-[#e8e7e7] text-[#1e1e1e]"}`}
+      className={`relative flex min-h-svh w-full overflow-x-clip px-4 pb-24 pt-24 sm:overflow-hidden sm:px-8 sm:pb-9 sm:pt-16 lg:px-12 lg:pb-10 lg:pt-20 ${isDark ? "bg-[#1e1e1e] text-[#e8e7e7]" : "bg-[#e8e7e7] text-[#1e1e1e]"}`}
     >
       <div className="relative mx-auto flex w-full max-w-370 flex-1 flex-col justify-between gap-8 sm:gap-10">
         <div className="flex flex-1 flex-col items-center justify-center text-center sm:items-stretch sm:pb-10 sm:text-left lg:pb-14">
@@ -189,17 +189,17 @@ export default function FinalCtaContent({
           </motion.div>
         </div>
 
-        <footer className={`grid gap-4 border-t pt-4 text-center text-[9px] uppercase tracking-[0.12em] sm:grid-cols-[1fr_1fr_1fr] sm:items-end sm:gap-6 sm:border-0 sm:pt-0 sm:text-left sm:text-[11px] lg:text-xs ${isDark ? "border-[#e8e7e7]/16" : "border-[#1e1e1e]/16"}`}>
+        <footer className={`grid grid-cols-2 gap-x-4 gap-y-5 border-t pt-5 text-center text-[9px] uppercase tracking-[0.12em] sm:grid-cols-[1fr_1fr_1fr] sm:items-end sm:gap-6 sm:border-0 sm:pt-0 sm:text-left sm:text-[11px] lg:text-xs ${isDark ? "border-[#e8e7e7]/16" : "border-[#1e1e1e]/16"}`}>
           <div className="sm:text-left">
             <span className={`block ${mutedInk}`}>{t("moreAboutFooterEdition")}</span>
             <span className={`mt-1.5 block tracking-normal sm:mt-2 ${detailInk}`}>2026 © Sarah Aliriel</span>
           </div>
           <LocalTime label={t("moreAboutFooterLocalTime")} dark={isDark} />
-          <nav aria-label={t("moreAboutFooterSocials")}>
+          <nav aria-label={t("moreAboutFooterSocials")} className="col-span-2 sm:col-span-1">
             <span className={`block sm:text-right ${mutedInk}`}>{t("moreAboutFooterSocials")}</span>
-            <div className="mt-1.5 flex flex-wrap justify-center gap-x-4 gap-y-1.5 tracking-normal sm:mt-2 sm:justify-end sm:gap-x-5 sm:gap-y-2">
+            <div className="mt-1 flex flex-wrap justify-center gap-x-2 gap-y-0 tracking-normal sm:mt-2 sm:justify-end sm:gap-x-5 sm:gap-y-2">
               {SOCIALS.map((social) => (
-                <a key={social.label} href={social.href} target="_blank" rel="noreferrer" tabIndex={interactive ? undefined : -1} className={`link-underline-invert normal-case ${detailInk}`}>
+                <a key={social.label} href={social.href} target="_blank" rel="noreferrer" tabIndex={interactive ? undefined : -1} className={`link-underline-invert inline-flex min-h-11 items-center px-1 normal-case sm:min-h-0 sm:px-0 ${detailInk}`}>
                   <RollingText variant="subtle">{social.label}</RollingText>
                 </a>
               ))}

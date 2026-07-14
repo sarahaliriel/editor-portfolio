@@ -14,9 +14,21 @@ function shortLabel(l: Lang) {
 export default function LanguageToggle() {
   const { lang, setLang, t } = useI18n()
   const [open, setOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
   const wrapRef = useRef<HTMLDivElement | null>(null)
 
   const next = ORDER[(ORDER.indexOf(lang) + 1) % ORDER.length]
+
+  useEffect(() => {
+    const onMenuState = (event: Event) => {
+      const menuEvent = event as CustomEvent<{ open?: boolean }>
+      setMenuOpen(Boolean(menuEvent.detail?.open))
+      if (menuEvent.detail?.open) setOpen(false)
+    }
+
+    window.addEventListener("menu:state", onMenuState)
+    return () => window.removeEventListener("menu:state", onMenuState)
+  }, [])
 
   useEffect(() => {
     if (!open) return
@@ -50,12 +62,18 @@ export default function LanguageToggle() {
   }
 
   return (
-    <div ref={wrapRef} className="fixed bottom-5 right-5 z-96">
+    <div
+      ref={wrapRef}
+      aria-hidden={menuOpen}
+      inert={menuOpen}
+      className={`fixed bottom-[max(.75rem,env(safe-area-inset-bottom))] right-3 z-96 transition-[opacity,transform] duration-200 sm:bottom-5 sm:right-5 ${menuOpen ? "pointer-events-none translate-y-2 opacity-0" : "opacity-100"}`}
+    >
       <div className="relative">
         <button
           type="button"
           aria-label={t("langLabel")}
           aria-expanded={open}
+          tabIndex={menuOpen ? -1 : undefined}
           onClick={() => setOpen((v) => !v)}
           onDoubleClick={cycle}
           className={[
@@ -77,6 +95,8 @@ export default function LanguageToggle() {
         </button>
 
         <div
+          aria-hidden={!open}
+          inert={!open || menuOpen}
           className={[
             "absolute bottom-[calc(100%+10px)] right-0",
             "origin-bottom-right transition-all duration-300 ease-[cubic-bezier(.16,1,.3,1)]",

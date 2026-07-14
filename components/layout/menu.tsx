@@ -383,9 +383,9 @@ export default function Menu() {
                   <MenuLocalTime label={t("moreAboutFooterLocalTime")} />
                   <div data-menu-safe className="col-span-2 sm:col-span-1">
                     <span className="block text-[#e8e7e7]/48 sm:text-right">{t("moreAboutFooterSocials")}</span>
-                    <div className="mt-1 flex flex-wrap justify-center gap-x-3 gap-y-1 tracking-normal sm:mt-2 sm:justify-end sm:gap-x-5 sm:gap-y-2">
+                    <div className="mt-1 flex flex-wrap justify-center gap-x-2 gap-y-0 tracking-normal sm:mt-2 sm:justify-end sm:gap-x-5 sm:gap-y-2">
                       {SOCIALS.map((social) => (
-                        <a key={social.label} href={social.href} target="_blank" rel="noreferrer" className="link-underline-invert normal-case text-[#e8e7e7]/82 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1800ad]">
+                        <a key={social.label} href={social.href} target="_blank" rel="noreferrer" className="link-underline-invert inline-flex min-h-8 items-center px-1 normal-case text-[#e8e7e7]/82 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1800ad] sm:min-h-0 sm:px-0">
                           <RollingText variant="subtle">{social.label}</RollingText>
                         </a>
                       ))}
