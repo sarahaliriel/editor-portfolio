@@ -229,7 +229,7 @@ export default function Menu() {
           whileHover={reducedMotion ? undefined : { scale: 1.035 }}
           whileTap={{ scale: 0.96 }}
           transition={{ duration: fastDuration }}
-          className="fixed right-5 top-5 z-20010 grid h-16 w-16 place-items-center rounded-full border border-white/35 bg-[#1e1e1e] shadow-[0_18px_70px_rgba(0,0,0,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e8e7e7] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1e1e1e]"
+          className="fixed right-3 top-3 z-20010 grid h-14 w-14 place-items-center rounded-full border border-white/35 bg-[#1e1e1e] shadow-[0_18px_70px_rgba(0,0,0,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e8e7e7] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1e1e1e] sm:right-5 sm:top-5 sm:h-16 sm:w-16"
         >
           <span aria-hidden="true" className="relative block h-6 w-6">
             <motion.span
@@ -292,11 +292,11 @@ export default function Menu() {
                 />
               ) : null}
 
-              <nav className="pointer-events-none relative z-10 mx-auto flex min-h-svh w-full max-w-248 flex-col px-5 pb-6 pt-24 sm:px-8 sm:pb-8 md:px-12 md:py-9 lg:px-16">
-                <div className="flex flex-1 flex-col justify-center py-5 md:block md:flex-none md:py-0">
+              <nav className="pointer-events-none relative z-10 mx-auto flex min-h-svh w-full max-w-248 flex-col px-3 pb-3 pt-20 [@media(max-width:639px)_and_(max-height:640px)]:pt-16 sm:px-8 sm:pb-8 sm:pt-24 md:px-12 md:py-9 lg:px-16">
+                <div className="flex flex-1 flex-col justify-center py-2 [@media(max-width:639px)_and_(max-height:640px)]:py-0 sm:py-5 md:block md:flex-none md:py-0">
                   <motion.p
                     data-menu-safe
-                    className="mb-3 text-[9px] uppercase tracking-[0.22em] text-[#e8e7e7]/42 md:mb-4"
+                    className="mx-auto mb-3 w-full max-w-90 border-b border-[#e8e7e7]/16 pb-2 text-center text-[9px] uppercase tracking-[0.22em] text-[#e8e7e7]/42 sm:mx-0 sm:max-w-none sm:border-0 sm:pb-0 sm:text-left md:mb-4"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0, transition: { duration: fastDuration } }}
@@ -309,7 +309,7 @@ export default function Menu() {
                     ref={navigationZoneRef}
                     data-menu-safe
                     data-menu-navigation-zone
-                    className="pointer-events-auto divide-y divide-[#e8e7e7]/16 border-y border-[#e8e7e7]/16"
+                    className="pointer-events-auto mx-auto flex w-full max-w-120 flex-col gap-[clamp(.65rem,2.2vh,1.35rem)] [@media(max-width:639px)_and_(max-height:640px)]:gap-1 sm:block sm:max-w-none sm:divide-y sm:divide-[#e8e7e7]/16 sm:border-y sm:border-[#e8e7e7]/16"
                   initial="closed"
                   animate="open"
                   exit="closed"
@@ -343,17 +343,17 @@ export default function Menu() {
                           onFocus={() => highlightItem(item.id)}
                           onBlur={() => clearHighlightedItem(item.id)}
                           onClick={() => navigate(item)}
-                          className={`group grid w-full grid-cols-[2.35rem_1fr] gap-x-2.5 py-3 text-left transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#1800ad] sm:grid-cols-[3rem_1fr] md:grid-cols-[3.75rem_1fr] md:py-[clamp(.65rem,1.5vh,1.15rem)] ${active ? "text-[#e8e7e7]" : "text-[#e8e7e7]/30 hover:text-[#e8e7e7]/64 focus-visible:text-[#e8e7e7]/64"}`}
+                          className={`group flex w-full flex-col items-center py-0 text-center transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#1800ad] sm:grid sm:grid-cols-[3rem_1fr] sm:items-start sm:gap-x-2.5 sm:py-3 sm:text-left md:grid-cols-[3.75rem_1fr] md:py-[clamp(.65rem,1.5vh,1.15rem)] ${active ? "text-[#e8e7e7]" : "text-[#e8e7e7]/46 hover:text-[#e8e7e7]/64 focus-visible:text-[#e8e7e7]/64 sm:text-[#e8e7e7]/30"}`}
                         >
-                          <span className={`pt-1 text-[9px] tabular-nums tracking-[0.18em] ${active ? "font-semibold text-[#7770ff]" : "text-current"}`}>
+                          <span className={`mb-1 text-[8px] tabular-nums tracking-[0.18em] [@media(max-width:639px)_and_(max-height:640px)]:mb-0 sm:mb-0 sm:pt-1 sm:text-[9px] ${active ? "font-semibold text-[#7770ff]" : "text-current"}`}>
                             {item.number}
                           </span>
-                          <span>
-                            <span className="block font-display text-[clamp(1.75rem,5.2vw,4.75rem)] font-semibold uppercase leading-[0.82] tracking-[-0.055em]">
+                          <span className="w-full">
+                            <span className="mx-auto block max-w-full font-display text-[clamp(2.6rem,10vw,4.6rem)] font-semibold uppercase leading-[0.9] tracking-[-0.045em] [@media(max-width:639px)_and_(max-height:640px)]:leading-[0.82] sm:mx-0 sm:text-[clamp(1.75rem,5.2vw,4.75rem)] sm:leading-[0.82] sm:tracking-[-0.055em]">
                               {t(item.labelKey)}
                             </span>
                             {active ? (
-                              <span className="mt-1.5 block max-w-lg text-[10px] leading-relaxed text-[#e8e7e7]/64 md:text-[11px]">
+                              <span className="mx-auto mt-1.5 block max-w-64 text-[10px] leading-relaxed text-[#e8e7e7]/64 sm:mx-0 sm:max-w-lg md:text-[11px]">
                                 {t(item.descriptionKey)}
                               </span>
                             ) : null}
@@ -370,7 +370,7 @@ export default function Menu() {
                 <motion.footer
                   ref={footerZoneRef}
                   data-menu-footer-zone
-                  className="pointer-events-auto relative left-1/2 grid w-[calc(100vw-2rem)] max-w-370 -translate-x-1/2 gap-4 border-t border-[#e8e7e7]/16 pt-4 text-center text-[9px] uppercase tracking-[0.12em] sm:w-[calc(100vw-4rem)] sm:grid-cols-[1fr_1fr_1fr] sm:items-end sm:gap-6 sm:border-0 sm:pt-0 sm:text-left sm:text-[11px] lg:w-[calc(100vw-6rem)] lg:text-xs"
+                  className="pointer-events-auto relative left-1/2 grid w-[calc(100vw-1.5rem)] max-w-370 -translate-x-1/2 grid-cols-2 items-end gap-x-3 gap-y-2 border-t border-[#e8e7e7]/16 pt-2.5 text-center text-[8px] uppercase tracking-[0.1em] [@media(max-width:639px)_and_(max-height:640px)]:gap-y-1 [@media(max-width:639px)_and_(max-height:640px)]:pt-2 sm:w-[calc(100vw-4rem)] sm:grid-cols-[1fr_1fr_1fr] sm:gap-6 sm:border-0 sm:pt-0 sm:text-left sm:text-[11px] sm:tracking-[0.12em] lg:w-[calc(100vw-6rem)] lg:text-xs"
                   initial={{ opacity: 0, y: reducedMotion ? 0 : 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: reducedMotion ? 0 : 4, transition: { duration: fastDuration } }}
@@ -378,12 +378,12 @@ export default function Menu() {
                 >
                   <div data-menu-safe className="sm:text-left">
                     <span className="block text-[#e8e7e7]/48">{t("moreAboutFooterEdition")}</span>
-                    <span className="mt-1.5 block tracking-normal text-[#e8e7e7]/82 sm:mt-2">2026 © Sarah Aliriel</span>
+                    <span className="mt-1 block tracking-normal text-[#e8e7e7]/82 sm:mt-2">2026 © Sarah Aliriel</span>
                   </div>
                   <MenuLocalTime label={t("moreAboutFooterLocalTime")} />
-                  <div data-menu-safe>
+                  <div data-menu-safe className="col-span-2 sm:col-span-1">
                     <span className="block text-[#e8e7e7]/48 sm:text-right">{t("moreAboutFooterSocials")}</span>
-                    <div className="mt-1.5 flex flex-wrap justify-center gap-x-4 gap-y-1.5 tracking-normal sm:mt-2 sm:justify-end sm:gap-x-5 sm:gap-y-2">
+                    <div className="mt-1 flex flex-wrap justify-center gap-x-3 gap-y-1 tracking-normal sm:mt-2 sm:justify-end sm:gap-x-5 sm:gap-y-2">
                       {SOCIALS.map((social) => (
                         <a key={social.label} href={social.href} target="_blank" rel="noreferrer" className="link-underline-invert normal-case text-[#e8e7e7]/82 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1800ad]">
                           <RollingText variant="subtle">{social.label}</RollingText>
