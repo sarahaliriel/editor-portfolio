@@ -23,7 +23,7 @@ function HeroSection({ project, backLabel }: { project: GalleryProject; backLabe
     <section className="relative z-10 isolate min-h-svh max-w-full bg-[#e8e7e7] px-5 pb-20 pt-[clamp(76px,9vh,112px)] text-[#1e1e1e] sm:px-8 lg:flex lg:min-h-[clamp(760px,100svh,1080px)] lg:items-stretch lg:px-[clamp(40px,4.6vw,88px)] lg:pb-[clamp(72px,9vh,108px)]">
       <div className="relative z-20 flex min-w-0 w-full flex-col lg:w-[61%] lg:pr-[clamp(16px,1.5vw,30px)]">
         <motion.div initial={prefersReducedMotion ? false : { opacity: 0, y: -14 }} animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }} transition={{ duration: 0.75, ease: EASE }}>
-          <Link href="/gallery" className="w-max text-[11px] font-black uppercase tracking-[0.24em] text-[var(--accent)] transition hover:text-[var(--accent)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]">
+          <Link href="/gallery" className="w-max text-[11px] font-black uppercase tracking-[0.24em] text-(--accent) transition hover:text-(--accent) focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--accent)">
             <RollingText>{backLabel}</RollingText>
           </Link>
         </motion.div>
@@ -42,13 +42,13 @@ function HeroSection({ project, backLabel }: { project: GalleryProject; backLabe
           <motion.dl initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }} animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: EASE, delay: 0.48 }} className="mt-[clamp(44px,6vh,72px)] grid w-full max-w-3xl grid-cols-3 gap-[clamp(22px,4.5vw,72px)] border-y border-[#1e1e1e]/15 py-[clamp(22px,2.7vh,32px)] lg:mt-auto">
             {project.caseStudy.metrics.map((metric) => (
               <div key={metric.label}>
-                <dd className="font-display text-[clamp(2.25rem,4.2vw,4.6rem)] font-black leading-none tracking-[-0.04em] text-[var(--accent)]">{metric.value}</dd>
+                <dd className="font-display text-[clamp(2.25rem,4.2vw,4.6rem)] font-black leading-none tracking-[-0.04em] text-(--accent)">{metric.value}</dd>
                 <dt className="mt-2.5 max-w-[14ch] text-[7px] font-black uppercase leading-[1.45] tracking-[0.18em] text-[#1e1e1e]/48 sm:text-[8px]">{metric.label}</dt>
               </div>
             ))}
           </motion.dl>
 
-          <button type="button" onClick={scrollToStory} aria-label="Ir para a próxima seção" className="group mt-[clamp(28px,3.5vh,42px)] grid size-11 place-items-center text-[#1e1e1e]/72 transition hover:translate-y-1 hover:text-[var(--accent)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]">
+          <button type="button" onClick={scrollToStory} aria-label="Ir para a próxima seção" className="group mt-[clamp(28px,3.5vh,42px)] grid size-11 place-items-center text-[#1e1e1e]/72 transition hover:translate-y-1 hover:text-(--accent) focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--accent)">
             <ArrowDownRight />
           </button>
         </div>
@@ -139,7 +139,7 @@ function ProjectProcess({ project, labels }: { project: GalleryProject; labels: 
         transition={{ duration: 0.85, ease: EASE }}
         className="grid gap-3 border-b border-[#e8e7e7]/14 pb-[clamp(28px,4vw,52px)] lg:grid-cols-[7.5rem_1fr] lg:items-end"
       >
-        <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[var(--accent)]">{labels.kicker}</p>
+        <p className="text-[10px] font-black uppercase tracking-[0.24em] text-(--accent)">{labels.kicker}</p>
         <h2 className="max-w-[22ch] font-display text-[clamp(1.8rem,3.2vw,3.8rem)] font-black leading-[0.95] tracking-[-0.035em]">{labels.heading}</h2>
       </motion.header>
 
@@ -154,7 +154,7 @@ function ProjectProcess({ project, labels }: { project: GalleryProject; labels: 
             className="grid gap-7 border-b border-[#e8e7e7]/14 py-[clamp(38px,5vw,72px)] md:grid-cols-[6rem_minmax(0,1fr)_minmax(16rem,1.1fr)] md:gap-x-8 lg:grid-cols-[7.5rem_minmax(17rem,0.9fr)_minmax(22rem,1.15fr)_minmax(12rem,0.55fr)] lg:items-center lg:gap-x-[clamp(28px,4vw,72px)]"
           >
             <div className="flex items-center justify-between md:block">
-              <span className="font-display text-sm font-black tracking-[-0.03em] text-[var(--accent)]">{item.number}</span>
+              <span className="font-display text-sm font-black tracking-[-0.03em] text-(--accent)">{item.number}</span>
               <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[#e8e7e7]/38 md:mt-3 md:block">{item.eyebrow}</span>
             </div>
             <h3 className="font-display text-[clamp(2.7rem,5.6vw,6.6rem)] font-black uppercase leading-[0.78] tracking-[-0.065em]">{item.title}</h3>
@@ -168,7 +168,7 @@ function ProjectProcess({ project, labels }: { project: GalleryProject; labels: 
             >
               <dd className="font-display text-[clamp(3.5rem,6.4vw,7.5rem)] font-black uppercase leading-[0.72] tracking-[-0.075em]">{item.metric}</dd>
               <dt className="mt-4 text-[10px] font-black uppercase tracking-[0.2em] text-[#e8e7e7]/58">{item.metricLabel}</dt>
-              {item.detail ? <dt className="mt-2 text-[9px] font-black uppercase tracking-[0.18em] text-[var(--accent)]">{item.detail}</dt> : null}
+              {item.detail ? <dt className="mt-2 text-[9px] font-black uppercase tracking-[0.18em] text-(--accent)">{item.detail}</dt> : null}
             </motion.dl>
           </motion.article>
         ))}
@@ -177,7 +177,7 @@ function ProjectProcess({ project, labels }: { project: GalleryProject; labels: 
       <a href="#visual-system" onClick={scrollToVisualSystem} className="group ml-auto mt-[clamp(36px,5vw,64px)] flex w-max items-end gap-5 text-right focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#e8e7e7]">
         <span>
           <span className="block text-[9px] font-black uppercase tracking-[0.22em] text-[#e8e7e7]/38">{labels.next}</span>
-          <span className="mt-2 block font-display text-[clamp(1.4rem,2.5vw,2.8rem)] font-black uppercase leading-none tracking-[-0.04em] transition group-hover:text-[var(--accent)]">{labels.visualSystem}</span>
+          <span className="mt-2 block font-display text-[clamp(1.4rem,2.5vw,2.8rem)] font-black uppercase leading-none tracking-[-0.04em] transition group-hover:text-(--accent)">{labels.visualSystem}</span>
         </span>
         <span className="transition group-hover:translate-y-1"><ArrowDownRight /></span>
       </a>
@@ -226,9 +226,9 @@ function CarouselCard({ carousel, index }: { carousel: GalleryCarousel; index: n
         <Image src={carousel.slides[slide].src} alt={carousel.slides[slide].alt} fill sizes="(max-width: 767px) 48vw, (max-width: 1023px) 32vw, 24vw" className="object-contain" />
       </div>
       <div className="mt-1 flex items-center justify-center gap-2 text-[#1e1e1e]/60">
-        <button type="button" onClick={() => step(-1)} aria-label={`Slide anterior de ${carousel.title}`} className="grid size-7 place-items-center text-sm transition hover:text-[var(--accent)] focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--accent)]">←</button>
+        <button type="button" onClick={() => step(-1)} aria-label={`Slide anterior de ${carousel.title}`} className="grid size-7 place-items-center text-sm transition hover:text-(--accent) focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-(--accent)">←</button>
         <span className="text-[9px] font-black tabular-nums tracking-[0.12em]">{String(slide + 1).padStart(2, "0")}/{String(total).padStart(2, "0")}</span>
-        <button type="button" onClick={() => step(1)} aria-label={`Próximo slide de ${carousel.title}`} className="grid size-7 place-items-center text-sm transition hover:text-[var(--accent)] focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--accent)]">→</button>
+        <button type="button" onClick={() => step(1)} aria-label={`Próximo slide de ${carousel.title}`} className="grid size-7 place-items-center text-sm transition hover:text-(--accent) focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-(--accent)">→</button>
       </div>
     </article>
   )
@@ -341,7 +341,7 @@ function FinalCta({ currentProject, nextProject, labels }: { currentProject: Gal
             }}
             onPointerMove={moveMockupCursor}
             onPointerLeave={() => setMockupHovered(false)}
-            className="absolute inset-x-0 bottom-0 top-[clamp(-104px,-9vh,-72px)] overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
+            className="absolute inset-x-0 bottom-0 top-[clamp(-104px,-9vh,-72px)] overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--accent)"
           >
             <motion.span
               initial={false}
@@ -368,7 +368,7 @@ function FinalCta({ currentProject, nextProject, labels }: { currentProject: Gal
               const active = index === currentIndex
               return (
                 <li key={slug} aria-current={active ? "step" : undefined} className="grid justify-items-center gap-2 text-[9px] font-black tracking-[0.18em] text-[#e8e7e7]/32">
-                  <span aria-hidden="true" className={`size-1.5 rounded-full border ${active ? "border-[var(--accent)] bg-[var(--accent)] shadow-[0_0_14px_rgba(24,0,173,0.3)]" : "border-[#e8e7e7]/32"}`} />
+                  <span aria-hidden="true" className={`size-1.5 rounded-full border ${active ? "border-(--accent) bg-(--accent) shadow-[0_0_14px_rgba(24,0,173,0.3)]" : "border-[#e8e7e7]/32"}`} />
                   <span className={active ? "text-[#e8e7e7]/82" : undefined}>{String(index + 1).padStart(2, "0")}</span>
                 </li>
               )
@@ -376,7 +376,7 @@ function FinalCta({ currentProject, nextProject, labels }: { currentProject: Gal
         </motion.ol>
 
           <motion.div variants={ctaRevealItem} className="order-5 mt-[clamp(22px,3vh,34px)]">
-            <Link href={`/gallery/${nextProject.slug}`} scroll aria-label={`${labels.continue}: ${nextProject.name}`} className="group relative inline-flex h-13 w-[min(68vw,300px)] items-center justify-center overflow-hidden rounded-full border border-[#e8e7e7]/20 px-8 font-display text-[10px] font-semibold uppercase tracking-[0.24em] text-[#e8e7e7] transition-[border-color,transform] duration-500 hover:-translate-y-0.5 hover:border-[#e8e7e7]/60 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)] sm:h-15 sm:w-74 sm:text-[11px]">
+            <Link href={`/gallery/${nextProject.slug}`} scroll aria-label={`${labels.continue}: ${nextProject.name}`} className="group relative inline-flex h-13 w-[min(68vw,300px)] items-center justify-center overflow-hidden rounded-full border border-[#e8e7e7]/20 px-8 font-display text-[10px] font-semibold uppercase tracking-[0.24em] text-[#e8e7e7] transition-[border-color,transform] duration-500 hover:-translate-y-0.5 hover:border-[#e8e7e7]/60 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--accent) sm:h-15 sm:w-74 sm:text-[11px]">
               <span aria-hidden="true" className="absolute inset-0 origin-bottom scale-y-0 rounded-full bg-[#e8e7e7] transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100" />
               <span className="relative z-10 flex items-center gap-4 transition-colors duration-500 group-hover:text-[#1e1e1e]"><RollingText variant="strong">{labels.continue}</RollingText><span aria-hidden="true" className="text-base transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1">↗</span></span>
             </Link>
@@ -404,7 +404,7 @@ function FinalCta({ currentProject, nextProject, labels }: { currentProject: Gal
           animate={mockupHovered ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.72 }}
           transition={{ duration: 0.38, ease: EASE }}
         >
-          <span className="grid size-36 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-[var(--accent)] px-6 text-center font-display text-[11px] font-medium uppercase leading-tight tracking-[0.12em] text-[#e8e7e7] shadow-[0_18px_54px_rgba(0,0,0,0.28)] backdrop-blur-sm">
+          <span className="grid size-36 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-(--accent) px-6 text-center font-display text-[11px] font-medium uppercase leading-tight tracking-[0.12em] text-[#e8e7e7] shadow-[0_18px_54px_rgba(0,0,0,0.28)] backdrop-blur-sm">
             {labels.viewProject}
           </span>
         </motion.div>

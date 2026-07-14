@@ -370,7 +370,7 @@ export default function Menu() {
                 <motion.footer
                   ref={footerZoneRef}
                   data-menu-footer-zone
-                  className="pointer-events-auto relative left-1/2 grid w-[calc(100vw-1.5rem)] max-w-370 -translate-x-1/2 grid-cols-2 items-end gap-x-3 gap-y-2 border-t border-[#e8e7e7]/16 pt-2.5 text-center text-[8px] uppercase tracking-[0.1em] [@media(max-width:639px)_and_(max-height:640px)]:gap-y-1 [@media(max-width:639px)_and_(max-height:640px)]:pt-2 sm:w-[calc(100vw-4rem)] sm:grid-cols-[1fr_1fr_1fr] sm:gap-6 sm:border-0 sm:pt-0 sm:text-left sm:text-[11px] sm:tracking-[0.12em] lg:w-[calc(100vw-6rem)] lg:text-xs"
+                  className="pointer-events-auto relative left-1/2 grid w-[calc(100vw-1.5rem)] max-w-370 -translate-x-1/2 grid-cols-2 items-end gap-x-3 gap-y-2 border-t border-[#e8e7e7]/16 pt-2.5 text-center text-[8px] uppercase tracking-widest [@media(max-width:639px)_and_(max-height:640px)]:gap-y-1 [@media(max-width:639px)_and_(max-height:640px)]:pt-2 sm:w-[calc(100vw-4rem)] sm:grid-cols-[1fr_1fr_1fr] sm:gap-6 sm:border-0 sm:pt-0 sm:text-left sm:text-[11px] sm:tracking-[0.12em] lg:w-[calc(100vw-6rem)] lg:text-xs"
                   initial={{ opacity: 0, y: reducedMotion ? 0 : 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: reducedMotion ? 0 : 4, transition: { duration: fastDuration } }}

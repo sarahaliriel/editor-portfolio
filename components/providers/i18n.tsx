@@ -35,9 +35,6 @@ const DICT = {
     introRouteMoreAbout: "sobre mim",
 
     cursorView: "Ver",
-    cursorEnter: "Entrar",
-    cursorOpen: "Abrir",
-    cursorTalk: "Conversar",
 
     heroAvailable: "Disponível para projetos",
     heroRole1: "Editora de Vídeos",
@@ -406,9 +403,6 @@ const DICT = {
     introRouteMoreAbout: "about me",
 
     cursorView: "View",
-    cursorEnter: "Enter",
-    cursorOpen: "Open",
-    cursorTalk: "Talk",
 
     heroAvailable: "Available for projects",
     heroRole1: "Video Editor",
@@ -777,9 +771,6 @@ const DICT = {
     introRouteMoreAbout: "sobre mí",
 
     cursorView: "Ver",
-    cursorEnter: "Entrar",
-    cursorOpen: "Abrir",
-    cursorTalk: "Hablar",
 
     heroAvailable: "Disponible para proyectos",
     heroRole1: "Editora de Video",

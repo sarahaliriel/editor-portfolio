@@ -1,36 +1,260 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
 
-## Getting Started
+  <b>` Editorial Design Portfolio `</b>
 
-First, run the development server:
+</div>
 
-```bash
+<br>
+
+<div align="center" width="100%">
+  <img src="https://readme-typing-svg.demolab.com?font=Iosevka&color=ECDED1&width=900&size=22&center=true&lines=Editorial+Design+Portfolio;Social+Media+%7C+Motion+Design;Art+Direction+%26+Visual+Identity;Designed+to+Tell+Stories" alt="Typing SVG"/>
+</div>
+
+<br>
+
+<details align="center">
+<summary>
+
+<samp>
+<b>Project Info</b>
+</samp>
+
+</summary>
+
+<br>
+
+##
+
+<br>
+
+<div align="center">
+<samp>
+
+<b>
+About This Project
+</b>
+
+<br>
+<br>
+
+This portfolio showcases my work as a designer, video editor and creative developer.
+<br><br>
+
+Instead of presenting isolated projects, it was designed as a curated visual archive,
+where each case study explains the thinking behind the identity, creative process and final execution.
+<br><br>
+
+The experience combines editorial layouts, cinematic transitions, motion design
+and interactive storytelling to transform a portfolio into an immersive experience.
+
+</samp>
+</div>
+
+<br>
+
+<div align="center">
+
+<samp>
+
+<b>
+Technologies Used
+</b>
+
+</samp>
+
+<br>
+<br>
+
+<img src="https://img.shields.io/badge/Next.js-ECDED1?style=for-the-badge&logo=nextdotjs&logoColor=000000"/>
+<img src="https://img.shields.io/badge/React-ECDED1?style=for-the-badge&logo=react&logoColor=000000"/>
+<img src="https://img.shields.io/badge/TypeScript-ECDED1?style=for-the-badge&logo=typescript&logoColor=000000"/>
+
+<br>
+
+<img src="https://img.shields.io/badge/Tailwind-ECDED1?style=for-the-badge&logo=tailwindcss&logoColor=000000"/>
+<img src="https://img.shields.io/badge/Framer_Motion-ECDED1?style=for-the-badge&logo=framer&logoColor=000000"/>
+<img src="https://img.shields.io/badge/Vercel-ECDED1?style=for-the-badge&logo=vercel&logoColor=000000"/>
+
+</div>
+
+<br>
+
+<div align="center">
+
+<samp>
+
+<b>
+Main Features
+</b>
+
+</samp>
+
+<br>
+<br>
+
+<samp>
+
+✦ Interactive editorial portfolio
+
+✦ Complete design case studies
+
+✦ Motion design showcase
+
+✦ Video gallery with fullscreen player
+
+✦ Three language support (PT • EN • ES)
+
+✦ Custom cursor interactions
+
+✦ Animated page transitions
+
+✦ Scroll-driven storytelling
+
+✦ Responsive experience
+
+✦ Modern component architecture
+
+</samp>
+
+</div>
+
+<br>
+
+<div align="center">
+
+<samp>
+
+<b>
+Featured Projects
+</b>
+
+</samp>
+
+<br>
+<br>
+
+<samp>
+
+✦ Frigideira AI
+
+Editorial social media system focused on artificial intelligence.
+
+<br><br>
+
+✦ The Real Tocha
+
+Art direction and visual identity for entrepreneurship and business content.
+
+<br><br>
+
+✦ Servidor dos Programadores
+
+Visual communication for one of Brazil's largest tech communities.
+
+</samp>
+
+</div>
+
+<br>
+
+<div align="center">
+
+<samp>
+
+<b>
+Run Locally
+</b>
+
+</samp>
+
+<br>
+
+<samp>
+
+<br>
+
+git clone https://github.com/sarahaliriel/design-portfolio.git
+
+cd design-portfolio
+
+npm install
+
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+<br><br>
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Available at:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+http://localhost:3000
 
-## Learn More
+</samp>
 
-To learn more about Next.js, take a look at the following resources:
+</div>
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+<br>
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+<div align="center">
 
-## Deploy on Vercel
+<samp>
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+<b>
+Design Inspiration
+</b>
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+</samp>
+
+<br>
+<br>
+
+<samp>
+
+The visual direction of this portfolio was inspired by designers and creative developers
+who combine interaction, storytelling and motion to create memorable experiences.
+
+<br><br>
+
+Special inspiration from:
+
+<br><br>
+
+♡ Özge Keleş
+
+♡ Dennis Snellenberg
+
+♡ Lando Norris Website
+
+<br><br>
+
+Rather than reproducing specific interfaces, this project studies their approach to
+editorial layouts, transitions, motion systems and immersive navigation,
+adapting those concepts into an original visual identity.
+
+</samp>
+
+</div>
+
+<br>
+
+<div align="center">
+
+<samp>
+
+♡ <a href="https://www.linkedin.com/in/sarah-dumitrache">linkedin</a>
+⊹
+<a href="mailto:dumitrachebusiness@gmail.com">email</a>
+⊹
+<a href="https://github.com/sarahaliriel">github</a>
+⊹
+<a href="https://discord.com/users/942126894478950530">discord</a> ♡
+
+</samp>
+
+</div>
+
+<br>
+
+</details>
+
+##
+
+<br>
