@@ -20,6 +20,7 @@ export default function CustomCursor() {
 
   const [enabled, setEnabled] = useState(false)
   const [mode, setMode] = useState<CursorMode>("default")
+  const [customLabel, setCustomLabel] = useState("")
   const [showLabel, setShowLabel] = useState(false)
   const [hidden, setHidden] = useState(false)
   const [fsHost, setFsHost] = useState<HTMLElement | null>(null)
@@ -28,11 +29,10 @@ export default function CustomCursor() {
   const closeTimer = useRef<NodeJS.Timeout | null>(null)
 
   const target = useRef({ x: 0, y: 0 })
-  const current = useRef({ x: 0, y: 0 })
 
   const isView = mode === "view"
 
-  const label = mode === "view" ? t("cursorView") : ""
+  const label = mode === "view" ? customLabel || t("cursorView") : ""
 
   useEffect(() => {
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)")
@@ -48,6 +48,10 @@ export default function CustomCursor() {
       } else {
         document.documentElement.classList.remove("cursor-hidden")
         document.body.style.cursor = "auto"
+        setMode("default")
+        setCustomLabel("")
+        setShowLabel(false)
+        setHidden(false)
       }
     }
 
@@ -91,16 +95,13 @@ export default function CustomCursor() {
   useEffect(() => {
     if (!enabled) return
 
-      const tick = () => {
-        raf.current = null
-        const el = cursorRef.current
-        if (!el) return
+    const tick = () => {
+      raf.current = null
+      const el = cursorRef.current
+      if (!el) return
 
-        current.current.x = target.current.x
-        current.current.y = target.current.y
-
-        el.style.transform = `translate3d(${current.current.x}px, ${current.current.y}px, 0) translate(-50%, -50%)`
-      }
+      el.style.transform = `translate3d(${target.current.x}px, ${target.current.y}px, 0) translate(-50%, -50%)`
+    }
 
     const move = (e: PointerEvent) => {
       target.current.x = e.clientX
@@ -108,8 +109,9 @@ export default function CustomCursor() {
       if (raf.current == null) raf.current = requestAnimationFrame(tick)
     }
 
-    const setViewOn = () => {
+    const setViewOn = (element: Element) => {
       if (closeTimer.current) clearTimeout(closeTimer.current)
+      setCustomLabel((element as HTMLElement).dataset.cursorLabel ?? "")
       setMode("view")
 
       if (openTimer.current) clearTimeout(openTimer.current)
@@ -125,6 +127,7 @@ export default function CustomCursor() {
       if (closeTimer.current) clearTimeout(closeTimer.current)
       closeTimer.current = setTimeout(() => {
         setMode("default")
+        setCustomLabel("")
       }, 120)
     }
 
@@ -138,7 +141,7 @@ export default function CustomCursor() {
       }
 
       const viewTarget = targetEl.closest('[data-cursor="view"]')
-      if (viewTarget) setViewOn()
+      if (viewTarget) setViewOn(viewTarget)
     }
 
     const onPointerOut = (e: PointerEvent) => {
@@ -164,7 +167,7 @@ export default function CustomCursor() {
       if (closeTimer.current) clearTimeout(closeTimer.current)
       if (raf.current) cancelAnimationFrame(raf.current)
     }
-  }, [enabled, isView])
+  }, [enabled])
 
   if (!enabled) return null
 
