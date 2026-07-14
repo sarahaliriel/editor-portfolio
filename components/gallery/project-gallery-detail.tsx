@@ -3,7 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion"
-import { useEffect, useMemo, useState, type PointerEvent as ReactPointerEvent } from "react"
+import { useEffect, useMemo, useState, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent } from "react"
 import { useI18n } from "@/components/providers/i18n"
 import ScrollProgress from "@/components/layout/scroll-progress"
 import ArrowDownRight from "@/components/gallery/arrow-down-right"
@@ -99,6 +99,10 @@ function ProjectProcess({ project, labels }: { project: GalleryProject; labels: 
   const isTocha = project.slug === "the-real-tocha"
   const isSdp = project.slug === "sdp"
   const metrics = project.caseStudy.metrics
+  const scrollToVisualSystem = (event: ReactMouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault()
+    document.querySelector("#visual-system")?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" })
+  }
   const items: ProcessItem[] = [
     {
       number: "01",
@@ -170,7 +174,7 @@ function ProjectProcess({ project, labels }: { project: GalleryProject; labels: 
         ))}
       </div>
 
-      <a href="#visual-system" className="group ml-auto mt-[clamp(36px,5vw,64px)] flex w-max items-end gap-5 text-right focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#e8e7e7]">
+      <a href="#visual-system" onClick={scrollToVisualSystem} className="group ml-auto mt-[clamp(36px,5vw,64px)] flex w-max items-end gap-5 text-right focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#e8e7e7]">
         <span>
           <span className="block text-[9px] font-black uppercase tracking-[0.22em] text-[#e8e7e7]/38">{labels.next}</span>
           <span className="mt-2 block font-display text-[clamp(1.4rem,2.5vw,2.8rem)] font-black uppercase leading-none tracking-[-0.04em] transition group-hover:text-[var(--accent)]">{labels.visualSystem}</span>

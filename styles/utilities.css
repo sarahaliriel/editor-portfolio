@@ -71,11 +71,6 @@ body {
 }
 
 
-html {
-  scroll-behavior: smooth;
-}
-
-
 .font-display {
   font-family: var(--font-montserrat), sans-serif;
 }

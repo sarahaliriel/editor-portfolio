@@ -5,7 +5,7 @@ import Link from "next/link"
 import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion"
 import RollingText from "@/components/shared/rolling-text"
 import { createPortal } from "react-dom"
-import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react"
+import { useEffect, useMemo, useRef, useState, type MouseEvent, type PointerEvent as ReactPointerEvent } from "react"
 import { useI18n } from "@/components/providers/i18n"
 import FinalCtaContent from "@/components/shared/final-cta-content"
 import ScrollProgress from "@/components/layout/scroll-progress"
@@ -13,6 +13,13 @@ import ArrowDownRight from "@/components/gallery/arrow-down-right"
 import { getTranslatedGalleryProjects, getTranslatedPlaygroundPieces, type GalleryImage, type GalleryProject } from "@/data/gallery"
 
 const playgroundOffset = ["", "mt-3", "mt-1", "mt-2", "", "mt-2", "mt-1"]
+
+function scrollToSection(event: MouseEvent<HTMLAnchorElement>) {
+  event.preventDefault()
+  const target = document.querySelector(event.currentTarget.hash)
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  target?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" })
+}
 
 type ViewCursorHandlers = {
   onPointerEnter: (event: ReactPointerEvent<HTMLElement>) => void
@@ -125,6 +132,7 @@ function GalleryHero({ projectCount, pieceCount }: { projectCount: number; piece
         <div className="absolute left-0 top-[74svh] sm:top-[75svh] lg:top-[72svh]">
           <a
             href="#selected-projects"
+            onClick={scrollToSection}
             className="group inline-flex w-max items-center gap-5 text-[10px] font-black uppercase tracking-[0.16em] text-[#1e1e1e]/78 transition hover:text-[#1800ad] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1800ad] sm:text-[11px]"
           >
             <span className="transition group-hover:translate-y-1">
@@ -183,6 +191,7 @@ function SelectedProjectsIntro({ projectCount }: { projectCount: number }) {
           </p>
           <a
             href="#gallery-projects"
+            onClick={scrollToSection}
             className="group mt-6 inline-flex w-max items-center gap-3 text-[10px] font-black uppercase tracking-[0.16em] text-[#1800ad] transition hover:text-[#1e1e1e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1800ad] sm:text-[11px]"
           >
             <span className="transition group-hover:translate-y-1">
