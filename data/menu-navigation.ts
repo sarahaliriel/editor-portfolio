@@ -1,13 +1,10 @@
 import type { I18nKey } from "@/components/providers/i18n"
 
-export type MenuPreviewType = "home" | "about" | "design" | "motion" | "contact"
-
 export type MenuNavigationItem = {
   id: string
   number: string
   labelKey: I18nKey
   descriptionKey: I18nKey
-  previewType: MenuPreviewType
 } & (
   | { navigation: "route"; href: string }
   | { navigation: "contact"; href: "/#contact" }
@@ -21,7 +18,6 @@ export const MENU_NAVIGATION_ITEMS: readonly MenuNavigationItem[] = [
     descriptionKey: "menuHomeDescription",
     navigation: "route",
     href: "/",
-    previewType: "home",
   },
   {
     id: "about",
@@ -30,7 +26,6 @@ export const MENU_NAVIGATION_ITEMS: readonly MenuNavigationItem[] = [
     descriptionKey: "menuAboutDescription",
     navigation: "route",
     href: "/more-about",
-    previewType: "about",
   },
   {
     id: "design-gallery",
@@ -39,7 +34,6 @@ export const MENU_NAVIGATION_ITEMS: readonly MenuNavigationItem[] = [
     descriptionKey: "menuDesignDescription",
     navigation: "route",
     href: "/gallery",
-    previewType: "design",
   },
   {
     id: "motion-archive",
@@ -48,7 +42,6 @@ export const MENU_NAVIGATION_ITEMS: readonly MenuNavigationItem[] = [
     descriptionKey: "menuMotionDescription",
     navigation: "route",
     href: "/allprojects",
-    previewType: "motion",
   },
   {
     id: "contact",
@@ -57,6 +50,5 @@ export const MENU_NAVIGATION_ITEMS: readonly MenuNavigationItem[] = [
     descriptionKey: "menuContactDescription",
     navigation: "contact",
     href: "/#contact",
-    previewType: "contact",
   },
 ] as const

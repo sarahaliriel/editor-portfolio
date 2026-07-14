@@ -265,3 +265,62 @@
     animation: none;
   }
 }
+
+
+@keyframes menuObjectEnter {
+  from {
+    opacity: 0;
+    transform: translate3d(var(--menu-object-enter-x), var(--menu-object-enter-y), 0)
+      rotate(var(--menu-object-enter-rotation));
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+}
+
+
+.menu-object-enter {
+  --menu-object-enter-x: 0px;
+  --menu-object-enter-y: 0px;
+  --menu-object-enter-rotation: 0deg;
+  animation: menuObjectEnter 460ms cubic-bezier(.22, 1, .36, 1) both;
+  transform-origin: center;
+}
+
+
+.menu-object-enter--macbook {
+  --menu-object-enter-x: -8px;
+  --menu-object-enter-y: -3px;
+  animation-duration: 560ms;
+}
+
+
+.menu-object-enter--tablet {
+  --menu-object-enter-x: 7px;
+  --menu-object-enter-y: 4px;
+  animation-duration: 440ms;
+}
+
+
+.menu-object-enter--headphones {
+  --menu-object-enter-x: -4px;
+  --menu-object-enter-y: 3px;
+  --menu-object-enter-rotation: -2deg;
+  animation-duration: 420ms;
+}
+
+
+.menu-object-enter--tea {
+  --menu-object-enter-x: -3px;
+  --menu-object-enter-y: 5px;
+  --menu-object-enter-rotation: 1.2deg;
+  animation-duration: 480ms;
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-object-enter {
+    animation: none;
+  }
+}
