@@ -39,17 +39,17 @@ export default function ScrollProgress() {
     <div className="fixed right-4 top-1/2 z-40 hidden -translate-y-1/2 sm:block">
       <div className="flex items-center gap-3">
         <div className="flex flex-col items-end gap-1">
-          <div className="text-[11px] text-[var(--project-accent,var(--accent))] font-semibold tracking-[0.16em] uppercase opacity-70">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--accent)] opacity-70">
             Scroll
           </div>
-          <div className="text-[12px] text-[var(--project-accent,var(--accent))] font-medium opacity-70 tabular-nums">
+          <div className="text-[12px] font-medium tabular-nums text-[var(--accent)] opacity-70">
             {pct}%
           </div>
         </div>
 
         <div className="relative h-40 w-0.5 overflow-hidden rounded-full bg-ink/20">
           <div
-            className="absolute bottom-0 left-0 w-full rounded-full bg-[var(--project-accent,var(--accent))]"
+            className="absolute bottom-0 left-0 w-full rounded-full bg-[var(--accent)]"
             style={{ height: `${p * 100}%` }}
           />
         </div>

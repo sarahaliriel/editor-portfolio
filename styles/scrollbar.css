@@ -37,11 +37,11 @@ body::-webkit-scrollbar{
 
 
 ::-webkit-scrollbar-thumb {
-  background: var(--page-accent, var(--accent));
+  background: var(--accent);
   border-radius: 999px;
 }
 
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--page-accent-dark, var(--page-accent, var(--accent)));
+  background: var(--accent);
 }

@@ -58,20 +58,9 @@ export default function IntroOverlay() {
   const [config, setConfig] = useState<IntroConfig | null>(null)
 
   const restoreOverflowRef = useRef<string>("")
-  const restoreScrollBehaviorRef = useRef<string>("")
-  const restoreScrollRef = useRef<History["scrollRestoration"]>("auto")
   const timersRef = useRef<number[]>([])
 
   const word = config?.mode === "route" ? t(config.labelKey) : WORDS[Math.min(i, WORDS.length - 1)]
-
-  useLayoutEffect(() => {
-    restoreScrollRef.current = window.history.scrollRestoration
-    window.history.scrollRestoration = "manual"
-
-    return () => {
-      window.history.scrollRestoration = restoreScrollRef.current
-    }
-  }, [])
 
   useLayoutEffect(() => {
     timersRef.current.forEach((tt) => window.clearTimeout(tt))
@@ -95,13 +84,6 @@ export default function IntroOverlay() {
 
     if (!nextConfig || prefersReducedMotion) {
       document.documentElement.style.overflow = restoreOverflowRef.current
-      document.documentElement.style.scrollBehavior = restoreScrollBehaviorRef.current
-      if (!window.location.hash) {
-        const previousBehavior = document.documentElement.style.scrollBehavior
-        document.documentElement.style.scrollBehavior = "auto"
-        window.scrollTo({ top: 0, left: 0, behavior: "auto" })
-        document.documentElement.style.scrollBehavior = previousBehavior
-      }
       dispatchIntroDone()
       setDone(true)
       setConfig(null)
@@ -109,13 +91,8 @@ export default function IntroOverlay() {
     }
 
     restoreOverflowRef.current = document.documentElement.style.overflow || ""
-    restoreScrollBehaviorRef.current = document.documentElement.style.scrollBehavior || ""
     document.documentElement.style.overflow = "hidden"
-    document.documentElement.style.scrollBehavior = "auto"
     document.documentElement.dataset.intro = "idle"
-    if (!window.location.hash) {
-      window.scrollTo({ top: 0, left: 0, behavior: "auto" })
-    }
     setConfig(nextConfig)
     setReady(false)
     setRunning(nextConfig.mode === "route")
@@ -126,7 +103,6 @@ export default function IntroOverlay() {
 
     return () => {
       document.documentElement.style.overflow = restoreOverflowRef.current
-      document.documentElement.style.scrollBehavior = restoreScrollBehaviorRef.current
       window.cancelAnimationFrame(readyFrame)
       timersRef.current.forEach((tt) => window.clearTimeout(tt))
       timersRef.current = []
@@ -158,8 +134,6 @@ export default function IntroOverlay() {
 
     timersRef.current.push(
       window.setTimeout(() => {
-        // Keep layout shifts and browser scroll anchoring behind the curtain.
-        window.scrollTo({ top: 0, left: 0, behavior: "auto" })
         setExiting(true)
         document.documentElement.dataset.intro = "exiting"
       }, exitAt)
@@ -170,7 +144,6 @@ export default function IntroOverlay() {
       window.setTimeout(() => {
         setDone(true)
         document.documentElement.style.overflow = restoreOverflowRef.current
-        document.documentElement.style.scrollBehavior = restoreScrollBehaviorRef.current
         if (config.mode === "home") {
           window.sessionStorage.setItem(HOME_INTRO_SEEN_KEY, "true")
         }

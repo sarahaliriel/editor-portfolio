@@ -82,7 +82,7 @@ html {
 
 
 ::selection {
-  background: var(--project-glow, rgba(24, 0, 173, 0.18));
+  background: rgba(24, 0, 173, 0.18);
 }
 
 

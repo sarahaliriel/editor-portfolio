@@ -35,10 +35,10 @@ export function VisualSystem({ system, labels }: { system: GalleryVisualSystem; 
   }
 
   return (
-    <section id="visual-system" className="scroll-mt-0 bg-[#e8e7e7] text-[#1e1e1e] [--visual-accent:var(--project-accent)] [--visual-line:rgba(30,30,30,.14)] [--visual-line-soft:rgba(30,30,30,.10)] [--visual-muted:rgba(30,30,30,.52)]">
+    <section id="visual-system" className="scroll-mt-0 bg-[#e8e7e7] text-[#1e1e1e] [--visual-line:rgba(30,30,30,.14)] [--visual-line-soft:rgba(30,30,30,.10)] [--visual-muted:rgba(30,30,30,.52)]">
       <div className="px-5 sm:px-8 lg:px-[clamp(40px,4.6vw,88px)]">
         <header className="flex items-end justify-between border-b border-[var(--visual-line)] py-[clamp(24px,3vw,42px)]">
-          <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[var(--visual-accent)]">{labels.system}</p>
+          <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[var(--accent)]">{labels.system}</p>
           <p className="text-[9px] font-black uppercase tracking-[0.2em] text-[var(--visual-muted)]">01—02</p>
         </header>
 
@@ -49,7 +49,7 @@ export function VisualSystem({ system, labels }: { system: GalleryVisualSystem; 
               {system.objective}
             </p>
             <div className="mt-[clamp(28px,3.5vw,46px)] grid gap-4 sm:grid-cols-[8rem_1fr] sm:items-start">
-              <p className="text-[9px] font-black uppercase tracking-[0.2em] text-[var(--visual-accent)]">{labels.purpose}</p>
+              <p className="text-[9px] font-black uppercase tracking-[0.2em] text-[var(--accent)]">{labels.purpose}</p>
               <p className="max-w-[48ch] text-[clamp(0.95rem,1.15vw,1.15rem)] leading-[1.55] text-[var(--visual-muted)]">{system.objectiveBody}</p>
             </div>
           </div>
@@ -63,7 +63,7 @@ export function VisualSystem({ system, labels }: { system: GalleryVisualSystem; 
           <ChapterLabel number="02" title={labels.system} />
           <div className="mt-[clamp(38px,5vw,68px)] grid gap-[clamp(64px,8vw,120px)] lg:grid-cols-2 lg:gap-[clamp(48px,7vw,112px)]">
             <div className="border-t border-[var(--visual-line)] pt-5">
-              <p className="text-[9px] font-black uppercase tracking-[0.22em] text-[var(--visual-accent)]">{labels.typography}</p>
+              <p className="text-[9px] font-black uppercase tracking-[0.22em] text-[var(--accent)]">{labels.typography}</p>
               <dl className="mt-[clamp(40px,5vw,64px)] divide-y divide-[var(--visual-line-soft)]">
                 {system.fonts.map((font, index) => (
                   <motion.div
@@ -82,7 +82,7 @@ export function VisualSystem({ system, labels }: { system: GalleryVisualSystem; 
             </div>
 
             <div className="border-t border-[var(--visual-line)] pt-5">
-              <p className="text-[9px] font-black uppercase tracking-[0.22em] text-[var(--visual-accent)]">{labels.colors}</p>
+              <p className="text-[9px] font-black uppercase tracking-[0.22em] text-[var(--accent)]">{labels.colors}</p>
               <div className="mt-[clamp(40px,5vw,64px)] space-y-[clamp(24px,3vw,38px)]">
                 {system.colors.map((color, index) => (
                   <div key={`${color.hex}-${color.role}`}>
@@ -105,10 +105,10 @@ export function VisualSystem({ system, labels }: { system: GalleryVisualSystem; 
           </div>
         </motion.article>
 
-        <a href="#designs" onClick={scrollToDesigns} className="group ml-auto flex w-max items-end gap-5 py-[clamp(36px,4vw,56px)] text-right focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--visual-accent)]">
+        <a href="#designs" onClick={scrollToDesigns} className="group ml-auto flex w-max items-end gap-5 py-[clamp(36px,4vw,56px)] text-right focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]">
           <span>
             <span className="block text-[9px] font-black uppercase tracking-[0.22em] text-[var(--visual-muted)]">{labels.next}</span>
-            <span className="mt-2 block font-display text-[clamp(1.8rem,3vw,3.5rem)] font-black uppercase leading-none tracking-[-0.045em] transition group-hover:text-[var(--visual-accent)]">{labels.designs}</span>
+            <span className="mt-2 block font-display text-[clamp(1.8rem,3vw,3.5rem)] font-black uppercase leading-none tracking-[-0.045em] transition group-hover:text-[var(--accent)]">{labels.designs}</span>
           </span>
           <span className="transition group-hover:translate-y-1"><ArrowDownRight /></span>
         </a>
@@ -120,7 +120,7 @@ export function VisualSystem({ system, labels }: { system: GalleryVisualSystem; 
 function ChapterLabel({ number, title }: { number: string; title: string }) {
   return (
     <div className="flex items-baseline gap-4">
-      <span className="font-display text-xs font-black text-[var(--visual-accent)]">{number}</span>
+      <span className="font-display text-xs font-black text-[var(--accent)]">{number}</span>
       <h2 className="text-[10px] font-black uppercase tracking-[0.24em] text-[var(--visual-muted)]">{title}</h2>
     </div>
   )

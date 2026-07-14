@@ -51,13 +51,6 @@ export type GalleryVisualSystem = {
   objectiveMockup: GalleryImage
 }
 
-export type GalleryProjectTheme = {
-  accent: string
-  accentDark: string
-  accentSoft: string
-  glow: string
-}
-
 export type GalleryProject = {
   name: string
   heroTitle?: string
@@ -67,7 +60,6 @@ export type GalleryProject = {
   role: string
   formats: string[]
   tools: string[]
-  theme: GalleryProjectTheme
   description: string
   heroMockup: GalleryImage
   caseStudy: GalleryCaseStudy
@@ -86,7 +78,6 @@ export type GalleryProjectConfig = {
   roleKey: I18nKey
   formatsKeys: I18nKey[]
   tools: string[]
-  theme: GalleryProjectTheme
   descriptionKey: I18nKey
   heroMockup: GalleryImageConfig
   caseStudy: {
@@ -163,7 +154,6 @@ export const galleryProjects: GalleryProjectConfig[] = [
     roleKey: "galleryProjectFrigideiraRole",
     formatsKeys: ["galleryFormatPosts", "galleryFormatCarousels", "galleryFormatEditorialCovers"],
     tools: ["Photoshop", "Illustrator", "Figma", "After Effects"],
-    theme: { accent: "#48ABCA", accentDark: "#2C5372", accentSoft: "#D5E976", glow: "rgba(72, 171, 202, 0.28)" },
     descriptionKey: "galleryProjectFrigideiraDescription",
     heroMockup: image("/images/gallery/mockup-heros/mock-frigi.png", "galleryFrigideiraMockup"),
     caseStudy: {
@@ -217,7 +207,6 @@ export const galleryProjects: GalleryProjectConfig[] = [
     roleKey: "galleryProjectTochaRole",
     formatsKeys: ["galleryFormatPosts", "galleryFormatStories", "galleryFormatCarousels", "galleryFormatMockups"],
     tools: ["Photoshop", "Illustrator", "Figma", "CapCut"],
-    theme: { accent: "#FFE750", accentDark: "#DA674D", accentSoft: "#FFF1A9", glow: "rgba(255, 231, 80, 0.28)" },
     descriptionKey: "galleryProjectTochaDescription",
     heroMockup: image("/images/gallery/mockup-heros/mock-trt.png", "galleryTochaMockup"),
     caseStudy: {
@@ -283,7 +272,6 @@ export const galleryProjects: GalleryProjectConfig[] = [
     roleKey: "galleryProjectSdpRole",
     formatsKeys: ["galleryFormatCarousels", "galleryFormatCampaignPosts", "galleryFormatEditorialSequences"],
     tools: ["Photoshop", "Illustrator", "Figma"],
-    theme: { accent: "#1451A7", accentDark: "#5A8BD6", accentSoft: "#BFD3E2", glow: "rgba(20, 81, 167, 0.24)" },
     descriptionKey: "galleryProjectSdpDescription",
     heroMockup: image("/images/gallery/mockup-heros/mock-sdp.png", "gallerySdpMockup"),
     caseStudy: {
@@ -344,7 +332,6 @@ export const getTranslatedGalleryProject = (project: GalleryProjectConfig, t: Tr
   role: t(project.roleKey),
   formats: project.formatsKeys.map(t),
   tools: project.tools,
-  theme: project.theme,
   description: t(project.descriptionKey),
   heroMockup: translateImage(project.heroMockup, t),
   caseStudy: {
