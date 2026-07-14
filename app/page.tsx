@@ -10,14 +10,17 @@ import MotionSelected from "@/components/home/motion-selected"
 import ProjectToCtaTransition from "@/components/home/project-to-cta-transition"
 import ScrollProgress from "@/components/layout/scroll-progress"
 import NarrativeOrb from "@/components/effects/narrative-orb"
-import { ReactiveDotField } from "@/components/effects/reactive-dot-field"
 
 function scrollToHash(behavior: ScrollBehavior) {
   const id = window.location.hash.replace("#", "")
   if (!id) return false
 
   if (id === "contact") {
-    window.dispatchEvent(new CustomEvent("nav:contact"))
+    if (document.documentElement.dataset.intro !== "done") return false
+
+    void document.fonts.ready.then(() => {
+      window.dispatchEvent(new CustomEvent("nav:contact"))
+    })
     return true
   }
 
@@ -67,7 +70,6 @@ export default function Page() {
         <Menu />
         <Hero />
         <div className="relative isolate overflow-x-clip bg-[#1e1e1e] text-[#e8e7e7]">
-          <ReactiveDotField fill className="[mask-image:linear-gradient(to_bottom,transparent_0%,black_6%,black_92%,transparent_100%)]" />
           <WhatMoves />
           <SelectedWork />
           <MotionSelected />

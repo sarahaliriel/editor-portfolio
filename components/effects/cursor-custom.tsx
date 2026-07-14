@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { createPortal } from "react-dom"
+import { usePathname } from "next/navigation"
 import { useI18n } from "@/components/providers/i18n"
 
 type CursorMode = "default" | "view"
@@ -14,6 +15,7 @@ type FullscreenDocument = Document & {
 
 export default function CustomCursor() {
   const { t } = useI18n()
+  const pathname = usePathname()
 
   const cursorRef = useRef<HTMLDivElement>(null)
   const raf = useRef<number | null>(null)
@@ -33,6 +35,19 @@ export default function CustomCursor() {
   const isView = mode === "view"
 
   const label = mode === "view" ? customLabel || t("cursorView") : ""
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      if (openTimer.current) clearTimeout(openTimer.current)
+      if (closeTimer.current) clearTimeout(closeTimer.current)
+      setMode("default")
+      setCustomLabel("")
+      setShowLabel(false)
+      setHidden(false)
+    })
+
+    return () => cancelAnimationFrame(frame)
+  }, [pathname])
 
   useEffect(() => {
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)")

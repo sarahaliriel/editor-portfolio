@@ -24,15 +24,18 @@ export default function ProjectToCtaTransition() {
 
   useEffect(() => {
     const scrollToCta = (behavior: ScrollBehavior) => {
-      const section = sectionRef.current
-      if (!section) return
-      const finalPosition = section.offsetTop + Math.max(0, section.offsetHeight - window.innerHeight)
-      window.scrollTo({ top: finalPosition, behavior })
+      if (!sectionRef.current) return
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const finalPosition = document.documentElement.scrollHeight - window.innerHeight
+          window.scrollTo({ top: finalPosition, behavior })
+        })
+      })
     }
 
     const onNav = () => scrollToCta("smooth")
     window.addEventListener("nav:contact", onNav)
-    if (window.location.hash === "#contact") scrollToCta("auto")
     return () => window.removeEventListener("nav:contact", onNav)
   }, [])
 

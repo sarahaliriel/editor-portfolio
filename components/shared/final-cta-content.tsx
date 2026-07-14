@@ -161,12 +161,13 @@ export default function FinalCtaContent({
                     href="mailto:dumitrachebusiness@gmail.com"
                     aria-label={button}
                     tabIndex={interactive ? undefined : -1}
-                    className={`group relative inline-flex aspect-square w-[clamp(112px,13vw,202px)] items-center justify-center overflow-hidden rounded-full bg-[#1800ad] p-5 text-center font-display text-[clamp(.68rem,.9vw,.88rem)] font-semibold uppercase leading-tight text-[#e8e7e7] transition-[transform,box-shadow,color] duration-700 hover:scale-[1.07] focus-visible:outline-2 focus-visible:outline-offset-4 ${isDark ? "hover:text-[#1800ad] focus-visible:outline-[#e8e7e7]" : "focus-visible:outline-[#1e1e1e]"}`}
+                    className={`group relative inline-flex aspect-square w-34 items-center justify-center overflow-hidden rounded-full bg-[#1800ad] p-5 text-center font-display text-[11px] font-semibold uppercase leading-tight text-[#e8e7e7] transition-[transform,box-shadow,color] duration-700 hover:scale-[1.07] focus-visible:outline-2 focus-visible:outline-offset-4 sm:w-[clamp(112px,13vw,202px)] sm:text-[clamp(.68rem,.9vw,.88rem)] ${isDark ? "hover:text-[#1800ad] focus-visible:outline-[#e8e7e7]" : "focus-visible:outline-[#1e1e1e]"}`}
                   >
                     <span aria-hidden="true" className={`absolute inset-0 origin-bottom scale-y-0 rounded-full transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100 ${isDark ? "bg-[#e8e7e7]" : "bg-[#1e1e1e]"}`} />
-                    <span className="relative z-10 flex items-center gap-2.5">
-                      <RollingText variant="strong">{button}</RollingText>
-                      <span aria-hidden="true" className="text-base transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1">↗</span>
+                    <span className="relative z-10 flex flex-col items-center gap-1.5 sm:flex-row sm:gap-2.5">
+                      <span className="max-w-[10ch] whitespace-normal leading-[1.05] tracking-[0.02em] sm:hidden">{button}</span>
+                      <RollingText variant="strong" className="hidden sm:inline-block">{button}</RollingText>
+                      <span aria-hidden="true" className="text-base leading-none transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1">↗</span>
                     </span>
                   </Link>
                 </motion.div>
