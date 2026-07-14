@@ -124,7 +124,7 @@ export default function FinalCtaContent({
       style={style}
       onPointerMove={move}
       onPointerLeave={reset}
-      className={`relative flex min-h-svh w-full overflow-x-clip px-4 pb-24 pt-24 sm:overflow-hidden sm:px-8 sm:pb-9 sm:pt-16 lg:px-12 lg:pb-10 lg:pt-20 ${isDark ? "bg-[#1e1e1e] text-[#e8e7e7]" : "bg-[#e8e7e7] text-[#1e1e1e]"}`}
+      className={`relative flex min-h-svh w-full overflow-x-clip px-4 pb-24 pt-24 sm:overflow-hidden sm:px-8 sm:pb-24 sm:pt-16 lg:px-12 lg:pb-10 lg:pt-20 ${isDark ? "bg-[#1e1e1e] text-[#e8e7e7]" : "bg-[#e8e7e7] text-[#1e1e1e]"}`}
     >
       <div className="relative mx-auto flex w-full max-w-370 flex-1 flex-col justify-between gap-8 sm:gap-10">
         <div className="flex flex-1 flex-col items-center justify-center text-center sm:items-stretch sm:pb-10 sm:text-left lg:pb-14">
