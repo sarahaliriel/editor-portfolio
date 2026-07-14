@@ -2,10 +2,10 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import Image from "next/image"
-import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react"
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type RefObject } from "react"
 import { createPortal } from "react-dom"
 import { usePathname, useRouter } from "next/navigation"
-import { useI18n, type I18nKey } from "@/components/providers/i18n"
+import { useI18n } from "@/components/providers/i18n"
 import { MENU_NAVIGATION_ITEMS, type MenuNavigationItem } from "@/data/menu-navigation"
 
 type FullscreenDocument = Document & {
@@ -32,13 +32,25 @@ export default function Menu() {
   const reducedMotion = Boolean(useReducedMotion())
   const [menuOpen, setMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const [showMenuObjects, setShowMenuObjects] = useState(false)
   const [highlightedItemId, setHighlightedItemId] = useState<string | null>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const dialogRef = useRef<HTMLDivElement>(null)
+  const navigationZoneRef = useRef<HTMLUListElement>(null)
+  const footerZoneRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => setMounted(true))
     return () => cancelAnimationFrame(frame)
+  }, [])
+
+  useEffect(() => {
+    const objectViewport = window.matchMedia("(min-width: 768px) and (min-height: 700px)")
+    const updateObjectVisibility = () => setShowMenuObjects(objectViewport.matches)
+
+    updateObjectVisibility()
+    objectViewport.addEventListener("change", updateObjectVisibility)
+    return () => objectViewport.removeEventListener("change", updateObjectVisibility)
   }, [])
 
   useEffect(() => {
@@ -176,12 +188,6 @@ export default function Menu() {
     return pathname === item.href || pathname.startsWith(`${item.href}/`)
   }
 
-  const cursorLabelKey = (item: MenuNavigationItem): I18nKey => {
-    if (item.id === "home") return "cursorEnter"
-    if (item.navigation === "contact") return "cursorTalk"
-    return "cursorOpen"
-  }
-
   if (!mounted) return null
 
   const routeActiveItem = MENU_NAVIGATION_ITEMS.find(isActive)
@@ -273,28 +279,36 @@ export default function Menu() {
                 transition={{ duration: enterDuration }}
               />
               <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(115deg,#1e1e1e00,#17171766)] shadow-[inset_0_0_120px_rgba(0,0,0,.18)]" aria-hidden="true" />
-              <MenuObjects
-                activeItemId={activeItemId}
-                onHighlightItem={highlightItem}
-                onClearItem={clearHighlightedItem}
-                onActivateObject={activateObject}
-              />
+              {showMenuObjects ? (
+                <MenuObjects
+                  activeItemId={activeItemId}
+                  closeButtonRef={triggerRef}
+                  footerZoneRef={footerZoneRef}
+                  navigationZoneRef={navigationZoneRef}
+                  onHighlightItem={highlightItem}
+                  onClearItem={clearHighlightedItem}
+                  onActivateObject={activateObject}
+                />
+              ) : null}
 
-              <nav className="relative z-10 mx-auto flex min-h-svh w-full max-w-[62rem] flex-col px-5 pb-6 pt-8 sm:px-8 sm:pb-8 sm:pt-9 md:px-12 md:pb-9 lg:px-16">
-                <motion.p
-                  data-menu-safe
-                  className="mb-3 text-[9px] uppercase tracking-[0.22em] text-[#e8e7e7]/42 md:mb-4"
+              <nav className="pointer-events-none relative z-10 mx-auto flex min-h-svh w-full max-w-248 flex-col px-5 pb-6 pt-24 sm:px-8 sm:pb-8 md:px-12 md:pb-9 md:pt-9 lg:px-16">
+                <div className="flex flex-1 flex-col justify-center py-5 md:block md:flex-none md:py-0">
+                  <motion.p
+                    data-menu-safe
+                    className="mb-3 text-[9px] uppercase tracking-[0.22em] text-[#e8e7e7]/42 md:mb-4"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0, transition: { duration: fastDuration } }}
                   transition={{ duration: fastDuration, delay: entranceDelay(0.25) }}
-                >
-                  {t("menuNav")}
-                </motion.p>
+                  >
+                    {t("menuNav")}
+                  </motion.p>
 
-                <motion.ul
-                  data-menu-safe
-                  className="divide-y divide-[#e8e7e7]/16 border-y border-[#e8e7e7]/16"
+                  <motion.ul
+                    ref={navigationZoneRef}
+                    data-menu-safe
+                    data-menu-navigation-zone
+                    className="pointer-events-auto divide-y divide-[#e8e7e7]/16 border-y border-[#e8e7e7]/16"
                   initial="closed"
                   animate="open"
                   exit="closed"
@@ -302,7 +316,7 @@ export default function Menu() {
                     open: { transition: { delayChildren: entranceDelay(0.28), staggerChildren: reducedMotion ? 0 : 0.055 } },
                     closed: { transition: { staggerChildren: reducedMotion ? 0 : 0.025, staggerDirection: -1 } },
                   }}
-                >
+                  >
                   {MENU_NAVIGATION_ITEMS.map((item) => {
                     const active = activeItemId === item.id
 
@@ -317,8 +331,6 @@ export default function Menu() {
                       >
                         <button
                           data-menu-item={item.id}
-                          data-cursor="view"
-                          data-cursor-label={t(cursorLabelKey(item))}
                           type="button"
                           aria-current={active && item.navigation === "route" ? "page" : undefined}
                           onPointerEnter={(event) => {
@@ -349,12 +361,15 @@ export default function Menu() {
                       </motion.li>
                     )
                   })}
-                </motion.ul>
+                  </motion.ul>
+                </div>
 
-                <div className="min-h-20 flex-1 sm:min-h-28 md:min-h-10" aria-hidden="true" />
+                <div className="hidden min-h-[clamp(9rem,20vh,13rem)] flex-1 md:block" aria-hidden="true" />
 
                 <motion.footer
-                  className="grid gap-5 border-t border-[#e8e7e7]/18 pt-4 text-[9px] uppercase tracking-[0.16em] text-[#e8e7e7]/48 sm:grid-cols-[1fr_auto] md:grid-cols-[1.4fr_1fr_1fr] md:items-end md:gap-8 md:pt-5"
+                  ref={footerZoneRef}
+                  data-menu-footer-zone
+                  className="pointer-events-auto grid gap-5 border-t border-[#e8e7e7]/18 pt-4 text-[9px] uppercase tracking-[0.16em] text-[#e8e7e7]/48 sm:grid-cols-[1fr_auto] md:grid-cols-[1.4fr_1fr_1fr] md:items-end md:gap-8 md:pt-5"
                   initial={{ opacity: 0, y: reducedMotion ? 0 : 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: reducedMotion ? 0 : 4, transition: { duration: fastDuration } }}
@@ -386,7 +401,7 @@ export default function Menu() {
   )
 }
 
-const objectImageClassName = "h-auto w-full select-none opacity-74 brightness-95 contrast-105 saturate-80 drop-shadow-[0_20px_28px_rgba(0,0,0,0.2)] transition-[scale,filter,opacity] duration-300 ease-out group-hover/object:scale-[1.02] group-hover/object:opacity-82 group-hover/object:drop-shadow-[0_18px_30px_rgba(119,112,255,0.18)]"
+const objectImageClassName = "h-auto w-full select-none opacity-100 brightness-[.98] contrast-105 saturate-95 drop-shadow-[0_16px_24px_rgba(0,0,0,0.2)] transition-[scale,filter] duration-300 ease-out group-hover/object:scale-[1.02] group-hover/object:drop-shadow-[0_16px_26px_rgba(119,112,255,0.18)]"
 
 type MenuObjectId = "headphones" | "tea" | "macbook" | "tablet"
 
@@ -399,6 +414,9 @@ const MENU_OBJECT_ITEM_IDS: Record<MenuObjectId, string> = {
 
 type MenuObjectsProps = {
   activeItemId: string | null
+  closeButtonRef: RefObject<HTMLButtonElement | null>
+  footerZoneRef: RefObject<HTMLElement | null>
+  navigationZoneRef: RefObject<HTMLUListElement | null>
   onHighlightItem: (itemId: string) => void
   onClearItem: (itemId: string) => void
   onActivateObject: (objectId: MenuObjectId, touch: boolean) => void
@@ -427,11 +445,6 @@ type MenuObjectBody = {
   pointerTravel: number
   lastPointerType: string
   lastInteraction: number
-  returning: boolean
-  minX: number | null
-  maxX: number | null
-  minY: number | null
-  maxY: number | null
 }
 
 const MENU_OBJECT_CONFIG: Record<MenuObjectId, Pick<MenuObjectBody, "mass" | "deceleration" | "maxRotation" | "rotationResponse">> = {
@@ -461,14 +474,17 @@ const createMenuObjectBody = (id: MenuObjectId): MenuObjectBody => ({
   pointerTravel: 0,
   lastPointerType: "mouse",
   lastInteraction: 0,
-  returning: false,
-  minX: null,
-  maxX: null,
-  minY: null,
-  maxY: null,
 })
 
-function MenuObjects({ activeItemId, onHighlightItem, onClearItem, onActivateObject }: MenuObjectsProps) {
+function MenuObjects({
+  activeItemId,
+  closeButtonRef,
+  footerZoneRef,
+  navigationZoneRef,
+  onHighlightItem,
+  onClearItem,
+  onActivateObject,
+}: MenuObjectsProps) {
   const bodiesRef = useRef<Record<MenuObjectId, MenuObjectBody>>({
     headphones: createMenuObjectBody("headphones"),
     tea: createMenuObjectBody("tea"),
@@ -488,19 +504,28 @@ function MenuObjects({ activeItemId, onHighlightItem, onClearItem, onActivateObj
 
   const keepHitAreaInside = (body: MenuObjectBody) => {
     if (!body.hitArea) return
-    const margin = 6
-    if (body.minX === null || body.maxX === null || body.minY === null || body.maxY === null) {
-      const rect = body.hitArea.getBoundingClientRect()
-      body.minX = rect.left < margin ? 0 : margin - rect.left
-      body.maxX = rect.right > window.innerWidth - margin ? 0 : window.innerWidth - margin - rect.right
-      body.minY = rect.top < margin ? 0 : margin - rect.top
-      body.maxY = rect.bottom > window.innerHeight - margin ? 0 : window.innerHeight - margin - rect.bottom
+    const rect = body.hitArea.getBoundingClientRect()
+    const visualOffset = 4
+    const footerTop = footerZoneRef.current?.getBoundingClientRect().top ?? window.innerHeight
+    const lowerBoundary = Math.min(window.innerHeight, footerTop) - visualOffset
+
+    if (rect.left < visualOffset) {
+      body.x += visualOffset - rect.left
+      body.vx = 0
+    } else if (rect.right > window.innerWidth - visualOffset) {
+      body.x += window.innerWidth - visualOffset - rect.right
+      body.vx = 0
     }
-    body.x = Math.max(body.minX, Math.min(body.maxX, body.x))
-    body.y = Math.max(body.minY, Math.min(body.maxY, body.y))
+    if (rect.top < visualOffset) {
+      body.y += visualOffset - rect.top
+      body.vy = 0
+    } else if (rect.bottom > lowerBoundary) {
+      body.y += lowerBoundary - rect.bottom
+      body.vy = 0
+    }
   }
 
-  const separateFromProtectedArea = (body: MenuObjectBody, protectedRect: DOMRect) => {
+  const separateFromProtectedArea = (body: MenuObjectBody, protectedRect: DOMRect, previousRect?: DOMRect) => {
     if (!body.hitArea) return
     const rect = body.hitArea.getBoundingClientRect()
     const padding = 8
@@ -508,14 +533,28 @@ function MenuObjects({ activeItemId, onHighlightItem, onClearItem, onActivateObj
     const right = protectedRect.right + padding
     const top = protectedRect.top - padding
     const bottom = protectedRect.bottom + padding
-    if (rect.right <= left || rect.left >= right || rect.bottom <= top || rect.top >= bottom) return
+    const sweptRect = previousRect ? {
+      left: Math.min(previousRect.left, rect.left),
+      right: Math.max(previousRect.right, rect.right),
+      top: Math.min(previousRect.top, rect.top),
+      bottom: Math.max(previousRect.bottom, rect.bottom),
+    } : rect
+    if (sweptRect.right <= left || sweptRect.left >= right || sweptRect.bottom <= top || sweptRect.top >= bottom) return
 
-    const moves = [
-      { axis: "x", amount: left - rect.right },
-      { axis: "x", amount: right - rect.left },
-      { axis: "y", amount: top - rect.bottom },
-      { axis: "y", amount: bottom - rect.top },
-    ] as const
+    const moves = previousRect && previousRect.right <= left
+      ? [{ axis: "x", amount: left - rect.right }] as const
+      : previousRect && previousRect.left >= right
+        ? [{ axis: "x", amount: right - rect.left }] as const
+        : previousRect && previousRect.bottom <= top
+          ? [{ axis: "y", amount: top - rect.bottom }] as const
+          : previousRect && previousRect.top >= bottom
+            ? [{ axis: "y", amount: bottom - rect.top }] as const
+            : [
+                { axis: "x", amount: left - rect.right },
+                { axis: "x", amount: right - rect.left },
+                { axis: "y", amount: top - rect.bottom },
+                { axis: "y", amount: bottom - rect.top },
+              ] as const
     const correction = moves.reduce((smallest, move) => Math.abs(move.amount) < Math.abs(smallest.amount) ? move : smallest)
     if (correction.axis === "x") {
       body.x += correction.amount
@@ -524,6 +563,25 @@ function MenuObjects({ activeItemId, onHighlightItem, onClearItem, onActivateObj
       body.y += correction.amount
       body.vy = 0
     }
+  }
+
+  const constrainBody = (body: MenuObjectBody, previousRect?: DOMRect) => {
+    if (!body.hitArea) return
+    applyBodyTransform(body)
+    keepHitAreaInside(body)
+    applyBodyTransform(body)
+
+    if (navigationZoneRef.current) {
+      separateFromProtectedArea(body, navigationZoneRef.current.getBoundingClientRect(), previousRect)
+      applyBodyTransform(body)
+    }
+    if (closeButtonRef.current) {
+      separateFromProtectedArea(body, closeButtonRef.current.getBoundingClientRect(), previousRect)
+      applyBodyTransform(body)
+    }
+
+    keepHitAreaInside(body)
+    applyBodyTransform(body)
   }
 
   const resolveObjectCollisions = (bodies: MenuObjectBody[], now: number) => {
@@ -538,7 +596,6 @@ function MenuObjects({ activeItemId, onHighlightItem, onClearItem, onActivateObj
         const second = bodies[secondIndex]
         if (!second.hitArea) continue
         if (first.lastInteraction === 0 && second.lastInteraction === 0) continue
-        if ((first.returning || second.returning) && !first.dragging && !second.dragging) continue
         const secondRect = second.hitArea.getBoundingClientRect()
         const secondRadius = Math.min(secondRect.width, secondRect.height) * 0.46
         const secondCenter = { x: secondRect.left + secondRect.width / 2, y: secondRect.top + secondRect.height / 2 }
@@ -578,8 +635,6 @@ function MenuObjects({ activeItemId, onHighlightItem, onClearItem, onActivateObj
         if (first.dragging || second.dragging || Math.abs(relativeVelocity) > 6) {
           first.lastInteraction = now
           second.lastInteraction = now
-          first.returning = false
-          second.returning = false
         }
       }
     }
@@ -598,19 +653,12 @@ function MenuObjects({ activeItemId, onHighlightItem, onClearItem, onActivateObj
         return
       }
 
-      if (body.lastInteraction > 0 && timestamp - body.lastInteraction >= 5000) body.returning = true
-      if (body.returning) {
-        const spring = reducedMotion ? 10 : 18 / body.mass
-        const damping = reducedMotion ? 7 : 6.5 / Math.sqrt(body.mass)
-        body.vx += (-body.x * spring - body.vx * damping) * delta
-        body.vy += (-body.y * spring - body.vy * damping) * delta
-        if (!reducedMotion) body.angularVelocity += (-body.rotation * spring - body.angularVelocity * damping) * delta
-      } else {
-        const decay = Math.exp(-body.deceleration * delta)
-        body.vx *= decay
-        body.vy *= decay
-        body.angularVelocity *= Math.exp(-7 * delta)
-      }
+      const previousRect = body.hitArea?.getBoundingClientRect()
+
+      const decay = Math.exp(-body.deceleration * delta)
+      body.vx *= decay
+      body.vy *= decay
+      body.angularVelocity *= Math.exp(-7 * delta)
 
       body.x += body.vx * delta
       body.y += body.vy * delta
@@ -622,40 +670,25 @@ function MenuObjects({ activeItemId, onHighlightItem, onClearItem, onActivateObj
         body.rotation = 0
         body.angularVelocity = 0
       }
-      applyBodyTransform(body)
-      keepHitAreaInside(body)
+      constrainBody(body, previousRect)
 
-      const protectedElements = document.querySelectorAll<HTMLElement>("[data-menu-safe]")
-      protectedElements.forEach((element) => separateFromProtectedArea(body, element.getBoundingClientRect()))
-      const closeButton = document.querySelector<HTMLElement>(`[aria-controls="${MENU_ID}"]`)
-      if (closeButton) separateFromProtectedArea(body, closeButton.getBoundingClientRect())
-      applyBodyTransform(body)
-
-      const settled = Math.hypot(body.x, body.y) < 0.35 && Math.hypot(body.vx, body.vy) < 2 && Math.abs(body.rotation) < 0.1
-      if (body.returning && settled) {
-        body.x = 0
-        body.y = 0
+      const moving = Math.hypot(body.vx, body.vy) >= 2 || Math.abs(body.angularVelocity) >= 0.02 || Math.abs(body.rotation) >= 0.1
+      if (body.lastInteraction > 0 && moving) {
+        shouldContinue = true
+      } else if (body.lastInteraction > 0) {
         body.vx = 0
         body.vy = 0
-        body.rotation = 0
         body.angularVelocity = 0
-        body.returning = false
-        body.minX = null
-        body.maxX = null
-        body.minY = null
-        body.maxY = null
-        body.lastInteraction = 0
         applyBodyTransform(body)
-      } else if (body.lastInteraction > 0) {
-        shouldContinue = true
       }
     })
 
     if (!reducedMotion) {
       resolveObjectCollisions(bodies, timestamp)
       bodies.forEach((body) => {
-        keepHitAreaInside(body)
-        applyBodyTransform(body)
+        constrainBody(body)
+        const moving = Math.hypot(body.vx, body.vy) >= 2 || Math.abs(body.angularVelocity) >= 0.02
+        if (body.dragging || moving) shouldContinue = true
       })
     }
 
@@ -676,7 +709,7 @@ function MenuObjects({ activeItemId, onHighlightItem, onClearItem, onActivateObj
     event.preventDefault()
     event.stopPropagation()
     const body = bodiesRef.current[id]
-    keepHitAreaInside(body)
+    constrainBody(body)
     body.dragging = true
     body.pointerId = event.pointerId
     body.lastPointerX = event.clientX
@@ -686,7 +719,6 @@ function MenuObjects({ activeItemId, onHighlightItem, onClearItem, onActivateObj
     body.lastPointerType = event.pointerType
     body.vx = 0
     body.vy = 0
-    body.returning = false
     body.lastInteraction = event.timeStamp
     event.currentTarget.setPointerCapture(event.pointerId)
     startEngine()
@@ -696,6 +728,7 @@ function MenuObjects({ activeItemId, onHighlightItem, onClearItem, onActivateObj
     const body = bodiesRef.current[id]
     if (!body.dragging || body.pointerId !== event.pointerId) return
     event.preventDefault()
+    const previousRect = body.hitArea?.getBoundingClientRect()
     const now = event.timeStamp
     const elapsed = Math.max(now - body.lastPointerTime, 8)
     let dx = event.clientX - body.lastPointerX
@@ -718,7 +751,7 @@ function MenuObjects({ activeItemId, onHighlightItem, onClearItem, onActivateObj
     body.lastPointerY = event.clientY
     body.lastPointerTime = now
     body.lastInteraction = now
-    applyBodyTransform(body)
+    constrainBody(body, previousRect)
   }
 
   const handlePointerEnd = (id: MenuObjectId, event: ReactPointerEvent<HTMLDivElement>) => {
@@ -740,6 +773,13 @@ function MenuObjects({ activeItemId, onHighlightItem, onClearItem, onActivateObj
 
   useEffect(() => {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)")
+    let layoutConstraintFrame = 0
+    const scheduleConstraint = () => {
+      cancelAnimationFrame(layoutConstraintFrame)
+      layoutConstraintFrame = requestAnimationFrame(() => {
+        Object.values(bodiesRef.current).forEach((body) => constrainBody(body))
+      })
+    }
     const updateReducedMotion = () => {
       reducedMotionRef.current = reducedMotion.matches
       if (reducedMotion.matches) {
@@ -748,25 +788,9 @@ function MenuObjects({ activeItemId, onHighlightItem, onClearItem, onActivateObj
         })
       }
     }
-    const resetBodies = () => {
-      Object.values(bodiesRef.current).forEach((body) => {
-        body.x = 0
-        body.y = 0
-        body.vx = 0
-        body.vy = 0
-        body.rotation = 0
-        body.angularVelocity = 0
-        body.dragging = false
-        body.pointerId = null
-        body.lastInteraction = 0
-        body.returning = false
-        body.minX = null
-        body.maxX = null
-        body.minY = null
-        body.maxY = null
-        applyBodyTransform(body)
-      })
+    const handleResize = () => {
       resetProximity()
+      scheduleConstraint()
     }
     const resetProximity = () => {
       Object.values(bodiesRef.current).forEach((body) => {
@@ -805,18 +829,45 @@ function MenuObjects({ activeItemId, onHighlightItem, onClearItem, onActivateObj
     }
 
     updateReducedMotion()
+    const constraintStartedAt = performance.now()
+    let constraintFrame = 0
+    const constrainDuringEntrance = () => {
+      Object.values(bodiesRef.current).forEach((body) => constrainBody(body))
+      if (performance.now() - constraintStartedAt < 1200) {
+        constraintFrame = requestAnimationFrame(constrainDuringEntrance)
+      }
+    }
+    constraintFrame = requestAnimationFrame(constrainDuringEntrance)
+    const boundaryObserver = new ResizeObserver(scheduleConstraint)
+    const observedBoundaries = [navigationZoneRef.current, footerZoneRef.current, closeButtonRef.current]
+      .filter((element): element is HTMLElement => element !== null)
+    observedBoundaries.forEach((element) => boundaryObserver.observe(element))
+    const navigationContentObserver = new MutationObserver(scheduleConstraint)
+    if (navigationZoneRef.current) {
+      navigationContentObserver.observe(navigationZoneRef.current, {
+        characterData: true,
+        childList: true,
+        subtree: true,
+      })
+    }
     reducedMotion.addEventListener("change", updateReducedMotion)
-    window.addEventListener("resize", resetBodies)
+    window.addEventListener("resize", handleResize)
     window.addEventListener("pointermove", handlePointerMove, { passive: true })
     window.addEventListener("pointerout", handlePointerOut)
     return () => {
       reducedMotion.removeEventListener("change", updateReducedMotion)
-      window.removeEventListener("resize", resetBodies)
+      window.removeEventListener("resize", handleResize)
       window.removeEventListener("pointermove", handlePointerMove)
       window.removeEventListener("pointerout", handlePointerOut)
+      boundaryObserver.disconnect()
+      navigationContentObserver.disconnect()
+      cancelAnimationFrame(layoutConstraintFrame)
+      cancelAnimationFrame(constraintFrame)
       if (frameRef.current !== null) cancelAnimationFrame(frameRef.current)
       if (proximityFrameRef.current !== null) cancelAnimationFrame(proximityFrameRef.current)
     }
+    // The physics listeners and their initial constraint pass are installed once per menu mount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const renderObject = (id: MenuObjectId, src: string, hitAreaClassName: string) => {
@@ -839,12 +890,11 @@ function MenuObjects({ activeItemId, onHighlightItem, onClearItem, onActivateObj
               width={1080}
               height={1350}
               draggable={false}
-              className={`${objectImageClassName} ${active ? "scale-[1.025] opacity-85 drop-shadow-[0_18px_30px_rgba(119,112,255,0.2)]" : ""}`}
+              className={`${objectImageClassName} ${active ? "scale-[1.025] drop-shadow-[0_16px_26px_rgba(119,112,255,0.2)]" : ""}`}
             />
           </div>
           <div
             ref={(node) => { bodiesRef.current[id].hitArea = node }}
-            data-cursor="view"
             data-menu-object={id}
             className={`pointer-events-auto absolute cursor-grab touch-none rounded-[35%] active:cursor-grabbing ${hitAreaClassName}`}
             onMouseDown={(event) => event.stopPropagation()}
@@ -870,18 +920,22 @@ function MenuObjects({ activeItemId, onHighlightItem, onClearItem, onActivateObj
   }
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
-      <div className="absolute -left-18 top-[43%] w-64 -rotate-7 sm:-left-28 sm:top-[39%] sm:w-84 lg:-left-60 lg:top-[14%] lg:w-[35rem]">
+    <div
+      data-menu-objects
+      className="pointer-events-none fixed bottom-[clamp(6.8rem,12vh,9rem)] left-1/2 z-0 h-[clamp(9.5rem,20vh,12.5rem)] w-[clamp(17.5rem,31vw,23.75rem)] -translate-x-1/2"
+      aria-hidden="true"
+    >
+      <div className="absolute -left-[8%] bottom-[-8%] z-20 w-[62%] -rotate-6">
         {renderObject("headphones", "/images/menu/fones.png", "left-[26%] top-[29%] h-[36%] w-[53%]")}
       </div>
-      <div className="absolute -left-14 top-[55%] w-52 rotate-3 sm:left-[3%] sm:top-[52%] sm:w-64 lg:-left-44 lg:top-[57%] lg:w-[30rem]">
+      <div className="absolute left-[14%] bottom-[-27%] z-40 w-[52%] rotate-2">
         {renderObject("tea", "/images/menu/cha.png", "left-[21%] top-[34%] h-[27%] w-[58%]")}
       </div>
-      <div className="absolute -right-16 top-[42%] w-64 rotate-6 sm:-right-16 sm:top-[36%] sm:w-80 lg:-left-52 lg:-top-28 lg:w-[41rem] lg:-rotate-3">
-        {renderObject("macbook", "/images/menu/macbook.png", "left-[26%] top-[35%] h-[29%] w-[46%]")}
-      </div>
-      <div className="absolute -right-18 top-[56%] w-64 -rotate-5 sm:right-[1%] sm:top-[50%] sm:w-80 lg:-right-52 lg:top-[46%] lg:w-[38rem]">
+      <div className="absolute left-[20%] top-[-55%] z-30 w-[72%] -rotate-2">
         {renderObject("tablet", "/images/menu/mesa-digitalizadora.png", "left-[23%] top-[26%] h-[43%] w-[60%]")}
+      </div>
+      <div className="absolute -right-[11%] bottom-[-25%] z-10 w-[79%] rotate-3">
+        {renderObject("macbook", "/images/menu/macbook.png", "left-[26%] top-[35%] h-[29%] w-[46%]")}
       </div>
     </div>
   )
