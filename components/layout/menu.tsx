@@ -280,23 +280,10 @@ export default function Menu() {
                 onActivateObject={activateObject}
               />
 
-              <nav className="relative z-10 mx-auto flex min-h-svh w-full max-w-[62rem] flex-col px-5 pb-6 pt-24 sm:px-8 sm:pb-8 md:px-12 md:pb-9 md:pt-9 lg:px-16">
-                <motion.header
-                  data-menu-safe
-                  className="grid grid-cols-3 items-start border-b border-[#e8e7e7]/18 pb-4 pr-18 text-[8px] uppercase tracking-[0.16em] text-[#e8e7e7]/58 sm:text-[9px] sm:tracking-[0.2em] md:pb-5 md:pr-20"
-                  initial={{ opacity: 0, y: reducedMotion ? 0 : -6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, transition: { duration: fastDuration } }}
-                  transition={{ duration: fastDuration, delay: entranceDelay(0.2) }}
-                >
-                  <span>Sarah Aliriel</span>
-                  <span className="text-center">Portfolio</span>
-                  <span className="text-right">2026</span>
-                </motion.header>
-
+              <nav className="relative z-10 mx-auto flex min-h-svh w-full max-w-[62rem] flex-col px-5 pb-6 pt-8 sm:px-8 sm:pb-8 sm:pt-9 md:px-12 md:pb-9 lg:px-16">
                 <motion.p
                   data-menu-safe
-                  className="mb-3 mt-6 text-[9px] uppercase tracking-[0.22em] text-[#e8e7e7]/42 md:mb-4 md:mt-[clamp(1.5rem,4vh,3rem)]"
+                  className="mb-3 text-[9px] uppercase tracking-[0.22em] text-[#e8e7e7]/42 md:mb-4"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0, transition: { duration: fastDuration } }}
