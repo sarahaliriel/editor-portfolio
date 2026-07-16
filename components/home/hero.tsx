@@ -26,6 +26,12 @@ export default function Hero() {
   useLayoutEffect(() => {
     const onDone = () => setIntroDone(true)
     window.addEventListener("intro:done", onDone)
+
+    // IntroOverlay is mounted before the page. When an intro is skipped it can
+    // finish in its layout effect before this listener exists, so also read the
+    // durable DOM state instead of relying exclusively on the event.
+    if (document.documentElement.dataset.intro === "done") onDone()
+
     return () => window.removeEventListener("intro:done", onDone)
   }, [])
 

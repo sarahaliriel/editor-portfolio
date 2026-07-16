@@ -7,6 +7,8 @@ export type Lang = "pt" | "en" | "es"
 const DICT = {
   pt: {
     langLabel: "Idioma",
+    langPrompt: "Escolha a sua experiência.",
+    langClose: "Fechar seletor de idioma",
     pt: "Português",
     en: "Inglês",
     es: "Espanhol",
@@ -370,6 +372,8 @@ const DICT = {
   },
   en: {
     langLabel: "Language",
+    langPrompt: "Choose your experience.",
+    langClose: "Close language selector",
     pt: "Portuguese",
     en: "English",
     es: "Spanish",
@@ -733,6 +737,8 @@ const DICT = {
   },
   es: {
     langLabel: "Idioma",
+    langPrompt: "Elige tu experiencia.",
+    langClose: "Cerrar selector de idioma",
     pt: "Portugués",
     en: "Inglés",
     es: "Español",

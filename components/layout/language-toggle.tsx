@@ -1,23 +1,23 @@
 "use client"
 
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import { useEffect, useRef, useState } from "react"
 import { Lang, useI18n } from "@/components/providers/i18n"
 
-const ORDER: Lang[] = ["pt", "en", "es"]
-
-function shortLabel(l: Lang) {
-  if (l === "pt") return "PT"
-  if (l === "en") return "EN"
-  return "ES"
-}
+const LANGUAGES: ReadonlyArray<{ code: Lang; short: string; label: string }> = [
+  { code: "pt", short: "PT", label: "Português" },
+  { code: "en", short: "EN", label: "English" },
+  { code: "es", short: "ES", label: "Español" },
+]
 
 export default function LanguageToggle() {
   const { lang, setLang, t } = useI18n()
   const [open, setOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const wrapRef = useRef<HTMLDivElement | null>(null)
-
-  const next = ORDER[(ORDER.indexOf(lang) + 1) % ORDER.length]
+  const optionRefs = useRef<Array<HTMLButtonElement | null>>([])
+  const reducedMotion = useReducedMotion()
+  const current = LANGUAGES.find((language) => language.code === lang) ?? LANGUAGES[0]
 
   useEffect(() => {
     const onMenuState = (event: Event) => {
@@ -33,32 +33,40 @@ export default function LanguageToggle() {
   useEffect(() => {
     if (!open) return
 
-    const onDown = (e: PointerEvent) => {
-      const el = wrapRef.current
-      if (!el) return
-      if (!el.contains(e.target as Node)) setOpen(false)
+    const onPointerDown = (event: PointerEvent) => {
+      if (!wrapRef.current?.contains(event.target as Node)) setOpen(false)
+    }
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false)
     }
 
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false)
-    }
-
-    window.addEventListener("pointerdown", onDown)
-    window.addEventListener("keydown", onKey)
+    window.addEventListener("pointerdown", onPointerDown)
+    window.addEventListener("keydown", onKeyDown)
     return () => {
-      window.removeEventListener("pointerdown", onDown)
-      window.removeEventListener("keydown", onKey)
+      window.removeEventListener("pointerdown", onPointerDown)
+      window.removeEventListener("keydown", onKeyDown)
     }
   }, [open])
 
-  const pick = (l: Lang) => {
-    setLang(l)
+  const openSelector = () => {
+    setOpen(true)
+    window.requestAnimationFrame(() => optionRefs.current[LANGUAGES.findIndex(({ code }) => code === lang)]?.focus())
+  }
+
+  const pick = (language: Lang) => {
+    setLang(language)
     setOpen(false)
   }
 
-  const cycle = () => {
-    if (open) return
-    setLang(next)
+  const handleOptionKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
+    let nextIndex: number | undefined
+    if (event.key === "ArrowDown") nextIndex = (index + 1) % LANGUAGES.length
+    if (event.key === "ArrowUp") nextIndex = (index - 1 + LANGUAGES.length) % LANGUAGES.length
+    if (event.key === "Home") nextIndex = 0
+    if (event.key === "End") nextIndex = LANGUAGES.length - 1
+    if (nextIndex === undefined) return
+    event.preventDefault()
+    optionRefs.current[nextIndex]?.focus()
   }
 
   return (
@@ -68,85 +76,102 @@ export default function LanguageToggle() {
       inert={menuOpen}
       className={`fixed bottom-[max(.75rem,env(safe-area-inset-bottom))] right-3 z-96 transition-[opacity,transform] duration-200 sm:bottom-5 sm:right-5 ${menuOpen ? "pointer-events-none translate-y-2 opacity-0" : "opacity-100"}`}
     >
-      <div className="relative">
-        <button
-          type="button"
-          aria-expanded={open}
-          aria-haspopup="menu"
-          tabIndex={menuOpen ? -1 : undefined}
-          onClick={() => setOpen((v) => !v)}
-          onDoubleClick={cycle}
-          className={[
-            "group relative grid h-14 w-14 place-items-center rounded-full",
-            "bg-[#1e1e1e]/72 backdrop-blur-xl",
-            "border border-white/40",
-            "shadow-[0_18px_70px_rgba(0,0,0,0.35)]",
-            "transition-transform duration-300 hover:scale-[1.04] active:scale-[0.97]",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/35 focus-visible:ring-offset-2 focus-visible:ring-offset-black",
-          ].join(" ")}
-        >
-          <span className="sr-only">{t("langLabel")}</span>
-          <span className="pointer-events-none absolute inset-0 rounded-full opacity-0 transition-opacity duration-300 group-hover:opacity-100 ring-1 ring-[#1800ad]/35" />
-          <span className="pointer-events-none absolute -inset-1 rounded-full bg-[radial-gradient(circle_at_30%_30%,rgba(24,0,173,0.35),rgba(24,0,173,0)_60%)] opacity-55 blur-md" />
-
-          <span className="relative grid place-items-center">
-            <span className="text-[12px] font-semibold tracking-[0.18em] text-[#e8e7e7]">{shortLabel(lang)}</span>
-            <span className="mt-0.5 text-[10px] tracking-[0.18em] text-white/55">{shortLabel(next)}</span>
-          </span>
-        </button>
-
-        <div
-          aria-hidden={!open}
-          inert={!open || menuOpen}
-          className={[
-            "absolute bottom-[calc(100%+10px)] right-0",
-            "origin-bottom-right transition-all duration-300 ease-[cubic-bezier(.16,1,.3,1)]",
-            open ? "scale-100 opacity-100 translate-y-0 pointer-events-auto" : "scale-95 opacity-0 translate-y-1 pointer-events-none",
-          ].join(" ")}
-        >
-          <div className="min-w-44 overflow-hidden rounded-2xl border border-white/18 bg-[#1e1e1e]/88 backdrop-blur-xl shadow-[0_30px_120px_rgba(0,0,0,0.45)]">
-            <div className="px-4 pt-3 pb-2 text-[11px] tracking-[0.22em] uppercase text-white/55">{t("langLabel")}</div>
-
-            <div className="h-px w-full bg-white/10" />
-
-            <div className="p-2">
-              {ORDER.map((l) => (
+      <motion.div
+        layout
+        initial={false}
+        animate={{ width: open ? 232 : 48, height: open ? 270 : 36 }}
+        transition={{ duration: reducedMotion ? 0.12 : 0.48, ease: [0.16, 1, 0.3, 1] }}
+        className="relative overflow-hidden rounded-[18px] bg-[#191919] text-[#e8e7e7] ring-1 ring-white/8"
+      >
+        <AnimatePresence initial={false} mode="popLayout">
+          {!open ? (
+            <motion.button
+              key="closed"
+              type="button"
+              aria-label={`${t("langLabel")}: ${current.label}`}
+              aria-expanded="false"
+              aria-haspopup="menu"
+              tabIndex={menuOpen ? -1 : undefined}
+              onClick={openSelector}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, y: reducedMotion ? 0 : -3 }}
+              transition={{ duration: reducedMotion ? 0.08 : 0.2 }}
+              className="group grid h-9 w-12 place-items-center rounded-[18px] text-[10px] font-semibold tracking-[0.16em] transition-colors duration-300 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1800ad] active:text-white/70"
+            >
+              <span className="transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.06]">
+                {current.short}
+              </span>
+            </motion.button>
+          ) : (
+            <motion.div
+              key="open"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: reducedMotion ? 0.08 : 0.24, delay: reducedMotion ? 0 : 0.08 }}
+              className="flex h-full w-full flex-col px-5 pb-4 pt-5"
+            >
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="font-display text-[11px] font-semibold uppercase tracking-[0.16em] text-[#e8e7e7]">
+                    {t("langLabel")}
+                  </p>
+                  <p className="mt-2 text-[11px] leading-relaxed text-white/45">{t("langPrompt")}</p>
+                </div>
                 <button
-                  key={l}
                   type="button"
-                  onClick={() => pick(l)}
-                  className={[
-                    "group flex w-full items-center justify-between rounded-xl px-3 py-2 text-left",
-                    "transition-colors duration-200",
-                    l === lang ? "bg-white/8" : "hover:bg-white/6",
-                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20",
-                  ].join(" ")}
+                  onClick={() => setOpen(false)}
+                  aria-label={t("langClose")}
+                  className="-mr-2 -mt-2 grid size-8 place-items-center rounded-full text-lg font-light text-white/35 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-[#1800ad]"
                 >
-                  <span className="flex items-center gap-3">
-                    <span
-                      className={[
-                        "inline-flex h-7 w-7 items-center justify-center rounded-full border",
-                        l === lang ? "border-[#1800ad]/70 bg-[#1800ad]/12" : "border-white/14 bg-white/4",
-                      ].join(" ")}
-                    >
-                      <span className="text-[11px] font-semibold tracking-[0.18em] text-white/85">{shortLabel(l)}</span>
-                    </span>
-
-                    <span className="text-[13px] text-white/85">{t(l)}</span>
-                  </span>
-
-                  <span
-                    className={[
-                      "h-1.5 w-1.5 rounded-full transition-opacity",
-                      l === lang ? "bg-[#1800ad] opacity-100" : "bg-white/40 opacity-0 group-hover:opacity-80",
-                    ].join(" ")}
-                  />
+                  <span aria-hidden="true">×</span>
                 </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
+              </div>
+
+              <div className="my-4 h-px w-full origin-left bg-white/12" />
+
+              <motion.div
+                role="menu"
+                aria-label={t("langLabel")}
+                initial="closed"
+                animate="open"
+                variants={{
+                  open: { transition: { staggerChildren: reducedMotion ? 0 : 0.05, delayChildren: reducedMotion ? 0 : 0.1 } },
+                  closed: {},
+                }}
+                className="flex flex-1 flex-col justify-center gap-1"
+              >
+                {LANGUAGES.map((language, index) => {
+                  const active = language.code === lang
+                  return (
+                    <motion.button
+                      key={language.code}
+                      ref={(element) => { optionRefs.current[index] = element }}
+                      type="button"
+                      role="menuitemradio"
+                      aria-checked={active}
+                      onClick={() => pick(language.code)}
+                      onKeyDown={(event) => handleOptionKeyDown(event, index)}
+                      variants={{
+                        closed: { opacity: 0, y: reducedMotion ? 0 : 7 },
+                        open: { opacity: 1, y: 0, transition: { duration: reducedMotion ? 0.1 : 0.32, ease: [0.16, 1, 0.3, 1] } },
+                      }}
+                      className="group relative flex min-h-10 w-full items-center gap-3 text-left text-[13px] text-white/55 focus-visible:outline-none focus-visible:text-white"
+                    >
+                      <span className={`size-1.5 shrink-0 rounded-full bg-[#1800ad] transition-[opacity,transform] duration-300 ${active ? "scale-100 opacity-100" : "scale-0 opacity-0"}`} />
+                      <span className={`relative transition-[color,font-weight,transform] duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:translate-x-1 group-hover:scale-[1.025] group-hover:text-white group-focus-visible:translate-x-1 ${active ? "font-semibold text-[#e8e7e7]" : "font-normal"}`}>
+                        {language.label}
+                        <span className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-[#1800ad] transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-x-100 group-focus-visible:scale-x-100" />
+                      </span>
+                    </motion.button>
+                  )
+                })}
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
     </div>
   )
 }

@@ -35,7 +35,7 @@ const archiveProjectSources: ArchiveProjectSource[] = [
   },
   {
     id: "02",
-    title: { pt: "Tipografia Edit", en: "Typography Edit", es: "Tipografía Edit" },
+    title: { pt: "Tipografia & Mograph Edit", en: "Typography & Mograph Edit", es: "Tipografía & Mograph Edit" },
     category: "lab",
     tagsLine: { pt: "tipografia animada | short-form", en: "animated typography | short-form", es: "tipografía animada | short-form" },
     year: "2025",
@@ -44,7 +44,7 @@ const archiveProjectSources: ArchiveProjectSource[] = [
   },
   {
     id: "03",
-    title: { pt: "Corte de Podcast", en: "Podcast Cut", es: "Corte de Pódcast" },
+    title: { pt: "Corte Dinâmico Podcast", en: "Dynamic Podcast Cut", es: "Corte Dinámico de Pódcast" },
     category: "social",
     tagsLine: { pt: "corte de podcast | legendas dinâmicas", en: "podcast cut | dynamic captions", es: "corte de pódcast | subtítulos dinámicos" },
     year: "2024",
