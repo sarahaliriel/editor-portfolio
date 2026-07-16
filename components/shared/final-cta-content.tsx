@@ -118,6 +118,7 @@ export default function FinalCtaContent({
   return (
     <motion.section
       id={id}
+      data-scroll-theme={theme}
       aria-labelledby={`${id}-title`}
       aria-hidden={!interactive}
       inert={!interactive}

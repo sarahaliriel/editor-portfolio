@@ -131,7 +131,7 @@ function ProjectProcess({ project, labels }: { project: GalleryProject; labels: 
   ]
 
   return (
-    <section id="project-story" className="relative z-0 bg-[#1e1e1e] px-5 pb-[clamp(64px,7vw,104px)] pt-[clamp(150px,18vw,280px)] text-[#e8e7e7] sm:px-8 lg:px-[clamp(40px,4.6vw,88px)]">
+    <section id="project-story" data-scroll-theme="dark" className="relative z-0 bg-[#1e1e1e] px-5 pb-[clamp(64px,7vw,104px)] pt-[clamp(150px,18vw,280px)] text-[#e8e7e7] sm:px-8 lg:px-[clamp(40px,4.6vw,88px)]">
       <motion.header
         initial={reducedMotion ? false : { opacity: 0, y: 24, filter: "blur(6px)" }}
         whileInView={reducedMotion ? undefined : { opacity: 1, y: 0, filter: "blur(0px)" }}
@@ -324,6 +324,7 @@ function FinalCta({ currentProject, nextProject, labels }: { currentProject: Gal
       viewport={{ once: true, amount: 0.18 }}
       variants={ctaReveal}
       aria-labelledby="next-project-title"
+      data-scroll-theme="dark"
       className="relative flex min-h-svh overflow-hidden bg-[#1e1e1e] px-5 pb-6 pt-[clamp(48px,6vh,76px)] text-[#e8e7e7] sm:px-8 sm:pb-8 lg:px-12 lg:pb-9"
     >
       <div className="relative mx-auto flex w-full max-w-450 flex-1 flex-col">

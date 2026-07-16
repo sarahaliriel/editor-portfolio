@@ -4,6 +4,7 @@ import type { MouseEvent } from "react"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ProjectPlayer } from "@/components/allprojects/project-player"
 import { ProjectThumbs } from "@/components/allprojects/project-thumbs"
+import ScrollProgress from "@/components/layout/scroll-progress"
 import { useI18n } from "@/components/providers/i18n"
 import { getArchiveProjects } from "@/data/all-projects"
 import { pad2 } from "@/lib/format"
@@ -40,6 +41,7 @@ export default function AllProjects() {
   const total = projects.length
   const [active, setActive] = useState(0)
   const idx = wrapIndex(active, total)
+  const archiveProgress = total <= 1 ? 0 : idx / (total - 1)
   const current = projects[idx]
   const videoSrc = current.src
   const category = categories[current.category]
@@ -371,6 +373,7 @@ export default function AllProjects() {
 
   return (
     <section ref={wrapRef} className="h-svh w-full overflow-hidden bg-[#e8e7e7] text-[#1e1e1e]">
+      <ScrollProgress progress={archiveProgress} />
       <div className="mx-auto flex h-svh w-full max-w-420 flex-col overflow-hidden px-4 pb-4 pt-18 sm:px-6 sm:pb-5 lg:px-9 lg:pb-7 lg:pt-6">
         <header className="grid shrink-0 gap-4 border-b border-[#1e1e1e]/12 pb-4 sm:grid-cols-[minmax(180px,1fr)_280px] sm:items-end lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-8 lg:pb-4">
           <div className="min-w-0">

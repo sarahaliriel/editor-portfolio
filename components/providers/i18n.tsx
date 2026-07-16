@@ -34,7 +34,6 @@ const DICT = {
     introRouteGallery: "galeria de designs",
     introRouteMoreAbout: "sobre mim",
 
-    cursorView: "Ver",
 
     heroAvailable: "Disponível para projetos",
     heroRole1: "Editora de Vídeos",
@@ -150,10 +149,6 @@ const DICT = {
     galleryPlaygroundTitle: "ANEXOS",
     galleryPlaygroundDescription: "Estudos independentes, composições livres e experimentações visuais que ajudaram a explorar linguagem, contraste e direção de arte.",
     galleryPlaygroundCount: "ESTUDOS",
-    galleryPlaygroundOpen: "Abrir visualização ampliada",
-    galleryPlaygroundClose: "Fechar",
-    galleryPlaygroundPrevious: "Anterior",
-    galleryPlaygroundNext: "Próximo",
     galleryFinalLine1: "UMA IDEIA PODE",
     galleryFinalLine2: "COMEÇAR AQUI.",
     galleryFinalButton: "VAMOS CONVERSAR",
@@ -402,7 +397,6 @@ const DICT = {
     introRouteGallery: "design gallery",
     introRouteMoreAbout: "about me",
 
-    cursorView: "View",
 
     heroAvailable: "Available for projects",
     heroRole1: "Video Editor",
@@ -518,10 +512,6 @@ const DICT = {
     galleryPlaygroundTitle: "APPENDICES",
     galleryPlaygroundDescription: "Independent studies, freeform compositions and visual experiments created to explore language, contrast and art direction.",
     galleryPlaygroundCount: "STUDIES",
-    galleryPlaygroundOpen: "Open expanded view",
-    galleryPlaygroundClose: "Close",
-    galleryPlaygroundPrevious: "Previous",
-    galleryPlaygroundNext: "Next",
     galleryFinalLine1: "AN IDEA CAN",
     galleryFinalLine2: "START HERE.",
     galleryFinalButton: "LET'S TALK",
@@ -770,7 +760,6 @@ const DICT = {
     introRouteGallery: "galería de diseños",
     introRouteMoreAbout: "sobre mí",
 
-    cursorView: "Ver",
 
     heroAvailable: "Disponible para proyectos",
     heroRole1: "Editora de Video",
@@ -886,10 +875,6 @@ const DICT = {
     galleryPlaygroundTitle: "ANEXOS",
     galleryPlaygroundDescription: "Estudios independientes, composiciones libres y experimentos visuales creados para explorar lenguaje, contraste y dirección de arte.",
     galleryPlaygroundCount: "ESTUDIOS",
-    galleryPlaygroundOpen: "Abrir vista ampliada",
-    galleryPlaygroundClose: "Cerrar",
-    galleryPlaygroundPrevious: "Anterior",
-    galleryPlaygroundNext: "Siguiente",
     galleryFinalLine1: "UNA IDEA PUEDE",
     galleryFinalLine2: "EMPEZAR AQUÍ.",
     galleryFinalButton: "HABLEMOS",

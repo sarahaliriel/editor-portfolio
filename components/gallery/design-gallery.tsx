@@ -2,10 +2,8 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion"
 import RollingText from "@/components/shared/rolling-text"
-import { createPortal } from "react-dom"
-import { useEffect, useMemo, useRef, useState, type MouseEvent, type PointerEvent as ReactPointerEvent } from "react"
+import { useEffect, useMemo, type MouseEvent } from "react"
 import { useI18n } from "@/components/providers/i18n"
 import FinalCtaContent from "@/components/shared/final-cta-content"
 import ScrollProgress from "@/components/layout/scroll-progress"
@@ -19,69 +17,6 @@ function scrollToSection(event: MouseEvent<HTMLAnchorElement>) {
   const target = document.querySelector(event.currentTarget.hash)
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
   target?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" })
-}
-
-type ViewCursorHandlers = {
-  onPointerEnter: (event: ReactPointerEvent<HTMLElement>) => void
-  onPointerMove: (event: ReactPointerEvent<HTMLElement>) => void
-  onPointerLeave: () => void
-}
-
-function useViewCursor() {
-  const { t } = useI18n()
-  const reducedMotion = Boolean(useReducedMotion())
-  const [canHover, setCanHover] = useState(false)
-  const [hovered, setHovered] = useState(false)
-  const pointerX = useMotionValue(0)
-  const pointerY = useMotionValue(0)
-  const cursorX = useSpring(pointerX, { stiffness: 105, damping: 22, mass: 0.72 })
-  const cursorY = useSpring(pointerY, { stiffness: 105, damping: 22, mass: 0.72 })
-
-  useEffect(() => {
-    const hoverQuery = window.matchMedia("(hover: hover) and (pointer: fine)")
-    const update = () => {
-      const enabled = hoverQuery.matches && !reducedMotion
-      setCanHover(enabled)
-      if (!enabled) setHovered(false)
-    }
-
-    update()
-    hoverQuery.addEventListener("change", update)
-    return () => hoverQuery.removeEventListener("change", update)
-  }, [reducedMotion])
-
-  const move = (event: ReactPointerEvent<HTMLElement>) => {
-    if (!canHover) return
-    pointerX.set(event.clientX)
-    pointerY.set(event.clientY)
-  }
-
-  const handlers: ViewCursorHandlers = {
-    onPointerEnter: (event) => {
-      if (!canHover) return
-      move(event)
-      setHovered(true)
-    },
-    onPointerMove: move,
-    onPointerLeave: () => setHovered(false),
-  }
-
-  const cursor = canHover ? (
-    <motion.div
-      aria-hidden="true"
-      className="pointer-events-none fixed left-0 top-0 z-30001"
-      style={{ x: cursorX, y: cursorY }}
-      initial={false}
-      animate={hovered ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.72 }}
-      transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
-    >
-      <span className="grid size-20 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-[#1800ad] px-3 text-center font-display text-[10px] font-semibold uppercase tracking-[0.14em] text-white shadow-[0_14px_40px_rgba(24,0,173,0.28)]">
-        {t("cursorView")}
-      </span>
-    </motion.div>
-  ) : null
-
-  return { handlers, cursor }
 }
 
 function countProjectPieces(project: GalleryProject) {
@@ -206,7 +141,7 @@ function SelectedProjectsIntro({ projectCount }: { projectCount: number }) {
   )
 }
 
-function SelectedProjectCard({ project, index, viewCursor }: { project: GalleryProject; index: number; viewCursor: ViewCursorHandlers }) {
+function SelectedProjectCard({ project, index }: { project: GalleryProject; index: number }) {
   const { t } = useI18n()
   const cover = getProjectCover(project)
   const pieceCount = countProjectPieces(project)
@@ -225,10 +160,6 @@ function SelectedProjectCard({ project, index, viewCursor }: { project: GalleryP
         <Link
           href={`/gallery/${project.slug}`}
           aria-label={`${t("galleryViewMorePieces")}: ${project.name}`}
-          data-cursor="hidden"
-          onPointerEnter={viewCursor.onPointerEnter}
-          onPointerMove={viewCursor.onPointerMove}
-          onPointerLeave={viewCursor.onPointerLeave}
           className="group block overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1800ad]"
         >
           <span className="relative block aspect-[2.45/1] lg:aspect-square">
@@ -260,59 +191,35 @@ function SelectedProjectCard({ project, index, viewCursor }: { project: GalleryP
 }
 
 function SelectedProjects({ projects }: { projects: GalleryProject[] }) {
-  const viewCursor = useViewCursor()
-
   return (
-    <>
-      <section id="gallery-projects" className="container-bleed pb-[clamp(56px,9vw,112px)]">
-        <div className="grid gap-9 lg:grid-cols-3 lg:gap-12">
-          {projects.map((project, index) => (
-            <SelectedProjectCard key={project.slug} project={project} index={index} viewCursor={viewCursor.handlers} />
-          ))}
-        </div>
-      </section>
-      {viewCursor.cursor}
-    </>
+    <section id="gallery-projects" className="container-bleed pb-[clamp(56px,9vw,112px)]">
+      <div className="grid gap-9 lg:grid-cols-3 lg:gap-12">
+        {projects.map((project, index) => (
+          <SelectedProjectCard key={project.slug} project={project} index={index} />
+        ))}
+      </div>
+    </section>
   )
 }
 
 function PlaygroundPiece({
   piece,
   index,
-  onOpen,
-  onPointerEnter,
-  onPointerMove,
-  onPointerLeave,
 }: {
   piece: GalleryImage
   index: number
-  onOpen: () => void
-  onPointerEnter: (event: ReactPointerEvent<HTMLButtonElement>) => void
-  onPointerMove: (event: ReactPointerEvent<HTMLButtonElement>) => void
-  onPointerLeave: () => void
 }) {
-  const { t } = useI18n()
-
   return (
-    <figure className={`min-w-0 transition-[opacity,transform] duration-500 ease-out group-hover/playground:opacity-55 hover:!opacity-100 hover:-translate-y-0.5 focus-within:!opacity-100 motion-reduce:transform-none motion-reduce:transition-none ${playgroundOffset[index % playgroundOffset.length]}`}>
-      <button
-        type="button"
-        onClick={onOpen}
-        data-cursor="hidden"
-        onPointerEnter={onPointerEnter}
-        onPointerMove={onPointerMove}
-        onPointerLeave={onPointerLeave}
-        aria-label={`${t("galleryPlaygroundOpen")}: ${piece.title}`}
-        className="relative block aspect-4/5 w-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1800ad]"
-      >
+    <figure className={`min-w-0 ${playgroundOffset[index % playgroundOffset.length]}`}>
+      <div className="relative block aspect-4/5 w-full">
         <Image
           src={piece.src}
           alt={piece.alt}
           fill
           sizes="(max-width: 379px) 94vw, (max-width: 639px) 47vw, (max-width: 1023px) 32vw, 24vw"
-          className="object-contain transition-transform duration-500 ease-out hover:scale-[1.008] motion-reduce:transition-none"
+          className="object-contain"
         />
-      </button>
+      </div>
       <figcaption className="sr-only">{piece.title}</figcaption>
     </figure>
   )
@@ -320,85 +227,27 @@ function PlaygroundPiece({
 
 function PlaygroundSection({ pieces }: { pieces: GalleryImage[] }) {
   const { t } = useI18n()
-  const viewCursor = useViewCursor()
-  const [activeIndex, setActiveIndex] = useState<number | null>(null)
-  const closeButtonRef = useRef<HTMLButtonElement>(null)
-  const activePiece = activeIndex === null ? null : pieces[activeIndex]
-  const activePosition = activeIndex ?? 0
-
-  useEffect(() => {
-    if (activeIndex === null) return
-
-    const previousOverflow = document.body.style.overflow
-    document.body.style.overflow = "hidden"
-    closeButtonRef.current?.focus()
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setActiveIndex(null)
-      if (event.key === "ArrowRight") setActiveIndex((current) => current === null ? null : (current + 1) % pieces.length)
-      if (event.key === "ArrowLeft") setActiveIndex((current) => current === null ? null : (current - 1 + pieces.length) % pieces.length)
-    }
-
-    window.addEventListener("keydown", onKeyDown)
-    return () => {
-      document.body.style.overflow = previousOverflow
-      window.removeEventListener("keydown", onKeyDown)
-    }
-  }, [activeIndex, pieces.length])
 
   return (
-    <>
-      <section id="creative-playground" aria-labelledby="playground-title" className="container-bleed border-t border-[#1e1e1e]/12 pb-[clamp(56px,7vw,88px)] pt-[clamp(52px,7vw,84px)]">
-        <header className="grid gap-7 border-b border-[#1e1e1e]/18 pb-[clamp(32px,5vw,56px)] lg:grid-cols-[minmax(0,0.58fr)_minmax(320px,0.42fr)] lg:items-end">
-          <h2 id="playground-title" className="text-[clamp(3.1rem,9vw,7.6rem)] font-black uppercase leading-[0.84] tracking-[-0.065em] text-[#1e1e1e]">
-            {t("galleryPlaygroundTitle")}
-          </h2>
-          <div className="lg:justify-self-end">
-            <p className="max-w-[44ch] text-base font-semibold leading-relaxed text-[#1e1e1e]/62 sm:text-lg">{t("galleryPlaygroundDescription")}</p>
-            <p className="mt-6 text-[10px] font-black uppercase tracking-[0.22em] text-[#1800ad]">
-              {String(pieces.length).padStart(2, "0")} {t("galleryPlaygroundCount")}
-            </p>
-          </div>
-        </header>
-
-        <div className="group/playground mt-4 grid grid-cols-1 items-start gap-x-1.5 gap-y-2 min-[380px]:grid-cols-2 sm:grid-cols-3 sm:gap-x-2 lg:grid-cols-4">
-          {pieces.map((piece, index) => (
-            <PlaygroundPiece
-              key={piece.src}
-              piece={piece}
-              index={index}
-              onOpen={() => setActiveIndex(index)}
-              onPointerEnter={viewCursor.handlers.onPointerEnter}
-              onPointerMove={viewCursor.handlers.onPointerMove}
-              onPointerLeave={viewCursor.handlers.onPointerLeave}
-            />
-          ))}
+    <section id="creative-playground" aria-labelledby="playground-title" className="container-bleed border-t border-[#1e1e1e]/12 pb-[clamp(56px,7vw,88px)] pt-[clamp(52px,7vw,84px)]">
+      <header className="grid gap-7 border-b border-[#1e1e1e]/18 pb-[clamp(32px,5vw,56px)] lg:grid-cols-[minmax(0,0.58fr)_minmax(320px,0.42fr)] lg:items-end">
+        <h2 id="playground-title" className="text-[clamp(3.1rem,9vw,7.6rem)] font-black uppercase leading-[0.84] tracking-[-0.065em] text-[#1e1e1e]">
+          {t("galleryPlaygroundTitle")}
+        </h2>
+        <div className="lg:justify-self-end">
+          <p className="max-w-[44ch] text-base font-semibold leading-relaxed text-[#1e1e1e]/62 sm:text-lg">{t("galleryPlaygroundDescription")}</p>
+          <p className="mt-6 text-[10px] font-black uppercase tracking-[0.22em] text-[#1800ad]">
+            {String(pieces.length).padStart(2, "0")} {t("galleryPlaygroundCount")}
+          </p>
         </div>
-      </section>
+      </header>
 
-      {viewCursor.cursor}
-
-      {activePiece && typeof document !== "undefined" ? createPortal(
-        <div role="dialog" aria-modal="true" aria-label={activePiece.title} className="fixed inset-0 z-20000 grid place-items-center bg-[#1e1e1e]/96 p-3 text-[#e8e7e7] sm:p-6">
-          <button type="button" onClick={() => setActiveIndex(null)} aria-label={t("galleryPlaygroundClose")} className="absolute inset-0 cursor-default" />
-          <div className="pointer-events-none relative z-10 flex h-full max-h-[calc(100svh-1.5rem)] w-full max-w-7xl flex-col sm:max-h-[calc(100svh-3rem)]">
-            <div className="pointer-events-auto flex items-center justify-between border-b border-[#e8e7e7]/18 pb-3 text-[10px] font-black uppercase tracking-[0.2em]">
-              <span className="text-[#e8e7e7]/58">{String(activePosition + 1).padStart(2, "0")} / {String(pieces.length).padStart(2, "0")}</span>
-              <button ref={closeButtonRef} type="button" onClick={() => setActiveIndex(null)} className="transition hover:text-[#1800ad] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#e8e7e7]">{t("galleryPlaygroundClose")}</button>
-            </div>
-            <figure className="relative min-h-0 flex-1">
-              <Image src={activePiece.src} alt={activePiece.alt} fill sizes="100vw" className="object-contain py-4" />
-              <figcaption className="sr-only">{activePiece.title}</figcaption>
-            </figure>
-            <div className="pointer-events-auto flex items-center justify-between border-t border-[#e8e7e7]/18 pt-3 text-[10px] font-black uppercase tracking-[0.18em]">
-              <button type="button" onClick={() => setActiveIndex((activePosition - 1 + pieces.length) % pieces.length)} aria-label={t("galleryPlaygroundPrevious")} className="min-h-11 px-3 transition hover:text-[#1800ad] focus-visible:outline-2 focus-visible:outline-[#e8e7e7]">← {t("galleryPlaygroundPrevious")}</button>
-              <button type="button" onClick={() => setActiveIndex((activePosition + 1) % pieces.length)} aria-label={t("galleryPlaygroundNext")} className="min-h-11 px-3 transition hover:text-[#1800ad] focus-visible:outline-2 focus-visible:outline-[#e8e7e7]">{t("galleryPlaygroundNext")} →</button>
-            </div>
-          </div>
-        </div>,
-        document.body
-      ) : null}
-    </>
+      <div className="mt-4 grid grid-cols-1 items-start gap-x-1.5 gap-y-2 min-[380px]:grid-cols-2 sm:grid-cols-3 sm:gap-x-2 lg:grid-cols-4">
+        {pieces.map((piece, index) => (
+          <PlaygroundPiece key={piece.src} piece={piece} index={index} />
+        ))}
+      </div>
+    </section>
   )
 }
 
