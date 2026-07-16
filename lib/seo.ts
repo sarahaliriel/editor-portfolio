@@ -39,7 +39,7 @@ export function createPageMetadata({
   title,
   description,
   path,
-  image = "/images/gallery/blurr-hero.png",
+  image = "/images/profile/signature-sarah-aliriel.png",
   keywords = [],
 }: PageMetadata): Metadata {
   const canonical = absoluteUrl(path)
