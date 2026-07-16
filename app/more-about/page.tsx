@@ -1,16 +1,42 @@
 import type { Metadata } from "next"
 import MoreAboutPage from "@/components/more-about/more-about"
+import JsonLd from "@/components/seo/json-ld"
+import { absoluteUrl, createPageMetadata, siteUrl } from "@/lib/seo"
 
-export const metadata: Metadata = {
-  title: "More About Sarah Aliriel Dumitrache",
-  description: "Creative evolution, services and tools by Sarah Aliriel Dumitrache.",
-  openGraph: {
-    title: "More About Sarah Aliriel Dumitrache",
-    description: "Creative evolution across video editing, design and frontend development.",
-    images: ["/images/moreabout/aboutme-photo.png"],
-  },
-}
+const title = "Sobre Sarah Aliriel | Designer, Vídeo & Frontend"
+const description =
+  "Conheça a trajetória, os serviços e o processo criativo de Sarah Aliriel Dumitrache, designer, editora de vídeo e desenvolvedora frontend em Portugal."
+
+export const metadata: Metadata = createPageMetadata({
+  title,
+  description,
+  path: "/more-about",
+  image: "/images/moreabout/aboutme-photo.png",
+  keywords: [
+    "Sarah Aliriel Dumitrache",
+    "designer Póvoa de Varzim",
+    "editora de vídeo Portugal",
+    "frontend developer Portugal",
+    "serviços criativos",
+  ],
+})
 
 export default function Page() {
-  return <MoreAboutPage />
+  return (
+    <>
+      <JsonLd
+        data={{
+          "@type": "ProfilePage",
+          "@id": `${siteUrl}/more-about#profile`,
+          name: title,
+          description,
+          url: absoluteUrl("/more-about"),
+          inLanguage: "pt-PT",
+          mainEntity: { "@id": `${siteUrl}/#person` },
+          isPartOf: { "@id": `${siteUrl}/#website` },
+        }}
+      />
+      <MoreAboutPage />
+    </>
+  )
 }

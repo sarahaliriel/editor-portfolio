@@ -132,6 +132,7 @@ function GalleryHero({ projectCount, pieceCount }: { projectCount: number; piece
         <div className="absolute left-0 top-[74svh] sm:top-[75svh] lg:top-[72svh]">
           <a
             href="#selected-projects"
+            aria-label={t("gallerySelectedTitle")}
             onClick={scrollToSection}
             className="group inline-flex w-max items-center gap-5 text-[10px] font-black uppercase tracking-[0.16em] text-[#1e1e1e]/78 transition hover:text-[#1800ad] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1800ad] sm:text-[11px]"
           >
@@ -180,9 +181,9 @@ function SelectedProjectsIntro({ projectCount }: { projectCount: number }) {
 
         <div>
           <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#1800ad]">{t("gallerySelectedEyebrow")}</p>
-          <h1 className="mt-5 max-w-[9ch] text-[clamp(3.35rem,12vw,6.4rem)] font-black leading-[0.92] text-[#030303] sm:text-[clamp(5.2rem,8.2vw,7.5rem)] lg:text-[clamp(4.6rem,6.2vw,6.8rem)]">
+          <h2 className="mt-5 max-w-[9ch] text-[clamp(3.35rem,12vw,6.4rem)] font-black leading-[0.92] text-[#030303] sm:text-[clamp(5.2rem,8.2vw,7.5rem)] lg:text-[clamp(4.6rem,6.2vw,6.8rem)]">
             {t("gallerySelectedTitle")}
-          </h1>
+          </h2>
         </div>
 
         <div className="max-w-[44ch] lg:justify-self-end lg:pb-3">
@@ -223,6 +224,7 @@ function SelectedProjectCard({ project, index, viewCursor }: { project: GalleryP
       {cover ? (
         <Link
           href={`/gallery/${project.slug}`}
+          aria-label={`${t("galleryViewMorePieces")}: ${project.name}`}
           data-cursor="hidden"
           onPointerEnter={viewCursor.onPointerEnter}
           onPointerMove={viewCursor.onPointerMove}
@@ -236,7 +238,6 @@ function SelectedProjectCard({ project, index, viewCursor }: { project: GalleryP
               fill
               sizes="(max-width: 768px) 92vw, 30vw"
               className="object-contain transition duration-700 group-hover:scale-[1.02]"
-              priority={index < 3}
             />
           </span>
         </Link>
@@ -386,7 +387,7 @@ function PlaygroundSection({ pieces }: { pieces: GalleryImage[] }) {
               <button ref={closeButtonRef} type="button" onClick={() => setActiveIndex(null)} className="transition hover:text-[#1800ad] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#e8e7e7]">{t("galleryPlaygroundClose")}</button>
             </div>
             <figure className="relative min-h-0 flex-1">
-              <Image src={activePiece.src} alt={activePiece.alt} fill sizes="100vw" className="object-contain py-4" priority />
+              <Image src={activePiece.src} alt={activePiece.alt} fill sizes="100vw" className="object-contain py-4" />
               <figcaption className="sr-only">{activePiece.title}</figcaption>
             </figure>
             <div className="pointer-events-auto flex items-center justify-between border-t border-[#e8e7e7]/18 pt-3 text-[10px] font-black uppercase tracking-[0.18em]">

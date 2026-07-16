@@ -40,7 +40,7 @@ function WorkMedia({ item, reducedMotion }: WorkMediaProps) {
           src={preview}
           alt={item.title}
           fill
-          sizes="(max-width: 640px) 74vw, (max-width: 1024px) 58vw, 62vw"
+          sizes="(max-width: 640px) 67vw, (max-width: 1024px) 58vw, 62vw"
           quality={100}
           className="object-contain transition-transform duration-1000 ease-[cubic-bezier(.16,1,.3,1)] group-hover/media:scale-[1.025]"
         />

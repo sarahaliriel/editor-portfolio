@@ -134,8 +134,8 @@ export default function WhatMoves() {
         <div className="mx-auto flex w-full max-w-280 flex-col py-[clamp(2.5rem,6svh,5rem)] sm:w-[72vw]">
           <p
             className="w-full text-balance text-center font-display text-[clamp(2.4rem,13vw,4.2rem)] font-medium leading-[0.96] tracking-[-0.045em] sm:text-[clamp(3.2rem,6.8vw,7.2rem)] sm:leading-[0.94]"
-            aria-label={quote}
           >
+            <span className="sr-only">{quote}</span>
             {words.map((word, index) => {
               const emphasized = moveKeywords.test(word)
 

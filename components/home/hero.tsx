@@ -95,7 +95,8 @@ function HeroScene({ introDone }: { introDone: boolean }) {
                   alt="Assinatura Sarah Aliriel"
                   width={2600}
                   height={600}
-                  priority
+                  preload
+                  sizes="(max-width: 639px) 46vw, (max-width: 1023px) 46vw, 860px"
                   className="h-auto w-[clamp(240px,46vw,860px)] translate-y-[2%] select-none"
                 />
               </div>
@@ -242,7 +243,7 @@ function InteractivePortfolio({ introDone }: { introDone: boolean }) {
           <button
             key={`${letter}-${index}`}
             type="button"
-            className="absolute z-30 appearance-none border-0 bg-transparent p-0 outline-none"
+            className="absolute z-30 appearance-none border-0 bg-transparent p-0 outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1800ad]"
             style={{ left: bounds.left, top: bounds.top, width: bounds.width, height: bounds.height }}
             aria-label={`${t("heroLetterAria")} ${letter.toUpperCase()}: ${word}`}
             aria-pressed={isActive}

@@ -171,7 +171,7 @@ function Hero() {
                   src="/images/moreabout/aboutme-photo.png"
                   alt="Sarah Aliriel Dumitrache"
                   fill
-                  priority
+                  preload
                   sizes="(min-width: 1024px) 46vw, (min-width: 640px) 68vw, 82vw"
                   className="scale-[1.03] object-cover object-center"
                 />
@@ -189,7 +189,7 @@ function Hero() {
             transition={{ duration: 0.82, delay: 0.98, ease: [0.16, 1, 0.3, 1] }}
           >
             <div className="grid gap-3 text-center sm:grid-cols-2 sm:text-left lg:grid-cols-[1fr_1.4fr_1fr] lg:items-start">
-              <p className="font-medium text-[#1e1e1e] sm:col-span-1">{t("moreAboutName")}</p>
+              <h1 className="font-medium text-[#1e1e1e] sm:col-span-1">{t("moreAboutName")}</h1>
               <p className="sm:text-right lg:text-center">
                 {t("moreAboutRole1")} <span className="text-[#1e1e1e]/34">/</span> {t("moreAboutRole2")}{" "}
                 <span className="text-[#1e1e1e]/34">/</span> {t("moreAboutRole3")}

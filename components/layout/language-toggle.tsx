@@ -71,8 +71,8 @@ export default function LanguageToggle() {
       <div className="relative">
         <button
           type="button"
-          aria-label={t("langLabel")}
           aria-expanded={open}
+          aria-haspopup="menu"
           tabIndex={menuOpen ? -1 : undefined}
           onClick={() => setOpen((v) => !v)}
           onDoubleClick={cycle}
@@ -85,6 +85,7 @@ export default function LanguageToggle() {
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/35 focus-visible:ring-offset-2 focus-visible:ring-offset-black",
           ].join(" ")}
         >
+          <span className="sr-only">{t("langLabel")}</span>
           <span className="pointer-events-none absolute inset-0 rounded-full opacity-0 transition-opacity duration-300 group-hover:opacity-100 ring-1 ring-[#1800ad]/35" />
           <span className="pointer-events-none absolute -inset-1 rounded-full bg-[radial-gradient(circle_at_30%_30%,rgba(24,0,173,0.35),rgba(24,0,173,0)_60%)] opacity-55 blur-md" />
 

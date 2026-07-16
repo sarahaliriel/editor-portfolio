@@ -1,7 +1,8 @@
 "use client"
 
 import Link from "next/link"
-import { motion, useReducedMotion } from "framer-motion"
+import { motion, useInView, useReducedMotion } from "framer-motion"
+import { useRef } from "react"
 import { useI18n } from "@/components/providers/i18n"
 import MotionCta from "@/components/shared/motion-cta"
 import TextCta from "@/components/shared/text-cta"
@@ -20,10 +21,13 @@ function MotionCard({
   reducedMotion: boolean
 }) {
   const { t } = useI18n()
+  const cardRef = useRef<HTMLElement | null>(null)
+  const isNearViewport = useInView(cardRef, { once: true, margin: "320px 0px" })
   const videoSrc = project.src
 
   return (
     <motion.article
+      ref={cardRef}
       initial={reducedMotion ? false : { opacity: 0, y: 34, filter: "blur(8px)" }}
       whileInView={reducedMotion ? undefined : { opacity: 1, y: 0, filter: "blur(0px)" }}
       viewport={{ once: true, amount: 0.22 }}
@@ -33,7 +37,7 @@ function MotionCard({
       <div className="relative overflow-hidden rounded-lg border border-[#e8e7e7]/10 bg-black shadow-[0_30px_90px_rgba(0,0,0,.34)]">
         <Link href="/allprojects" aria-label={`${t("motionSelectedWatch")} ${project.title}`} className="block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#e8e7e7]">
           <div className="relative aspect-video overflow-hidden">
-            {videoSrc ? (
+            {videoSrc && isNearViewport ? (
               <video
                 className="h-full w-full object-cover opacity-90 transition-transform duration-1000 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.045]"
                 src={videoSrc}
@@ -41,7 +45,7 @@ function MotionCard({
                 loop
                 playsInline
                 autoPlay={!reducedMotion}
-                preload="metadata"
+                preload="none"
               />
             ) : <div className="h-full w-full bg-black" />}
 

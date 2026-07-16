@@ -56,7 +56,7 @@ function HeroSection({ project, backLabel }: { project: GalleryProject; backLabe
 
       <motion.figure initial={prefersReducedMotion ? false : { opacity: 0, x: 70, scale: 0.94, filter: "blur(12px)" }} animate={prefersReducedMotion ? undefined : { opacity: 1, x: 0, scale: 1, filter: "blur(0px)" }} transition={{ duration: 1.1, ease: EASE, delay: 0.18 }} className="relative z-20 mt-6 h-[min(110vw,720px)] w-full lg:absolute lg:-bottom-[17vh] lg:right-[3vw] lg:mt-0 lg:h-[108%] lg:w-[53%]">
         <Image src="/images/gallery/blurr-hero.png" alt="" fill sizes="(max-width: 1023px) 100vw, 53vw" className="pointer-events-none translate-x-[14%] scale-[1.3] object-contain opacity-80 lg:translate-x-[22%]" />
-        <Image src={project.heroMockup.src} alt={project.heroMockup.alt} fill sizes="(max-width: 1023px) 100vw, 53vw" className="relative z-10 object-contain object-center lg:object-right" priority />
+        <Image src={project.heroMockup.src} alt={project.heroMockup.alt} fill sizes="(max-width: 1023px) 100vw, 53vw" className="relative z-10 object-contain object-center lg:object-right" preload />
         <figcaption className="sr-only">{project.heroMockup.title}</figcaption>
       </motion.figure>
     </section>
@@ -349,7 +349,7 @@ function FinalCta({ currentProject, nextProject, labels }: { currentProject: Gal
               transition={{ duration: 0.95, ease: EASE }}
               className="absolute inset-x-0 -bottom-24 top-[clamp(72px,9vh,104px)] origin-top"
             >
-              <Image src={nextProject.heroMockup.src} alt={nextProject.heroMockup.alt} fill unoptimized sizes="(max-width: 640px) 86vw, 550px" className="object-cover object-top drop-shadow-[0_28px_70px_rgba(0,0,0,0.32)]" />
+              <Image src={nextProject.heroMockup.src} alt={nextProject.heroMockup.alt} fill sizes="(max-width: 640px) 86vw, 550px" className="object-cover object-top drop-shadow-[0_28px_70px_rgba(0,0,0,0.32)]" />
             </motion.span>
           </Link>
         </motion.div>
