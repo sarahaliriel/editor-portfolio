@@ -7,6 +7,7 @@ import IntroOverlay from "@/components/effects/intro-overlay"
 import LanguageToggle from "@/components/layout/language-toggle"
 import JsonLd from "@/components/seo/json-ld"
 import Analytics from "@/components/analytics/analytics"
+import { Analytics as VercelAnalytics } from "@vercel/analytics/next"
 import {
   portfolioSchema,
   personSchema,
@@ -114,6 +115,7 @@ export default function RootLayout({
       <body>
         <JsonLd data={[personSchema, websiteSchema, portfolioSchema]} />
         <Analytics />
+        <VercelAnalytics />
         <LanguageProvider>
           <CustomCursor />
           <IntroOverlay />
