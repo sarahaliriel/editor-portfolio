@@ -54,6 +54,7 @@
 }
 
 .secondaryLine {
+  display: none;
   transform: translate3d(0, 100%, 0);
 }
 
@@ -83,11 +84,20 @@
 }
 
 .secondary {
+  display: none;
   transform: translate3d(0, 100%, 0);
   opacity: 1;
 }
 
 @media (hover: hover) and (pointer: fine) {
+  .secondary {
+    display: inline-block;
+  }
+
+  .secondaryLine {
+    display: inline-flex;
+  }
+
   :global(a:hover) .primary,
   :global(button:hover) .primary,
   :global(a:focus-visible) .primary,
@@ -111,6 +121,23 @@
   :global(a:focus-visible) .secondaryLine,
   :global(button:focus-visible) .secondaryLine {
     transform: none;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .root {
+    overflow: visible;
+  }
+
+  .character,
+  .characters,
+  .characterLine {
+    overflow: visible;
+  }
+
+  .primary {
+    transform: none;
+    animation: none;
   }
 }
 

@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { motion, useInView, useReducedMotion } from "framer-motion"
-import { useRef } from "react"
+import { useEffect, useRef } from "react"
 import { useI18n } from "@/components/providers/i18n"
 import MotionCta from "@/components/shared/motion-cta"
 import TextCta from "@/components/shared/text-cta"
@@ -22,8 +22,19 @@ function MotionCard({
 }) {
   const { t } = useI18n()
   const cardRef = useRef<HTMLElement | null>(null)
+  const videoRef = useRef<HTMLVideoElement | null>(null)
   const isNearViewport = useInView(cardRef, { once: true, margin: "320px 0px" })
+  const isVisible = useInView(cardRef, { amount: 0.12 })
   const videoSrc = project.src
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video || reducedMotion || !isVisible) {
+      video?.pause()
+      return
+    }
+    void video.play().catch(() => undefined)
+  }, [isNearViewport, isVisible, reducedMotion])
 
   return (
     <motion.article
@@ -39,12 +50,12 @@ function MotionCard({
           <div className="relative aspect-video overflow-hidden">
             {videoSrc && isNearViewport ? (
               <video
+                ref={videoRef}
                 className="h-full w-full object-cover opacity-90 transition-transform duration-1000 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.045]"
                 src={videoSrc}
                 muted
                 loop
                 playsInline
-                autoPlay={!reducedMotion}
                 preload="none"
               />
             ) : <div className="h-full w-full bg-black" />}

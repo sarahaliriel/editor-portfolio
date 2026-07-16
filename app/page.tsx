@@ -62,7 +62,7 @@ export default function Page() {
   }, [router])
 
   return (
-    <main className="relative min-h-screen bg-base text-ink">
+    <main className="relative min-h-screen overflow-x-clip bg-base text-ink">
       <ScrollProgress />
       <NarrativeOrb />
 

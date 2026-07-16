@@ -167,8 +167,10 @@ export default function FinalCtaContent({
                     <span aria-hidden="true" className={`absolute inset-0 origin-bottom scale-y-0 rounded-full transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100 ${isDark ? "bg-[#e8e7e7]" : "bg-[#1e1e1e]"}`} />
                     <span className="relative z-10 flex flex-col items-center gap-1.5 sm:flex-row sm:gap-2.5">
                       <span className="max-w-[10ch] whitespace-normal leading-[1.05] tracking-[0.02em] sm:hidden">{button}</span>
-                      <RollingText variant="strong" className="hidden sm:inline-block">{button}</RollingText>
-                      <span aria-hidden="true" className="text-base leading-none transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1">↗</span>
+                      <span className="hidden sm:inline-block">
+                        <RollingText variant="strong">{button}</RollingText>
+                      </span>
+                      <span aria-hidden="true" className="hidden text-base leading-none transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1 sm:inline">↗</span>
                     </span>
                   </Link>
                 </motion.div>

@@ -15,6 +15,7 @@ const EASE = [0.16, 1, 0.3, 1] as const
 
 function HeroSection({ project, backLabel }: { project: GalleryProject; backLabel: string }) {
   const prefersReducedMotion = useReducedMotion()
+  const [mockupReady, setMockupReady] = useState(false)
   const projectTitle = project.heroTitle ?? project.name
   const isFrigideira = project.slug === "frigideira-ai"
   const scrollToStory = () => document.querySelector("#project-story")?.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" })
@@ -30,7 +31,7 @@ function HeroSection({ project, backLabel }: { project: GalleryProject; backLabe
 
         <div className="mt-[clamp(72px,12vh,132px)] lg:mt-[clamp(112px,17vh,184px)] lg:flex lg:flex-1 lg:flex-col">
           <div>
-            <motion.h1 initial={prefersReducedMotion ? false : { opacity: 0, y: 36, filter: "blur(10px)" }} animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ duration: 1, ease: EASE, delay: 0.08 }} className={`whitespace-nowrap font-display font-black uppercase leading-[0.76] tracking-[-0.075em] text-[#030303] ${isFrigideira ? "text-[clamp(3.65rem,12vw,13.5rem)]" : "text-[clamp(3rem,7.5vw,8.8rem)]"}`}>
+            <motion.h1 initial={prefersReducedMotion ? false : { opacity: 0, y: 28 }} animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }} transition={{ duration: 0.85, ease: EASE, delay: 0.08 }} className={`whitespace-nowrap font-display font-black uppercase leading-[0.76] tracking-[-0.075em] text-[#030303] ${isFrigideira ? "text-[clamp(3.65rem,12vw,13.5rem)]" : "text-[clamp(3rem,7.5vw,8.8rem)]"}`}>
               {projectTitle}
             </motion.h1>
 
@@ -54,9 +55,15 @@ function HeroSection({ project, backLabel }: { project: GalleryProject; backLabe
         </div>
       </div>
 
-      <motion.figure initial={prefersReducedMotion ? false : { opacity: 0, x: 70, scale: 0.94, filter: "blur(12px)" }} animate={prefersReducedMotion ? undefined : { opacity: 1, x: 0, scale: 1, filter: "blur(0px)" }} transition={{ duration: 1.1, ease: EASE, delay: 0.18 }} className="relative z-20 mt-6 h-[min(110vw,720px)] w-full lg:absolute lg:-bottom-[17vh] lg:right-[3vw] lg:mt-0 lg:h-[108%] lg:w-[53%]">
+      <motion.figure
+        aria-busy={!mockupReady}
+        initial={false}
+        animate={mockupReady && !prefersReducedMotion ? { opacity: 1, x: 0, scale: 1 } : { opacity: mockupReady ? 1 : 0.2, x: mockupReady || prefersReducedMotion ? 0 : 42, scale: mockupReady || prefersReducedMotion ? 1 : 0.97 }}
+        transition={{ duration: mockupReady ? 0.85 : 0, ease: EASE }}
+        className="relative z-20 mt-6 h-[min(110vw,720px)] w-full lg:absolute lg:-bottom-[17vh] lg:right-[3vw] lg:mt-0 lg:h-[108%] lg:w-[53%]"
+      >
         <Image src="/images/gallery/blurr-hero.png" alt="" fill sizes="(max-width: 1023px) 100vw, 53vw" className="pointer-events-none translate-x-[14%] scale-[1.3] object-contain opacity-80 lg:translate-x-[22%]" />
-        <Image src={project.heroMockup.src} alt={project.heroMockup.alt} fill sizes="(max-width: 1023px) 100vw, 53vw" className="relative z-10 object-contain object-center lg:object-right" preload />
+        <Image src={project.heroMockup.src} alt={project.heroMockup.alt} fill sizes="(max-width: 1023px) 100vw, 53vw" className="relative z-10 object-contain object-center lg:object-right" preload onLoad={() => setMockupReady(true)} />
         <figcaption className="sr-only">{project.heroMockup.title}</figcaption>
       </motion.figure>
     </section>

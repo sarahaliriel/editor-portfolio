@@ -350,7 +350,7 @@ export default function Menu() {
                           </span>
                           <span className="w-full">
                             <span className="mx-auto block max-w-full font-display text-[clamp(2.6rem,10vw,4.6rem)] font-semibold uppercase leading-[0.9] tracking-[-0.045em] [@media(max-width:639px)_and_(max-height:640px)]:leading-[0.82] sm:mx-0 sm:text-[clamp(1.75rem,5.2vw,4.75rem)] sm:leading-[0.82] sm:tracking-[-0.055em]">
-                              {t(item.labelKey)}
+                              <RollingText variant="strong">{t(item.labelKey)}</RollingText>
                             </span>
                             {active ? (
                               <span className="mx-auto mt-1.5 block max-w-64 text-[10px] leading-relaxed text-[#e8e7e7]/64 sm:mx-0 sm:max-w-lg md:text-[11px]">

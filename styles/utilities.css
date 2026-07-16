@@ -29,6 +29,14 @@ h1{
   line-height: 1.05;
 }
 
+.profile-name {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+}
+
 
 h2{
   font-family: var(--font-montserrat), sans-serif;
