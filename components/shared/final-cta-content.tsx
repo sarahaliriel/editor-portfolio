@@ -7,6 +7,7 @@ import type { PointerEvent, Ref } from "react"
 import { useEffect, useState } from "react"
 import { useI18n } from "@/components/providers/i18n"
 import RollingText from "@/components/shared/rolling-text"
+import { getResumeFile } from "@/lib/resume"
 
 const SOCIALS = [
   { label: "Instagram", href: "https://www.instagram.com/chazinhodociel/" },
@@ -14,8 +15,6 @@ const SOCIALS = [
   { label: "GitHub", href: "https://github.com/sarahaliriel" },
   { label: "Discord", href: "https://discord.com/users/942126894478950530" },
 ] as const
-
-const RESUME_HREF = "/cv/Sarah-Design.CV.pdf"
 
 const reveal: Variants = {
   hidden: { opacity: 0, y: 28, filter: "blur(6px)" },
@@ -84,7 +83,8 @@ export default function FinalCtaContent({
   animateReveal = true,
   theme = "light",
 }: FinalCtaContentProps) {
-  const { t } = useI18n()
+  const { lang, t } = useI18n()
+  const resumeFile = getResumeFile(lang)
   const reducedMotion = Boolean(useReducedMotion())
   const rawX = useMotionValue(0)
   const rawY = useMotionValue(0)
@@ -186,7 +186,7 @@ export default function FinalCtaContent({
               <span aria-hidden="true" className={`absolute inset-0 origin-bottom scale-y-0 rounded-full transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100 ${pillFill}`} />
               <RollingText variant="subtle" className="relative z-10">dumitrachebusiness@gmail.com</RollingText>
             </a>
-            <a href={RESUME_HREF} download tabIndex={interactive ? undefined : -1} className={pillClassName} aria-label={t("moreAboutCtaResume")}>
+            <a href={resumeFile.href} download={resumeFile.downloadName} tabIndex={interactive ? undefined : -1} className={pillClassName} aria-label={t("moreAboutCtaResume")}>
               <span aria-hidden="true" className={`absolute inset-0 origin-bottom scale-y-0 rounded-full transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100 ${pillFill}`} />
               <RollingText variant="strong" className="relative z-10 uppercase">{t("moreAboutCtaResume")}</RollingText>
             </a>
