@@ -87,7 +87,9 @@ export default function ProjectToCtaTransition() {
           interactive={reduceMotion || contentActive}
           animateReveal={false}
           buttonVisible={buttonVisible}
-          style={reduceMotion ? undefined : { opacity: contentOpacity, y: contentY, filter: contentBlur }}
+          style={reduceMotion
+            ? { opacity: 1, y: 0, filter: "blur(0px)" }
+            : { opacity: contentOpacity, y: contentY, filter: contentBlur }}
         />
 
         {!reduceMotion ? (

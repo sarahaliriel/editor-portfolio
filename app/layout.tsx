@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     images: [
       {
-        url: "/images/gallery/blurr-hero.png",
+        url: "/images/profile/signature-sarah-aliriel.png",
         width: 1080,
         height: 1350,
         alt: `Portfólio de ${SITE_NAME}`,
