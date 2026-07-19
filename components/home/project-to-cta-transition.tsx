@@ -12,15 +12,24 @@ import {
 import { useEffect, useRef, useState } from "react"
 import { useI18n } from "@/components/providers/i18n"
 import FinalCtaContent from "@/components/shared/final-cta-content"
+import { useMobileMotion } from "@/lib/use-mobile-motion"
 
 export default function ProjectToCtaTransition() {
   const { t } = useI18n()
   const reducedMotion = Boolean(useReducedMotion())
+  const mobileMotion = useMobileMotion()
+  const reduceMotion = reducedMotion || mobileMotion
   const sectionRef = useRef<HTMLElement>(null)
   const buttonAnchorRef = useRef<HTMLDivElement>(null)
-  const [contentActive, setContentActive] = useState(reducedMotion)
-  const [buttonVisible, setButtonVisible] = useState(reducedMotion)
+  const [contentActive, setContentActive] = useState(reduceMotion)
+  const [buttonVisible, setButtonVisible] = useState(reduceMotion)
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start end", "end end"] })
+
+  useEffect(() => {
+    if (!reduceMotion) return
+    setContentActive(true)
+    setButtonVisible(true)
+  }, [reduceMotion])
 
   useEffect(() => {
     const scrollToCta = (behavior: ScrollBehavior) => {
@@ -40,7 +49,7 @@ export default function ProjectToCtaTransition() {
   }, [])
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    if (reducedMotion) return
+    if (reduceMotion) return
     if (latest >= 0.72) setButtonVisible(true)
     setContentActive((current) => {
       const next = latest >= 0.84
@@ -61,13 +70,13 @@ export default function ProjectToCtaTransition() {
       id="contact"
       ref={sectionRef}
       data-project-cta-transition
-      className={`relative z-30 overflow-x-clip bg-[#1e1e1e] ${reducedMotion ? "min-h-svh bg-[#e8e7e7]" : "h-[280svh] sm:h-[310svh]"}`}
+      className={`relative z-30 overflow-x-clip bg-[#1e1e1e] ${reduceMotion ? "min-h-svh bg-[#e8e7e7]" : "h-[280svh] sm:h-[310svh]"}`}
     >
-      <div data-orb-stage className={`${reducedMotion ? "relative" : "sticky top-0"} isolate min-h-svh w-full overflow-hidden bg-[#1e1e1e]`}>
+      <div data-orb-stage className={`${reduceMotion ? "relative" : "sticky top-0"} isolate min-h-svh w-full overflow-hidden bg-[#1e1e1e]`}>
         <motion.div
           aria-hidden="true"
           className="absolute inset-0 bg-[#e8e7e7] will-change-[clip-path]"
-          style={{ clipPath: reducedMotion ? "none" : clipPath }}
+          style={{ clipPath: reduceMotion ? "none" : clipPath }}
         />
 
         <FinalCtaContent
@@ -75,13 +84,13 @@ export default function ProjectToCtaTransition() {
           titleLines={[t("projectCtaLine1"), t("projectCtaLine2")]}
           button={t("moreAboutCtaButton")}
           buttonAnchorRef={buttonAnchorRef}
-          interactive={reducedMotion || contentActive}
+          interactive={reduceMotion || contentActive}
           animateReveal={false}
           buttonVisible={buttonVisible}
-          style={reducedMotion ? undefined : { opacity: contentOpacity, y: contentY, filter: contentBlur }}
+          style={reduceMotion ? undefined : { opacity: contentOpacity, y: contentY, filter: contentBlur }}
         />
 
-        {!reducedMotion ? (
+        {!reduceMotion ? (
           <motion.p
             aria-hidden="true"
             className="pointer-events-none absolute bottom-8 left-1/2 z-40 -translate-x-1/2 text-[9px] font-semibold uppercase tracking-[.24em] text-[#e8e7e7] sm:bottom-10 sm:text-[10px]"

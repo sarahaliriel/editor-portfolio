@@ -7,6 +7,7 @@ import type { PointerEvent } from "react"
 import { useRef } from "react"
 import { useI18n } from "@/components/providers/i18n"
 import RollingText from "@/components/shared/rolling-text"
+import { useMobileMotion } from "@/lib/use-mobile-motion"
 
 const moveKeywords = /^(pararem|sentirem|lembrarem|stop|feel|remember|detengan|sientan|recuerden)[,.]?$/i
 
@@ -114,6 +115,8 @@ export default function WhatMoves() {
   const { t } = useI18n()
   const sectionRef = useRef<HTMLElement | null>(null)
   const prefersReducedMotion = useReducedMotion()
+  const mobileMotion = useMobileMotion()
+  const reduceMotion = Boolean(prefersReducedMotion || mobileMotion)
   const quote = t("moreAboutMovesQuote")
   const words = quote.split(/\s+/)
   const { scrollYProgress } = useScroll({
@@ -125,12 +128,12 @@ export default function WhatMoves() {
     <section
       ref={sectionRef}
       className={
-        prefersReducedMotion
+        reduceMotion
           ? "relative z-20 overflow-x-clip bg-transparent px-4 py-24 text-[#e8e7e7] sm:px-8 sm:py-32 lg:px-12"
           : "relative z-20 h-[180svh] overflow-x-clip bg-transparent px-4 text-[#e8e7e7] sm:px-8 lg:px-12"
       }
     >
-      <div className={prefersReducedMotion ? "mx-auto w-full" : "sticky top-0 mx-auto flex h-svh w-full items-center"}>
+      <div className={reduceMotion ? "mx-auto w-full" : "sticky top-0 mx-auto flex h-svh w-full items-center"}>
         <div className="mx-auto flex w-full max-w-280 flex-col py-[clamp(2.5rem,6svh,5rem)] sm:w-[72vw]">
           <p
             className="w-full text-balance text-center font-display text-[clamp(2.4rem,13vw,4.2rem)] font-medium leading-[0.96] tracking-[-0.045em] sm:text-[clamp(3.2rem,6.8vw,7.2rem)] sm:leading-[0.94]"
@@ -146,7 +149,7 @@ export default function WhatMoves() {
                     total={words.length}
                     progress={scrollYProgress}
                     emphasized={emphasized}
-                    reducedMotion={Boolean(prefersReducedMotion)}
+                    reducedMotion={reduceMotion}
                   >
                     {word}
                   </MovingWord>
@@ -157,7 +160,7 @@ export default function WhatMoves() {
           </p>
 
           <div className="mt-[clamp(2.75rem,6svh,5rem)] flex w-full justify-center">
-            <MagneticAboutButton reducedMotion={Boolean(prefersReducedMotion)} />
+            <MagneticAboutButton reducedMotion={reduceMotion} />
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 type ScrollProgressProps = {
   progress?: number
@@ -9,31 +9,51 @@ type ScrollProgressProps = {
 type ScrollTheme = "light" | "dark"
 
 export default function ScrollProgress({ progress }: ScrollProgressProps) {
+  const [isVisible, setIsVisible] = useState(false)
   const [scrollProgress, setScrollProgress] = useState(0)
   const [menuOpen, setMenuOpen] = useState(false)
   const [theme, setTheme] = useState<ScrollTheme>("light")
 
-  useEffect(() => {
-    if (progress !== undefined) return
+  const frameRef = useRef<number | null>(null)
 
-    const onScroll = () => {
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 640px)")
+    const update = () => setIsVisible(media.matches)
+
+    update()
+    media.addEventListener("change", update)
+    return () => media.removeEventListener("change", update)
+  }, [])
+
+  useEffect(() => {
+    if (progress !== undefined || !isVisible) return
+
+    const update = () => {
+      frameRef.current = null
       const doc = document.documentElement
       const max = doc.scrollHeight - window.innerHeight
       const next = max <= 0 ? 0 : Math.min(1, Math.max(0, window.scrollY / max))
-      setScrollProgress(next)
+      setScrollProgress((current) => Math.abs(current - next) < 0.001 ? current : next)
     }
 
-    onScroll()
+    const onScroll = () => {
+      if (frameRef.current === null) frameRef.current = window.requestAnimationFrame(update)
+    }
+
+    update()
     window.addEventListener("scroll", onScroll, { passive: true })
     window.addEventListener("resize", onScroll)
 
     return () => {
       window.removeEventListener("scroll", onScroll)
       window.removeEventListener("resize", onScroll)
+      if (frameRef.current !== null) window.cancelAnimationFrame(frameRef.current)
     }
-  }, [progress])
+  }, [isVisible, progress])
 
   useEffect(() => {
+    if (!isVisible) return
+
     const onMenu = (event: Event) => {
       const customEvent = event as CustomEvent<{ open: boolean }>
       setMenuOpen(Boolean(customEvent.detail?.open))
@@ -41,10 +61,14 @@ export default function ScrollProgress({ progress }: ScrollProgressProps) {
 
     window.addEventListener("menu:state", onMenu)
     return () => window.removeEventListener("menu:state", onMenu)
-  }, [])
+  }, [isVisible])
 
   useEffect(() => {
+    if (!isVisible) return
+
+    let frame: number | null = null
     const updateTheme = () => {
+      frame = null
       const indicatorY = window.innerHeight / 2
       const themedSections = document.querySelectorAll<HTMLElement>("[data-scroll-theme]")
       let nextTheme: ScrollTheme = "light"
@@ -56,18 +80,23 @@ export default function ScrollProgress({ progress }: ScrollProgressProps) {
         }
       })
 
-      setTheme(nextTheme)
+      setTheme((current) => current === nextTheme ? current : nextTheme)
+    }
+
+    const scheduleThemeUpdate = () => {
+      if (frame === null) frame = window.requestAnimationFrame(updateTheme)
     }
 
     updateTheme()
-    window.addEventListener("scroll", updateTheme, { passive: true })
-    window.addEventListener("resize", updateTheme)
+    window.addEventListener("scroll", scheduleThemeUpdate, { passive: true })
+    window.addEventListener("resize", scheduleThemeUpdate)
 
     return () => {
-      window.removeEventListener("scroll", updateTheme)
-      window.removeEventListener("resize", updateTheme)
+      window.removeEventListener("scroll", scheduleThemeUpdate)
+      window.removeEventListener("resize", scheduleThemeUpdate)
+      if (frame !== null) window.cancelAnimationFrame(frame)
     }
-  }, [])
+  }, [isVisible])
 
   const p = progress === undefined
     ? scrollProgress
@@ -75,7 +104,7 @@ export default function ScrollProgress({ progress }: ScrollProgressProps) {
 
   const pct = Math.round(p * 100)
 
-  if (menuOpen) return null
+  if (!isVisible || menuOpen) return null
 
   const foreground = theme === "dark" ? "text-[#e8e7e7]" : "text-[var(--accent)]"
   const progressColor = theme === "dark" ? "bg-[#e8e7e7]" : "bg-[var(--accent)]"

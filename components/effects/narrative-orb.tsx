@@ -9,6 +9,7 @@ import {
   useTransform,
 } from "framer-motion"
 import { useCallback, useEffect, useLayoutEffect, useState } from "react"
+import { useMobileMotion } from "@/lib/use-mobile-motion"
 
 const ORB_STOPS = [0, 0.2, 0.45, 0.7, 0.95, 1]
 const MAGNET_RADIUS = 160
@@ -37,7 +38,7 @@ function sampleTrack(progress: number, values: number[]) {
   return values[values.length - 1]
 }
 
-export default function NarrativeOrb() {
+function NarrativeOrbAnimation() {
   const prefersReducedMotion = useReducedMotion()
   const { scrollYProgress } = useScroll()
   const [isCta, setIsCta] = useState(false)
@@ -244,4 +245,11 @@ export default function NarrativeOrb() {
       <motion.span className="narrative-orb__ripple" aria-hidden="true" style={{ opacity: rippleOpacity, scale: rippleScale }} />
     </motion.div>
   )
+}
+
+export default function NarrativeOrb() {
+  const mobileMotion = useMobileMotion()
+
+  if (mobileMotion) return null
+  return <NarrativeOrbAnimation />
 }
